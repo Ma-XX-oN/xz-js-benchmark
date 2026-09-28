@@ -38,6 +38,7 @@ jobs:
         shell: bash
         run: |
           source ./.emsdk/emsdk_env.sh
+          exports='["_dc_xz_encoder_new","_dc_xz_encoder_write","_dc_xz_encoder_finish","_dc_xz_encoder_free","_dc_xz_decode","_dc_xz_buffer_free","_malloc","_free"]'
           build_variant() {
             local name="$1"
             local flags="$2"
@@ -68,15 +69,33 @@ jobs:
               -sENVIRONMENT=node \
               -sALLOW_MEMORY_GROWTH=1 \
               -sFILESYSTEM=0 \
-              -sEXPORTED_FUNCTIONS='["_dc_xz_encoder_new","_dc_xz_encoder_write","_dc_xz_encoder_finish","_dc_xz_encoder_free","_malloc","_free"]' \
+              -sEXPORTED_FUNCTIONS="$exports" \
               -sEXPORTED_RUNTIME_METHODS='["HEAPU8","HEAPU32"]' \
               -o "$out/liblzma.cjs"
           }
           build_variant scalar ''
           build_variant simd128 '-msimd128'
+          mkdir -p prototype/liblzma-wasm/browser
+          emcc prototype/liblzma-wasm/wrapper.c upstream-xz/build-scalar/liblzma.a \
+            -Iupstream-xz/src/liblzma/api \
+            -O3 -flto \
+            -sMODULARIZE=1 \
+            -sEXPORT_ES6=1 \
+            -sENVIRONMENT=web \
+            -sWASM_ASYNC_COMPILATION=0 \
+            -sALLOW_MEMORY_GROWTH=1 \
+            -sFILESYSTEM=0 \
+            -sEXPORTED_FUNCTIONS="$exports" \
+            -sEXPORTED_RUNTIME_METHODS='["HEAPU8","HEAPU32"]' \
+            -o prototype/liblzma-wasm/browser/liblzma.mjs
+      - name: Native compatibility and decoder test
+        run: |
+          cp prototype/liblzma-wasm/scalar/liblzma.cjs prototype/liblzma-wasm/liblzma.cjs
+          cp prototype/liblzma-wasm/scalar/liblzma.wasm prototype/liblzma-wasm/liblzma.wasm
+          node --test test/liblzma-wasm.test.mjs
       - name: Compare scalar, SIMD, Rust, and native
         run: node src/liblzma-modern-compare.mjs
-      - name: Measure payloads
+      - name: Measure payloads and preserve browser build
         shell: bash
         run: |
           source ./.emsdk/emsdk_env.sh
@@ -85,6 +104,10 @@ jobs:
             gzip -9 -c "prototype/liblzma-wasm/$variant/liblzma.wasm" > "benchmark-results/$variant.wasm.gz"
             gzip -9 -c "prototype/liblzma-wasm/$variant/liblzma.cjs" > "benchmark-results/$variant.cjs.gz"
           done
+          cp prototype/liblzma-wasm/browser/liblzma.mjs benchmark-results/browser-liblzma.mjs
+          cp prototype/liblzma-wasm/browser/liblzma.wasm benchmark-results/browser-liblzma.wasm
+          gzip -9 -c prototype/liblzma-wasm/browser/liblzma.wasm > benchmark-results/browser-liblzma.wasm.gz
+          gzip -9 -c prototype/liblzma-wasm/browser/liblzma.mjs > benchmark-results/browser-liblzma.mjs.gz
           gzip -9 -c prototype/direct-xz/pkg-web/direct_xz_wasm_bg.wasm > benchmark-results/rust.wasm.gz
           gzip -9 -c prototype/direct-xz/pkg-web/direct_xz_wasm.js > benchmark-results/rust.js.gz
           {
