@@ -18,4 +18,4 @@ panic = "abort"
 strip = true
 
 [package.metadata.wasm-pack.profile.release]
-wasm-opt = ["-O3", "--enable-bulk-memory"]
+wasm-opt = ["-O3", "--enable-bulk-memory", "--enable-sign-ext"]
