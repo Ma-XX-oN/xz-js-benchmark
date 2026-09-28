@@ -1,5 +1,5 @@
-use lzma_rust2::{XzOptions, XzWriter};
-use std::io::Write;
+use lzma_rust2::{XzOptions, XzReader, XzWriter};
+use std::io::{Read, Write};
 use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen]
@@ -33,4 +33,13 @@ impl XzEncoder {
         writer.finish()
             .map_err(|e| JsValue::from_str(&format!("XZ finish failed: {e}")))
     }
+}
+
+#[wasm_bindgen]
+pub fn decompress_xz(input: &[u8]) -> Result<Vec<u8>, JsValue> {
+    let mut reader = XzReader::new(input, true);
+    let mut output = Vec::new();
+    reader.read_to_end(&mut output)
+        .map_err(|e| JsValue::from_str(&format!("XZ decompression failed: {e}")))?;
+    Ok(output)
 }
