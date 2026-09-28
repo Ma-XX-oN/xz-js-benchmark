@@ -1,0 +1,62 @@
+name: Upstream liblzma WASM
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [issue-3-upstream-liblzma-wasm]
+  pull_request:
+    branches: [main]
+
+jobs:
+  liblzma-wasm:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '22' }
+      - name: Install tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y xz-utils emscripten cmake ninja-build
+          cargo install wasm-pack --locked
+          npm install
+      - name: Build Rust reference
+        run: wasm-pack build prototype/direct-xz --target web --release --out-dir pkg-web
+      - name: Fetch pinned upstream XZ
+        run: |
+          git clone https://github.com/tukaani-project/xz.git upstream-xz
+          git -C upstream-xz checkout 3b1efb04d17c3a9ef7f473d73af13f1531428ffe
+      - name: Build upstream liblzma
+        run: |
+          emcmake cmake -S upstream-xz -B upstream-xz/build -G Ninja -DCMAKE_C_BYTE_ORDER=LITTLE_ENDIAN -DBUILD_SHARED_LIBS=OFF -DCMAKE_C_BYTE_ORDER=LITTLE_ENDIAN -DXZ_NLS=OFF -DXZ_TOOL_XZ=OFF -DXZ_TOOL_XZDEC=OFF -DXZ_TOOL_LZMADEC=OFF -DXZ_TOOL_LZMAINFO=OFF -DXZ_TOOL_SCRIPTS=OFF -DXZ_DOC=OFF -DXZ_ENCODERS='lzma1;lzma2' -DXZ_DECODERS='lzma1;lzma2' -DXZ_CHECKS=crc64 -DXZ_MATCH_FINDERS=bt4
+          cmake --build upstream-xz/build --target liblzma
+          mkdir -p prototype/liblzma-wasm
+          emcc prototype/liblzma-wasm/wrapper.c upstream-xz/build/liblzma.a -Iupstream-xz/src/liblzma/api -O3 -flto -sMODULARIZE=1 -sENVIRONMENT=node -sALLOW_MEMORY_GROWTH=1 -sFILESYSTEM=0 -sEXPORTED_FUNCTIONS='["_dc_xz_encoder_new","_dc_xz_encoder_write","_dc_xz_encoder_finish","_dc_xz_encoder_free","_dc_xz_decode","_dc_xz_buffer_free","_malloc","_free"]' -sEXPORTED_RUNTIME_METHODS='["HEAPU8","HEAPU32"]' -o prototype/liblzma-wasm/liblzma.cjs
+      - name: Native compatibility and decoder test
+        run: node --test test/liblzma-wasm.test.mjs
+      - name: Benchmark
+        run: node src/liblzma-wasm-benchmark.mjs
+      - name: Diagnose speed gap
+        run: node src/liblzma-speed-diagnosis.mjs
+      - name: Measure Rust and liblzma payloads
+        run: |
+          mkdir -p benchmark-results
+          gzip -9 -c prototype/liblzma-wasm/liblzma.wasm > benchmark-results/liblzma.wasm.gz
+          gzip -9 -c prototype/liblzma-wasm/liblzma.cjs > benchmark-results/liblzma.cjs.gz
+          gzip -9 -c prototype/direct-xz/pkg-web/direct_xz_wasm_bg.wasm > benchmark-results/rust.wasm.gz
+          gzip -9 -c prototype/direct-xz/pkg-web/direct_xz_wasm.js > benchmark-results/rust.js.gz
+          {
+            echo "# WASM payload comparison"
+            echo
+            echo "| Codec | WASM raw | WASM gzip | JS raw | JS gzip | Total gzip |"
+            echo "|---|---:|---:|---:|---:|---:|"
+            lr=$(stat -c%s prototype/liblzma-wasm/liblzma.wasm); lg=$(stat -c%s benchmark-results/liblzma.wasm.gz); jr=$(stat -c%s prototype/liblzma-wasm/liblzma.cjs); jg=$(stat -c%s benchmark-results/liblzma.cjs.gz)
+            rr=$(stat -c%s prototype/direct-xz/pkg-web/direct_xz_wasm_bg.wasm); rg=$(stat -c%s benchmark-results/rust.wasm.gz); rjr=$(stat -c%s prototype/direct-xz/pkg-web/direct_xz_wasm.js); rjg=$(stat -c%s benchmark-results/rust.js.gz)
+            echo "| upstream liblzma 5.8.4 | $lr | $lg | $jr | $jg | $((lg+jg)) |"
+            echo "| lzma-rust2 0.16.2 | $rr | $rg | $rjr | $rjg | $((rg+rjg)) |"
+          } | tee benchmark-results/payload-comparison.md
+      - uses: actions/upload-artifact@v4
+        with:
+          name: upstream-liblzma-wasm-results
+          path: benchmark-results/

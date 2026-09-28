@@ -1,11 +1,12 @@
 {
   "name": "xz-js-benchmark",
-  "version": "0.1.0-issue.1.4",
+  "version": "0.1.0-issue.2.2",
   "private": true,
   "type": "module",
   "scripts": {
     "test": "node --test",
-    "benchmark": "node src/benchmark.mjs"
+    "benchmark": "node src/benchmark.mjs",
+    "test:direct": "node --test test/direct-streaming.test.mjs"
   },
   "dependencies": {
     "lzma-wasm": "1.0.7",

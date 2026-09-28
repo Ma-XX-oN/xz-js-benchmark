@@ -1,0 +1,59 @@
+name: Direct streaming XZ WASM
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [issue-2-direct-streaming-lzma-rust2]
+
+jobs:
+  direct-streaming:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install native xz and wasm-pack
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y xz-utils
+          cargo install wasm-pack --locked
+          npm install
+      - name: Build direct XZ WASM
+        run: wasm-pack build prototype/direct-xz --target nodejs --release --out-dir pkg
+      - name: Build browser-target direct XZ WASM
+        run: wasm-pack build prototype/direct-xz --target web --release --out-dir pkg-web
+      - name: RED/GREEN streaming contract
+        run: node --test test/direct-streaming.test.mjs
+      - name: Benchmark direct streaming versus stock lzma-wasm
+        run: node src/direct-streaming-benchmark.mjs
+      - name: Measure payload
+        run: |
+          mkdir -p benchmark-results
+          gzip -9 -c prototype/direct-xz/pkg/direct_xz_wasm_bg.wasm > benchmark-results/direct_xz_wasm_bg.wasm.gz
+          gzip -9 -c prototype/direct-xz/pkg/direct_xz_wasm.js > benchmark-results/direct_xz_wasm.js.gz
+          gzip -9 -c prototype/direct-xz/pkg-web/direct_xz_wasm_bg.wasm > benchmark-results/direct_xz_web_bg.wasm.gz
+          gzip -9 -c prototype/direct-xz/pkg-web/direct_xz_wasm.js > benchmark-results/direct_xz_web.js.gz
+          wasm_raw=$(stat -c%s prototype/direct-xz/pkg/direct_xz_wasm_bg.wasm)
+          wasm_gz=$(stat -c%s benchmark-results/direct_xz_wasm_bg.wasm.gz)
+          js_raw=$(stat -c%s prototype/direct-xz/pkg/direct_xz_wasm.js)
+          js_gz=$(stat -c%s benchmark-results/direct_xz_wasm.js.gz)
+          total=$((wasm_gz + js_gz))
+          {
+            echo "# Direct streaming XZ WASM payload"
+            echo
+            echo "- lzma-rust2: 0.16.2"
+            echo "- WASM raw: $wasm_raw bytes"
+            echo "- WASM gzip -9: $wasm_gz bytes"
+            echo "- JS glue raw: $js_raw bytes"
+            echo "- JS glue gzip -9: $js_gz bytes"
+            echo "- Total gzip payload: $total bytes"
+            echo "- Current direct 7-Zip gzip payload: 631420 bytes"
+            echo "- Difference: $((631420 - total)) bytes smaller"
+          } | tee benchmark-results/direct-xz-payload.md
+      - name: Upload results
+        uses: actions/upload-artifact@v4
+        with:
+          name: direct-xz-wasm-results
+          path: benchmark-results/
