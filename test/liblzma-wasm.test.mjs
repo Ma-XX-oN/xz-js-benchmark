@@ -7,7 +7,8 @@ import test from 'node:test';
 
 async function loadModule() {
   const factory = (await import('../prototype/liblzma-wasm/liblzma.cjs')).default;
-  return factory();
+  const wasmBinary = fs.readFileSync(new URL('../prototype/liblzma-wasm/liblzma.wasm', import.meta.url));
+  return factory({ wasmBinary });
 }
 
 test('upstream liblzma WASM streams one native-compatible XZ', async () => {
