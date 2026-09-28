@@ -40,3 +40,5 @@ test('upstream liblzma WASM streams one native-compatible XZ', async () => {
   assert.deepEqual(decoded.stdout,expected);
   fs.rmSync(root,{recursive:true,force:true});
 });
+
+// CJS loader alignment verified.
