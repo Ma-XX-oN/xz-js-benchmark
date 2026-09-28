@@ -20,6 +20,7 @@ const repetitions = Number(process.env.BENCH_REPETITIONS || 3);
 const corpusBytes = Number(process.env.BENCH_CORPUS_BYTES || 32 * 1024 * 1024);
 const corpusSelection = process.env.BENCH_CORPUS_KIND || 'all';
 const preset = Number(process.env.BENCH_PRESET || 9);
+const nodeLiblzmaPreset = Math.min(preset, 6);
 const xz = process.env.XZ_BIN || 'xz';
 
 assert(Number.isInteger(repetitions) && repetitions > 0);
@@ -130,13 +131,13 @@ async function runNodeLiblzma(kind, source) {
     const run = await nodeLiblzmaStreamOnce(mod, source, output);
     runs.push({ initMs: i === 0 ? initMs : 0, ...run });
   }
-  return { id: 'node-liblzma-5.1.3-wasm', api: 'web-transform-stream', streaming: true, runs };
+  return { id: `node-liblzma-5.1.3-wasm-preset-${nodeLiblzmaPreset}`, api: 'web-transform-stream', streaming: true, preset: nodeLiblzmaPreset, runs };
 }
 
 async function nodeLiblzmaStreamOnce(mod, source, output) {
   const input = new Uint8Array(fs.readFileSync(source));
   const start = performance.now();
-  const stream = new Blob([input]).stream().pipeThrough(mod.createXz({ preset }));
+  const stream = new Blob([input]).stream().pipeThrough(mod.createXz({ preset: nodeLiblzmaPreset }));
   const compressed = new Uint8Array(await new Response(stream).arrayBuffer());
   const compressionMs = performance.now() - start;
   fs.writeFileSync(output, compressed);
