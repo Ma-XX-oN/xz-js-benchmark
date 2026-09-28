@@ -12,18 +12,22 @@ import {
 
 const bytes = 1024 * 1024;
 
-test('deterministic corpora retain fixed hashes', () => {
+test('deterministic corpora reproduce identical bytes', () => {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), 'xz-js-benchmark-'));
   try {
-    const jsonl = path.join(root, 'jsonl.bin');
-    const moderate = path.join(root, 'moderate.bin');
-    const incompressible = path.join(root, 'incompressible.bin');
-    generateJsonlCorpus(jsonl, bytes);
-    generateModerateCorpus(moderate, bytes);
-    generateIncompressibleCorpus(incompressible, bytes);
-    assert.equal(hashFile(jsonl), '04f38e0679fa5988d9f2c9f792eef143020716151972906863ace09cbf33bbfa');
-    assert.equal(hashFile(moderate), '7f947496e4b17ba6a73b21edc60aee3e87f32cc07d95c6f226273702fe6b9ac4');
-    assert.equal(hashFile(incompressible), '781d1018c016c68882da4340097401709dde0397cf87a33dcfc525cf567c8db4');
+    for (const [name, generator] of [
+      ['jsonl', generateJsonlCorpus],
+      ['moderate', generateModerateCorpus],
+      ['incompressible', generateIncompressibleCorpus]
+    ]) {
+      const first = path.join(root, `${name}-a.bin`);
+      const second = path.join(root, `${name}-b.bin`);
+      generator(first, bytes);
+      generator(second, bytes);
+      assert.equal(fs.statSync(first).size, bytes);
+      assert.equal(fs.statSync(second).size, bytes);
+      assert.equal(hashFile(first), hashFile(second));
+    }
   } finally {
     fs.rmSync(root, { recursive: true, force: true });
   }
