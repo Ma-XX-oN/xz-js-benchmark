@@ -11,14 +11,6 @@ jobs:
   modern-liblzma-wasm:
     runs-on: ubuntu-latest
     timeout-minutes: 35
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - variant: scalar
-            simd_flags: ''
-          - variant: simd128
-            simd_flags: '-msimd128'
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -42,61 +34,80 @@ jobs:
         run: |
           git clone https://github.com/tukaani-project/xz.git upstream-xz
           git -C upstream-xz checkout 3b1efb04d17c3a9ef7f473d73af13f1531428ffe
-      - name: Build upstream liblzma (${{ matrix.variant }})
+      - name: Build scalar and SIMD liblzma
         shell: bash
         run: |
           source ./.emsdk/emsdk_env.sh
-          FLAGS='${{ matrix.simd_flags }}'
-          emcmake cmake -S upstream-xz -B upstream-xz/build -G Ninja \
-            -DCMAKE_BUILD_TYPE=Release \
-            -DCMAKE_C_BYTE_ORDER=LITTLE_ENDIAN \
-            -DBUILD_SHARED_LIBS=OFF \
-            -DXZ_NLS=OFF \
-            -DXZ_TOOL_XZ=OFF \
-            -DXZ_TOOL_XZDEC=OFF \
-            -DXZ_TOOL_LZMADEC=OFF \
-            -DXZ_TOOL_LZMAINFO=OFF \
-            -DXZ_TOOL_SCRIPTS=OFF \
-            -DXZ_DOC=OFF \
-            -DXZ_ENCODERS='lzma1;lzma2' \
-            -DXZ_DECODERS='lzma1;lzma2' \
-            -DXZ_CHECKS=crc64 \
-            -DXZ_MATCH_FINDERS=bt4 \
-            -DCMAKE_C_FLAGS_RELEASE="-O3 -flto $FLAGS"
-          cmake --build upstream-xz/build --target liblzma
-          mkdir -p prototype/liblzma-wasm
-          emcc prototype/liblzma-wasm/wrapper.c upstream-xz/build/liblzma.a \
-            -Iupstream-xz/src/liblzma/api \
-            -O3 -flto $FLAGS \
-            -sMODULARIZE=1 \
-            -sENVIRONMENT=node \
-            -sALLOW_MEMORY_GROWTH=1 \
-            -sFILESYSTEM=0 \
-            -sEXPORTED_FUNCTIONS='["_dc_xz_encoder_new","_dc_xz_encoder_write","_dc_xz_encoder_finish","_dc_xz_encoder_free","_malloc","_free"]' \
-            -sEXPORTED_RUNTIME_METHODS='["HEAPU8","HEAPU32"]' \
-            -o prototype/liblzma-wasm/liblzma.cjs
-      - name: Native compatibility test
-        run: node --test test/liblzma-wasm.test.mjs
-      - name: Diagnose speed gap
-        run: node src/liblzma-speed-diagnosis.mjs
-      - name: Measure payload
+          build_variant() {
+            local name="$1"
+            local flags="$2"
+            local build="upstream-xz/build-$name"
+            local out="prototype/liblzma-wasm/$name"
+            emcmake cmake -S upstream-xz -B "$build" -G Ninja \
+              -DCMAKE_BUILD_TYPE=Release \
+              -DCMAKE_C_BYTE_ORDER=LITTLE_ENDIAN \
+              -DBUILD_SHARED_LIBS=OFF \
+              -DXZ_NLS=OFF \
+              -DXZ_TOOL_XZ=OFF \
+              -DXZ_TOOL_XZDEC=OFF \
+              -DXZ_TOOL_LZMADEC=OFF \
+              -DXZ_TOOL_LZMAINFO=OFF \
+              -DXZ_TOOL_SCRIPTS=OFF \
+              -DXZ_DOC=OFF \
+              -DXZ_ENCODERS='lzma1;lzma2' \
+              -DXZ_DECODERS='lzma1;lzma2' \
+              -DXZ_CHECKS=crc64 \
+              -DXZ_MATCH_FINDERS=bt4 \
+              -DCMAKE_C_FLAGS_RELEASE="-O3 -flto $flags"
+            cmake --build "$build" --target liblzma
+            mkdir -p "$out"
+            emcc prototype/liblzma-wasm/wrapper.c "$build/liblzma.a" \
+              -Iupstream-xz/src/liblzma/api \
+              -O3 -flto $flags \
+              -sMODULARIZE=1 \
+              -sENVIRONMENT=node \
+              -sALLOW_MEMORY_GROWTH=1 \
+              -sFILESYSTEM=0 \
+              -sEXPORTED_FUNCTIONS='["_dc_xz_encoder_new","_dc_xz_encoder_write","_dc_xz_encoder_finish","_dc_xz_encoder_free","_malloc","_free"]' \
+              -sEXPORTED_RUNTIME_METHODS='["HEAPU8","HEAPU32"]' \
+              -o "$out/liblzma.cjs"
+          }
+          build_variant scalar ''
+          build_variant simd128 '-msimd128'
+      - name: Compare scalar, SIMD, Rust, and native
+        run: node src/liblzma-modern-compare.mjs
+      - name: Measure payloads
         shell: bash
         run: |
           source ./.emsdk/emsdk_env.sh
           mkdir -p benchmark-results
-          gzip -9 -c prototype/liblzma-wasm/liblzma.wasm > benchmark-results/liblzma.wasm.gz
-          gzip -9 -c prototype/liblzma-wasm/liblzma.cjs > benchmark-results/liblzma.cjs.gz
+          for variant in scalar simd128; do
+            gzip -9 -c "prototype/liblzma-wasm/$variant/liblzma.wasm" > "benchmark-results/$variant.wasm.gz"
+            gzip -9 -c "prototype/liblzma-wasm/$variant/liblzma.cjs" > "benchmark-results/$variant.cjs.gz"
+          done
+          gzip -9 -c prototype/direct-xz/pkg-web/direct_xz_wasm_bg.wasm > benchmark-results/rust.wasm.gz
+          gzip -9 -c prototype/direct-xz/pkg-web/direct_xz_wasm.js > benchmark-results/rust.js.gz
           {
-            echo '# Modern Emscripten liblzma payload'
+            echo '# Same-runner payload comparison'
             echo
             emcc --version | head -n 1
-            echo "variant=${{ matrix.variant }}"
-            echo "wasm_raw=$(stat -c%s prototype/liblzma-wasm/liblzma.wasm)"
-            echo "wasm_gzip=$(stat -c%s benchmark-results/liblzma.wasm.gz)"
-            echo "js_raw=$(stat -c%s prototype/liblzma-wasm/liblzma.cjs)"
-            echo "js_gzip=$(stat -c%s benchmark-results/liblzma.cjs.gz)"
-          } | tee benchmark-results/modern-${{ matrix.variant }}-payload.txt
+            echo
+            echo '| Codec | WASM raw | WASM gzip | JS raw | JS gzip | Total gzip |'
+            echo '|---|---:|---:|---:|---:|---:|'
+            for variant in scalar simd128; do
+              wr=$(stat -c%s "prototype/liblzma-wasm/$variant/liblzma.wasm")
+              wg=$(stat -c%s "benchmark-results/$variant.wasm.gz")
+              jr=$(stat -c%s "prototype/liblzma-wasm/$variant/liblzma.cjs")
+              jg=$(stat -c%s "benchmark-results/$variant.cjs.gz")
+              echo "| liblzma $variant | $wr | $wg | $jr | $jg | $((wg+jg)) |"
+            done
+            wr=$(stat -c%s prototype/direct-xz/pkg-web/direct_xz_wasm_bg.wasm)
+            wg=$(stat -c%s benchmark-results/rust.wasm.gz)
+            jr=$(stat -c%s prototype/direct-xz/pkg-web/direct_xz_wasm.js)
+            jg=$(stat -c%s benchmark-results/rust.js.gz)
+            echo "| lzma-rust2 0.16.2 | $wr | $wg | $jr | $jg | $((wg+jg)) |"
+          } | tee benchmark-results/modern-same-runner-payload.md
       - uses: actions/upload-artifact@v4
         with:
-          name: modern-liblzma-${{ matrix.variant }}
+          name: modern-liblzma-same-runner
           path: benchmark-results/
