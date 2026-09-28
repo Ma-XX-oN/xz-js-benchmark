@@ -4,6 +4,8 @@ on:
   workflow_dispatch:
   push:
     branches: [issue-3-upstream-liblzma-wasm]
+  pull_request:
+    branches: [main]
 
 jobs:
   liblzma-wasm:
