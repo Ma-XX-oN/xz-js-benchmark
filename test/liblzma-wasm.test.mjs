@@ -43,3 +43,5 @@ test('upstream liblzma WASM streams one native-compatible XZ', async () => {
 });
 
 // CJS loader alignment verified.
+
+// Explicit WASM byte initialization.
