@@ -85,4 +85,60 @@ void dc_xz_encoder_free(dc_xz_encoder *e) {
   free(e);
 }
 
-/* issue-3 CI trigger */
+int dc_xz_decode(const uint8_t *input, size_t input_len,
+                 uint8_t **output, size_t *output_len) {
+  if (!input || !output || !output_len) return 0;
+  lzma_stream strm = LZMA_STREAM_INIT;
+  if (lzma_stream_decoder(&strm, UINT64_MAX, LZMA_CONCATENATED) != LZMA_OK) {
+    return 0;
+  }
+
+  size_t cap = input_len > 16384 ? input_len * 4 : 65536;
+  if (cap < input_len || cap < 65536) cap = 65536;
+  uint8_t *buffer = (uint8_t *)malloc(cap);
+  if (!buffer) {
+    lzma_end(&strm);
+    return 0;
+  }
+
+  strm.next_in = input;
+  strm.avail_in = input_len;
+  size_t used = 0;
+  for (;;) {
+    strm.next_out = buffer + used;
+    strm.avail_out = cap - used;
+    lzma_ret ret = lzma_code(&strm, LZMA_FINISH);
+    used = cap - strm.avail_out;
+    if (ret == LZMA_STREAM_END) break;
+    if (ret != LZMA_OK) {
+      free(buffer);
+      lzma_end(&strm);
+      return 0;
+    }
+    if (!strm.avail_out) {
+      if (cap > SIZE_MAX / 2) {
+        free(buffer);
+        lzma_end(&strm);
+        return 0;
+      }
+      size_t new_cap = cap * 2;
+      uint8_t *grown = (uint8_t *)realloc(buffer, new_cap);
+      if (!grown) {
+        free(buffer);
+        lzma_end(&strm);
+        return 0;
+      }
+      buffer = grown;
+      cap = new_cap;
+    }
+  }
+
+  lzma_end(&strm);
+  *output = buffer;
+  *output_len = used;
+  return 1;
+}
+
+void dc_xz_buffer_free(uint8_t *buffer) {
+  free(buffer);
+}
