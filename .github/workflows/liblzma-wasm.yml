@@ -32,8 +32,8 @@ jobs:
           emcmake cmake -S upstream-xz -B upstream-xz/build -G Ninja -DCMAKE_C_BYTE_ORDER=LITTLE_ENDIAN -DBUILD_SHARED_LIBS=OFF -DCMAKE_C_BYTE_ORDER=LITTLE_ENDIAN -DXZ_NLS=OFF -DXZ_TOOL_XZ=OFF -DXZ_TOOL_XZDEC=OFF -DXZ_TOOL_LZMADEC=OFF -DXZ_TOOL_LZMAINFO=OFF -DXZ_TOOL_SCRIPTS=OFF -DXZ_DOC=OFF -DXZ_ENCODERS='lzma1;lzma2' -DXZ_DECODERS='lzma1;lzma2' -DXZ_CHECKS=crc64 -DXZ_MATCH_FINDERS=bt4
           cmake --build upstream-xz/build --target liblzma
           mkdir -p prototype/liblzma-wasm
-          emcc prototype/liblzma-wasm/wrapper.c upstream-xz/build/liblzma.a -Iupstream-xz/src/liblzma/api -O3 -flto -sMODULARIZE=1 -sENVIRONMENT=node -sALLOW_MEMORY_GROWTH=1 -sFILESYSTEM=0 -sEXPORTED_FUNCTIONS='["_dc_xz_encoder_new","_dc_xz_encoder_write","_dc_xz_encoder_finish","_dc_xz_encoder_free","_malloc","_free"]' -sEXPORTED_RUNTIME_METHODS='["HEAPU8","HEAPU32"]' -o prototype/liblzma-wasm/liblzma.cjs
-      - name: Native compatibility test
+          emcc prototype/liblzma-wasm/wrapper.c upstream-xz/build/liblzma.a -Iupstream-xz/src/liblzma/api -O3 -flto -sMODULARIZE=1 -sENVIRONMENT=node -sALLOW_MEMORY_GROWTH=1 -sFILESYSTEM=0 -sEXPORTED_FUNCTIONS='["_dc_xz_encoder_new","_dc_xz_encoder_write","_dc_xz_encoder_finish","_dc_xz_encoder_free","_dc_xz_decode","_dc_xz_buffer_free","_malloc","_free"]' -sEXPORTED_RUNTIME_METHODS='["HEAPU8","HEAPU32"]' -o prototype/liblzma-wasm/liblzma.cjs
+      - name: Native compatibility and decoder test
         run: node --test test/liblzma-wasm.test.mjs
       - name: Benchmark
         run: node src/liblzma-wasm-benchmark.mjs
