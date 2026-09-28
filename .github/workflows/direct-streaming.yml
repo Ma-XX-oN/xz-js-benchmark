@@ -19,10 +19,13 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y xz-utils
           cargo install wasm-pack --locked
+          npm install
       - name: Build direct XZ WASM
         run: wasm-pack build prototype/direct-xz --target nodejs --release --out-dir pkg
       - name: RED/GREEN streaming contract
         run: node --test test/direct-streaming.test.mjs
+      - name: Benchmark direct streaming versus stock lzma-wasm
+        run: node src/direct-streaming-benchmark.mjs
       - name: Measure payload
         run: |
           mkdir -p benchmark-results
