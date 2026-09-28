@@ -84,3 +84,5 @@ void dc_xz_encoder_free(dc_xz_encoder *e) {
   free(e->out);
   free(e);
 }
+
+/* issue-3 CI trigger */
