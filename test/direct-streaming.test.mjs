@@ -31,6 +31,7 @@ test('direct WASM encoder preserves one XZ stream across many writes', async () 
     const decoded = childProcess.spawnSync('xz', ['-dc', archive], { maxBuffer: expected.length * 2 + 1024 });
     assert.equal(decoded.status, 0, String(decoded.stderr));
     assert.deepEqual(decoded.stdout, expected);
+    assert.deepEqual(Buffer.from(mod.decompress_xz(compressed)), expected);
     assert.equal(compressed.subarray(0, 6).toString('hex'), 'fd377a585a00');
     assert.equal(compressed.indexOf(Buffer.from('fd377a585a00', 'hex'), 1), -1, 'writes must not create concatenated XZ streams');
   } finally {
