@@ -120,6 +120,7 @@ async function runLzmaWasm(kind, source) {
 async function runNodeLiblzma(kind, source) {
   const modStart = performance.now();
   const mod = await import('node-liblzma/wasm');
+  await mod.initModule();
   const initMs = performance.now() - modStart;
   await nodeLiblzmaStreamOnce(mod, source, path.join(workRoot, 'out', `${kind}-node-liblzma-warmup.xz`));
   fs.rmSync(path.join(workRoot, 'out', `${kind}-node-liblzma-warmup.xz`), { force: true });
