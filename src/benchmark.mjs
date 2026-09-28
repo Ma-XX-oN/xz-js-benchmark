@@ -19,7 +19,7 @@ const resultRoot = path.join(repoRoot, 'benchmark-results');
 const repetitions = Number(process.env.BENCH_REPETITIONS || 3);
 const corpusBytes = Number(process.env.BENCH_CORPUS_BYTES || 32 * 1024 * 1024);
 const corpusSelection = process.env.BENCH_CORPUS_KIND || 'all';
-const preset = Number(process.env.BENCH_PRESET || 8);
+const preset = Number(process.env.BENCH_PRESET || 9);
 const xz = process.env.XZ_BIN || 'xz';
 
 assert(Number.isInteger(repetitions) && repetitions > 0);
