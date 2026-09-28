@@ -36,7 +36,6 @@ jobs:
           ./.emsdk/emsdk activate 6.0.10
           source ./.emsdk/emsdk_env.sh
           emcc --version
-          emcmake --version
       - name: Build Rust reference
         run: wasm-pack build prototype/direct-xz --target web --release --out-dir pkg-web
       - name: Fetch pinned upstream XZ
@@ -83,6 +82,7 @@ jobs:
       - name: Measure payload
         shell: bash
         run: |
+          source ./.emsdk/emsdk_env.sh
           mkdir -p benchmark-results
           gzip -9 -c prototype/liblzma-wasm/liblzma.wasm > benchmark-results/liblzma.wasm.gz
           gzip -9 -c prototype/liblzma-wasm/liblzma.cjs > benchmark-results/liblzma.cjs.gz
