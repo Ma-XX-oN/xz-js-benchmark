@@ -121,18 +121,25 @@ async function runNodeLiblzma(kind, source) {
   const modStart = performance.now();
   const mod = await import('node-liblzma/wasm');
   const initMs = performance.now() - modStart;
-  const input = fs.readFileSync(source);
-  await mod.xzAsync(input, { preset });
+  await nodeLiblzmaStreamOnce(mod, source, path.join(workRoot, 'out', `${kind}-node-liblzma-warmup.xz`));
+  fs.rmSync(path.join(workRoot, 'out', `${kind}-node-liblzma-warmup.xz`), { force: true });
   const runs = [];
   for (let i = 0; i < repetitions; i += 1) {
-    const start = performance.now();
-    const compressed = await mod.xzAsync(input, { preset });
-    const compressionMs = performance.now() - start;
     const output = path.join(workRoot, 'out', `${kind}-node-liblzma-${i + 1}.xz`);
-    fs.writeFileSync(output, compressed);
-    runs.push({ initMs: i === 0 ? initMs : 0, compressionMs, archiveBytes: compressed.byteLength, output });
+    const run = await nodeLiblzmaStreamOnce(mod, source, output);
+    runs.push({ initMs: i === 0 ? initMs : 0, ...run });
   }
-  return { id: 'node-liblzma-5.1.3-wasm', api: 'one-shot', streaming: 'separate-stream-test-required', runs };
+  return { id: 'node-liblzma-5.1.3-wasm', api: 'web-transform-stream', streaming: true, runs };
+}
+
+async function nodeLiblzmaStreamOnce(mod, source, output) {
+  const input = new Uint8Array(fs.readFileSync(source));
+  const start = performance.now();
+  const stream = new Blob([input]).stream().pipeThrough(mod.createXz({ preset }));
+  const compressed = new Uint8Array(await new Response(stream).arrayBuffer());
+  const compressionMs = performance.now() - start;
+  fs.writeFileSync(output, compressed);
+  return { compressionMs, archiveBytes: compressed.byteLength, output };
 }
 
 function verifyXz(archive, expectedHash) {
