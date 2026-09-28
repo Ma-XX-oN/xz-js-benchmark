@@ -1,0 +1,30 @@
+name: XZ benchmark
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+jobs:
+  benchmark:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Install native xz
+        run: sudo apt-get update && sudo apt-get install -y xz-utils
+      - name: Install dependencies
+        run: npm install
+      - name: Test
+        run: npm test
+      - name: Benchmark
+        run: npm run benchmark
+      - name: Upload results
+        uses: actions/upload-artifact@v4
+        with:
+          name: xz-js-benchmark-results
+          path: benchmark-results/
