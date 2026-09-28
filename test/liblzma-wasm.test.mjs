@@ -5,7 +5,7 @@ import os from 'node:os';
 import path from 'node:path';
 import test from 'node:test';
 
-function loadModule() {
+async function loadModule() {
   const factory = (await import('../prototype/liblzma-wasm/liblzma.mjs')).default;
   return factory();
 }
