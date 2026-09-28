@@ -15,10 +15,12 @@ const direct = await import(pathToFileURL(path.resolve('prototype/direct-xz/pkg/
 const oneShot = await import('lzma-wasm');
 await oneShot.initWasm();
 
+const chunkSizes = [input.byteLength, 4 * 1024 * 1024, 1024 * 1024, 64 * 1024];
+const directRuns = [];
+for (const chunkBytes of chunkSizes) {
 const encoder = new direct.XzEncoder(9);
 const outputs = [];
 let emittedBeforeFinish = 0;
-const chunkBytes = 64 * 1024;
 const directStart = performance.now();
 for (let offset = 0; offset < input.length; offset += chunkBytes) {
   const out = encoder.write(input.subarray(offset, Math.min(offset + chunkBytes, input.length)));
@@ -29,18 +31,23 @@ const tail = encoder.finish();
 outputs.push(Buffer.from(tail));
 const directMs = performance.now() - directStart;
 const directBytes = Buffer.concat(outputs);
+directRuns.push({ chunkBytes, compressionMs: directMs, archiveBytes: directBytes.byteLength, emittedBeforeFinish });
+}
+const directResult = directRuns.at(-1);
 
 const oneStart = performance.now();
 const oneBytes = oneShot.compress(input, { format: 'xz', level: 9 });
 const oneMs = performance.now() - oneStart;
 
 assert(emittedBeforeFinish > 0, 'encoder must emit drainable bytes before finish');
-fs.writeFileSync(path.join(root, 'direct.xz'), directBytes);
+const finalEncoder = new direct.XzEncoder(9);
+const finalParts = [Buffer.from(finalEncoder.write(input)), Buffer.from(finalEncoder.finish())];
+fs.writeFileSync(path.join(root, 'direct.xz'), Buffer.concat(finalParts));
 fs.writeFileSync(path.join(root, 'oneshot.xz'), oneBytes);
 const result = {
   inputBytes: input.byteLength,
-  chunkBytes,
-  direct: { compressionMs: directMs, archiveBytes: directBytes.byteLength, emittedBeforeFinish },
+  directRuns,
+  direct: directResult,
   oneShot: { compressionMs: oneMs, archiveBytes: oneBytes.byteLength }
 };
 fs.mkdirSync('benchmark-results', { recursive: true });
