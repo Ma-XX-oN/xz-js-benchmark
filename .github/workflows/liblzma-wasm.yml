@@ -37,6 +37,8 @@ jobs:
         run: node --test test/liblzma-wasm.test.mjs
       - name: Benchmark
         run: node src/liblzma-wasm-benchmark.mjs
+      - name: Diagnose speed gap
+        run: node src/liblzma-speed-diagnosis.mjs
       - name: Measure Rust and liblzma payloads
         run: |
           mkdir -p benchmark-results
