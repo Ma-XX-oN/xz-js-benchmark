@@ -16,6 +16,8 @@ const chunkBytes = 64 * 1024;
 const repeats = 3;
 
 const direct = await import(pathToFileURL(path.resolve('prototype/direct-xz/pkg-web/direct_xz_wasm.js')));
+const directWasm = fs.readFileSync(path.resolve('prototype/direct-xz/pkg-web/direct_xz_wasm_bg.wasm'));
+direct.initSync({ module: directWasm });
 const factory = (await import('../prototype/liblzma-wasm/liblzma.cjs')).default;
 const wasmBinary = fs.readFileSync(new URL('../prototype/liblzma-wasm/liblzma.wasm', import.meta.url));
 const mod = await factory({ wasmBinary });
@@ -125,12 +127,10 @@ function runLiblzmaPreloaded() {
 }
 
 function runNative() {
-  const out = path.join(root, `native-${Date.now()}.xz`);
   const start = performance.now();
   const result = spawnSync('xz', ['-9', '-c', sourcePath], { maxBuffer: 64 * 1024 * 1024 });
   const ms = performance.now() - start;
   assert.equal(result.status, 0, String(result.stderr));
-  fs.writeFileSync(out, result.stdout);
   return { ms, bytes: result.stdout.length };
 }
 
