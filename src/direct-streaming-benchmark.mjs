@@ -39,7 +39,7 @@ const oneStart = performance.now();
 const oneBytes = oneShot.compress(input, { format: 'xz', level: 9 });
 const oneMs = performance.now() - oneStart;
 
-assert(emittedBeforeFinish > 0, 'encoder must emit drainable bytes before finish');
+assert(directRuns.every(run => run.emittedBeforeFinish > 0), 'encoder must emit drainable bytes before finish');
 const finalEncoder = new direct.XzEncoder(9);
 const finalParts = [Buffer.from(finalEncoder.write(input)), Buffer.from(finalEncoder.finish())];
 fs.writeFileSync(path.join(root, 'direct.xz'), Buffer.concat(finalParts));
