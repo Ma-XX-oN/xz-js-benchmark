@@ -1,0 +1,8 @@
+import fs from 'node:fs'; import path from 'node:path'; import {performance} from 'node:perf_hooks'; import {pathToFileURL} from 'node:url'; import {generateJsonlCorpus} from './corpus.mjs';
+const root=path.resolve('.liblzma-bench'); fs.rmSync(root,{recursive:true,force:true}); fs.mkdirSync(root,{recursive:true});
+const src=path.join(root,'jsonl.bin'); generateJsonlCorpus(src,32*1024*1024); const input=Buffer.from(fs.readFileSync(src));
+const factory=(await import('../prototype/liblzma-wasm/liblzma.mjs')).default; const mod=await factory();
+const enc=mod._dc_xz_encoder_new(9); const parts=[]; const chunk=64*1024; const t0=performance.now();
+for(let off=0;off<input.length;off+=chunk){const b=input.subarray(off,Math.min(off+chunk,input.length));const p=mod._malloc(b.length);mod.HEAPU8.set(b,p);const op=mod._malloc(4),on=mod._malloc(4);if(!mod._dc_xz_encoder_write(enc,p,b.length,op,on))throw Error('write');const q=mod.HEAPU32[op>>>2],n=mod.HEAPU32[on>>>2];if(n)parts.push(Buffer.from(mod.HEAPU8.slice(q,q+n)));mod._free(p);mod._free(op);mod._free(on);}
+const op=mod._malloc(4),on=mod._malloc(4);if(!mod._dc_xz_encoder_finish(enc,op,on))throw Error('finish');{const q=mod.HEAPU32[op>>>2],n=mod.HEAPU32[on>>>2];if(n)parts.push(Buffer.from(mod.HEAPU8.slice(q,q+n)));} const ms=performance.now()-t0; mod._dc_xz_encoder_free(enc);
+const archive=Buffer.concat(parts); fs.mkdirSync('benchmark-results',{recursive:true}); fs.writeFileSync(path.join(root,'liblzma.xz'),archive); fs.writeFileSync('benchmark-results/liblzma-wasm-benchmark.json',JSON.stringify({inputBytes:input.length,archiveBytes:archive.length,compressionMs:ms},null,2)+'\n'); console.log(JSON.stringify({inputBytes:input.length,archiveBytes:archive.length,compressionMs:ms},null,2));
