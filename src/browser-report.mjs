@@ -58,8 +58,13 @@ function renderReport(data) {
 function tradeoffChart(title, rows, value, suffix) {
   const levels = [1, 4, 6, 9, 11];
   const series = [
-    { prefix: 'brotli-wasm-q', label: 'Brotli/WASM', marker: 'circle' },
-    { prefix: 'xz-wasm-p', label: 'XZ/WASM', marker: 'square' }
+    { prefix: 'brotli-wasm-q', label: 'Brotli/WASM', marker: 'circle', color: '#0072B2', dash: '' },
+    { prefix: 'xz-wasm-p', label: 'XZ/WASM', marker: 'square', color: '#D55E00', dash: '8 5' }
+  ];
+  const referenceStyles = [
+    { color: '#009E73', dash: '10 4' },
+    { color: '#CC79A7', dash: '3 4' },
+    { color: '#56B4E9', dash: '10 3 2 3' }
   ];
   const corpora = [...new Set(rows.map(row => row.corpus))];
   const width = 1000, panelHeight = 300, height = 60 + corpora.length * panelHeight;
@@ -79,23 +84,26 @@ function tradeoffChart(title, rows, value, suffix) {
         .map(row => ({ row, level: Number(row.codec.slice(s.prefix.length)) }))
         .sort((a, b) => a.level - b.level);
       const path = points.map((p, i) => `${i ? 'L' : 'M'} ${x(p.level)} ${y(value(p.row))}`).join(' ');
-      const nodes = points.map(p => marker(s.marker, x(p.level), y(value(p.row))) + `<text x="${x(p.level) + 7}" y="${y(value(p.row)) - 7}" font-size="10">${formatValue(value(p.row), suffix)}</text>`).join('');
-      return `<path d="${path}" fill="none" stroke="currentColor" stroke-width="2"/>${nodes}`;
+      const nodes = points.map(p => marker(s.marker, x(p.level), y(value(p.row)), s.color) + `<text x="${x(p.level) + 7}" y="${y(value(p.row)) - 7}" font-size="10" fill="${s.color}">${formatValue(value(p.row), suffix)}</text>`).join('');
+      const dash = s.dash ? ` stroke-dasharray="${s.dash}"` : '';
+      return `<path d="${path}" fill="none" stroke="${s.color}" stroke-width="2.5"${dash}/>${nodes}`;
     }).join('');
     const refs = baselines.map((row, i) => {
       const yy = y(value(row));
-      return `<line x1="${left}" y1="${yy}" x2="${width - right}" y2="${yy}" stroke="#777" stroke-dasharray="${4 + i * 2} 4"/><text x="${width - right - 4}" y="${yy - 4}" text-anchor="end" font-size="10">${escapeXml(row.codec)} ${formatValue(value(row), suffix)}</text>`;
+      const style = referenceStyles[i];
+      const labelY = yy - 5 - i * 12;
+      return `<line x1="${left}" y1="${yy}" x2="${width - right}" y2="${yy}" stroke="${style.color}" stroke-width="1.75" stroke-dasharray="${style.dash}"/><text x="${width - right - 4}" y="${labelY}" text-anchor="end" font-size="10" fill="${style.color}">${escapeXml(row.codec)} ${formatValue(value(row), suffix)}</text>`;
     }).join('');
     return `<text x="20" y="${top - 18}" font-size="15" font-weight="bold">${escapeXml(corpus)}</text>${grid}${refs}${curves}<text x="${left + plotWidth / 2}" y="${bottom + 43}" text-anchor="middle" font-size="12">Quality / preset level</text>`;
   }).join('');
-  const legend = `<circle cx="720" cy="25" r="5" fill="currentColor"/><text x="732" y="29" font-size="12">Brotli/WASM</text><rect x="825" y="20" width="10" height="10" fill="currentColor"/><text x="840" y="29" font-size="12">XZ/WASM</text>`;
+  const legend = `<line x1="700" y1="25" x2="724" y2="25" stroke="#0072B2" stroke-width="2.5"/><circle cx="712" cy="25" r="5" fill="white" stroke="#0072B2" stroke-width="2.5"/><text x="732" y="29" font-size="12">Brotli/WASM</text><line x1="820" y1="25" x2="844" y2="25" stroke="#D55E00" stroke-width="2.5" stroke-dasharray="8 5"/><rect x="827" y="20" width="10" height="10" fill="white" stroke="#D55E00" stroke-width="2.5"/><text x="850" y="29" font-size="12">XZ/WASM</text>`;
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}"><rect width="100%" height="100%" fill="white"/><text x="20" y="28" font-size="18" font-weight="bold">${escapeXml(title)}</text>${legend}${panels}</svg>\n`;
 }
 
-function marker(kind, x, y) {
+function marker(kind, x, y, color) {
   return kind === 'square'
-    ? `<rect x="${x - 5}" y="${y - 5}" width="10" height="10" fill="currentColor"/>`
-    : `<circle cx="${x}" cy="${y}" r="5" fill="currentColor"/>`;
+    ? `<rect x="${x - 5}" y="${y - 5}" width="10" height="10" fill="white" stroke="${color}" stroke-width="2.5"/>`
+    : `<circle cx="${x}" cy="${y}" r="5" fill="white" stroke="${color}" stroke-width="2.5"/>`;
 }
 
 function formatValue(value, suffix) {
