@@ -1,10 +1,10 @@
-import { createUnxz, createXz, ensureInlineInit } from 'node-liblzma/inline';
+import { createUnxz, createXz, initModule } from 'node-liblzma';
 
 const NATIVE_FORMATS = ['gzip', 'deflate', 'deflate-raw', 'brotli', 'zstd'];
 
 window.runCompressionBenchmark = async ({ corpora, repetitions, xzPreset }) => {
   const support = Object.fromEntries(NATIVE_FORMATS.map(format => [format, supportsNative(format)]));
-  await ensureInlineInit();
+  await initModule();
   const results = [];
   for (const corpus of corpora) {
     const input = new Uint8Array(await (await fetch(corpus.url)).arrayBuffer());
