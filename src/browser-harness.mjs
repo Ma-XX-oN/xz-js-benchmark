@@ -2,7 +2,7 @@ import { createUnxz, createXz, initModule } from 'node-liblzma';
 
 const NATIVE_FORMATS = ['gzip', 'deflate', 'deflate-raw', 'brotli', 'zstd'];
 const BROTLI_QUALITIES = [1, 4, 6, 9, 11];
-const XZ_PRESETS = [1, 4, 6, 9];
+const XZ_PRESETS = [9, 6, 4, 1];
 
 window.runCompressionBenchmark = async ({ corpora, repetitions }) => {
   const support = Object.fromEntries(NATIVE_FORMATS.map(format => [format, supportsNative(format)]));
