@@ -24,7 +24,9 @@ function renderReport(data) {
     `- Corpus size: ${(data.metadata.corpusBytes / 1024 / 1024).toFixed(2)} MiB each`,
     `- Repetitions: ${data.metadata.repetitions} measured after ${data.metadata.warmupRuns} warm-up`,
     `- XZ: node-liblzma 5.1.3 WebAssembly, preset ${data.metadata.xzPreset}`, '',
-    '## Browser codec support', ''
+    '## Browser codec support', '',
+    'Support is runtime-detected in the browser named above.  An unsupported entry means that this browser rejects the corresponding `CompressionStream` / `DecompressionStream` format; it does not mean the compression algorithm is absent from the browser\'s HTTP stack.', '',
+    'As of September 2026, Chromium/Chrome does **not** expose Brotli through `CompressionStream`, despite supporting Brotli HTTP content encoding.  Chromium issue 463397980 tracks that still-unshipped API support.  Firefox 147+ and Safari 18.4+ do expose native Brotli through `CompressionStream`.  Therefore this Chrome run cannot produce a legitimate browser-native Brotli measurement.', ''
   ];
   for (const [codec, available] of Object.entries(data.codecSupport)) lines.push(`- ${available ? 'Supported' : 'Unsupported'}: \`${codec}\``);
   lines.push('', '## Graphs', '', '### Compression ability', '', '![Compressed size](compression-ratio.svg)', '', '### Compression speed', '', '![Compression speed](compression-speed.svg)', '', '### Decompression speed', '', '![Decompression speed](decompression-speed.svg)', '', '## Measurements', '');
