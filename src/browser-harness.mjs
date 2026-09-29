@@ -8,6 +8,7 @@ window.runCompressionBenchmark = async ({ corpora, repetitions }) => {
   const xz = await createXzWasm();
   const brotli = await createBrotliWasm();
   const zstd = await createZstdWasm();
+  await validateCodecFailures(xz, brotli, zstd);
   const results = [];
   for (const corpus of corpora) {
     const input = new Uint8Array(await (await fetch(corpus.url)).arrayBuffer());
@@ -227,4 +228,20 @@ async function createZstdWasm() {
       } finally { e.zs_free(outPtr); e.zs_free(inPtr); }
     }
   };
+}
+
+async function validateCodecFailures(xz, brotli, zstd) {
+  const input = new TextEncoder().encode('codec validation '.repeat(128));
+  const cases = [
+    ['xz', () => xz.compress(input, 1), data => xz.decompress(data, input.byteLength)],
+    ['brotli', () => brotli.compress(input, 1), data => brotli.decompress(data, input.byteLength)],
+    ['zstd', () => zstd.compress(input, 1), data => zstd.decompress(data, input.byteLength)]
+  ];
+  for (const [name, compress, decompress] of cases) {
+    const encoded = await compress();
+    const truncated = encoded.slice(0, Math.max(1, encoded.byteLength - 3));
+    let failed = false;
+    try { await decompress(truncated); } catch { failed = true; }
+    if (!failed) throw new Error(`${name}: truncated stream was not rejected`);
+  }
 }
