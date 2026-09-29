@@ -39,6 +39,11 @@ const corpora = definitions.map(([kind, label, create]) => {
   return { kind, label, file, sha256: info.sha256, bytes: info.bytes, url: `/corpora/${kind}.bin` };
 });
 
+fs.copyFileSync(
+  path.join(root, 'node_modules', 'node-liblzma', 'lib', 'wasm', 'liblzma.wasm'),
+  path.join(work, 'liblzma.wasm')
+);
+
 await build({
   entryPoints: [path.join(here, 'browser-harness.mjs')],
   bundle: true,
@@ -52,6 +57,7 @@ const server = http.createServer((request, response) => {
   const pathname = new URL(request.url, 'http://localhost').pathname;
   if (pathname === '/') return send(response, path.join(work, 'index.html'), 'text/html');
   if (pathname === '/harness.js') return send(response, path.join(work, 'harness.js'), 'text/javascript');
+  if (pathname === '/liblzma.wasm') return send(response, path.join(work, 'liblzma.wasm'), 'application/wasm');
   const corpus = corpora.find(item => item.url === pathname);
   if (corpus) return send(response, corpus.file, 'application/octet-stream');
   response.writeHead(404).end();
