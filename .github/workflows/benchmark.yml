@@ -15,7 +15,7 @@ jobs:
         with:
           node-version: '22'
       - name: Install native xz
-        run: sudo apt-get update && sudo apt-get install -y xz-utils autoconf automake libtool gettext
+        run: sudo apt-get update && sudo apt-get install -y xz-utils autoconf automake libtool gettext autopoint
       - name: Install Emscripten
         uses: mymindstorm/setup-emsdk@4528d102f7230f0e7b276855c01ea1159be0e984
         with:
