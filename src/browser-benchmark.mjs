@@ -42,7 +42,7 @@ const corpora = definitions.map(([kind, label, create]) => {
 await build({
   entryPoints: [path.join(here, 'browser-harness.mjs')],
   bundle: true,
-  format: 'iife',
+  format: 'esm',
   platform: 'browser',
   target: 'chrome120',
   outfile: path.join(work, 'harness.js')
