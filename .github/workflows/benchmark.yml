@@ -3,7 +3,7 @@ name: XZ benchmark
 on:
   workflow_dispatch:
   push:
-    branches: [main, issue-7-brotli-native]
+    branches: [main, issue-9-brotli-wasm]
 
 jobs:
   benchmark:
@@ -16,6 +16,36 @@ jobs:
           node-version: '22'
       - name: Install native xz
         run: sudo apt-get update && sudo apt-get install -y xz-utils
+      - name: Install Emscripten
+        uses: mymindstorm/setup-emsdk@4528d102f7230f0e7b276855c01ea1159be0e984
+        with:
+          version: 3.1.51
+          no-cache: true
+      - name: Checkout Brotli source
+        uses: actions/checkout@v4
+        with:
+          repository: google/brotli
+          ref: d5d3f45973da91c386dd7e1086b13facecfb4087
+          path: .brotli-src
+      - name: Build Brotli WASM
+        run: |
+          mkdir -p wasm
+          emcc \
+            src/brotli-wasm-wrapper.c \
+            .brotli-src/c/common/*.c \
+            .brotli-src/c/enc/*.c \
+            .brotli-src/c/dec/*.c \
+            -I.brotli-src/c/include \
+            -O3 \
+            -s STANDALONE_WASM=1 \
+            -s ALLOW_MEMORY_GROWTH=1 \
+            -Wl,--no-entry \
+            -Wl,--export=br_max_compressed_size \
+            -Wl,--export=br_compress \
+            -Wl,--export=br_decompress \
+            -Wl,--export=br_malloc \
+            -Wl,--export=br_free \
+            -o wasm/brotli.wasm
       - name: Install dependencies
         run: npm install
       - name: Test
