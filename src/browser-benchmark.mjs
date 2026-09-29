@@ -56,7 +56,7 @@ const server = http.createServer((request, response) => {
   if (corpus) return send(response, corpus.file, 'application/octet-stream');
   response.writeHead(404).end();
 });
-fs.writeFileSync(path.join(work, 'index.html'), '<!doctype html><meta charset="utf-8"><script src="/harness.js"></script>\n');
+fs.writeFileSync(path.join(work, 'index.html'), '<!doctype html><meta charset="utf-8"><script type="module" src="/harness.js"></script>\n');
 await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
 const port = server.address().port;
 
