@@ -18,10 +18,8 @@ const work = path.join(root, '.browser-benchmark-work');
 const resultsDir = path.join(root, 'browser-benchmark-results');
 const repetitions = Number(process.env.BENCH_REPETITIONS || 3);
 const corpusBytes = Number(process.env.BENCH_CORPUS_BYTES || 32 * 1024 * 1024);
-const xzPreset = Number(process.env.BENCH_XZ_PRESET || 6);
 assert(Number.isInteger(repetitions) && repetitions > 0);
 assert(Number.isInteger(corpusBytes) && corpusBytes > 0);
-assert(Number.isInteger(xzPreset) && xzPreset >= 0 && xzPreset <= 6);
 
 fs.rmSync(work, { recursive: true, force: true });
 fs.rmSync(resultsDir, { recursive: true, force: true });
@@ -41,10 +39,9 @@ const corpora = definitions.map(([kind, label, create]) => {
 
 fs.copyFileSync(path.join(root, 'wasm', 'brotli.wasm'), path.join(work, 'brotli.wasm'));
 
-fs.copyFileSync(
-  path.join(root, 'node_modules', 'node-liblzma', 'lib', 'wasm', 'liblzma.wasm'),
-  path.join(work, 'liblzma.wasm')
-);
+const xzWasmSource = path.join(root, 'node_modules', 'node-liblzma', 'lib', 'wasm', 'liblzma.wasm');
+const xzWasmBytes = fs.statSync(xzWasmSource).size;
+fs.copyFileSync(xzWasmSource, path.join(work, 'liblzma.wasm'));
 
 await build({
   entryPoints: [path.join(here, 'browser-harness.mjs')],
@@ -84,7 +81,7 @@ try {
   await page.waitForFunction(() => typeof window.runCompressionBenchmark === 'function');
   const browserResult = await page.evaluate(
     async config => window.runCompressionBenchmark(config),
-    { corpora: corpora.map(({ kind, label, url }) => ({ kind, label, url })), repetitions, xzPreset }
+    { corpora: corpora.map(({ kind, label, url }) => ({ kind, label, url })), repetitions }
   );
   const output = {
     metadata: {
@@ -98,7 +95,8 @@ try {
       corpusBytes,
       repetitions,
       warmupRuns: 1,
-      xzPreset,
+      xzPresets: browserResult.xzPresets,
+      xzWasmBytes,
       brotliQualities: browserResult.brotliQualities,
       brotliWasmBytes: browserResult.brotliWasmBytes,
       browser: browserResult.userAgent,
