@@ -18,10 +18,8 @@ const work = path.join(root, '.browser-benchmark-work');
 const resultsDir = path.join(root, 'browser-benchmark-results');
 const repetitions = Number(process.env.BENCH_REPETITIONS || 3);
 const corpusBytes = Number(process.env.BENCH_CORPUS_BYTES || 32 * 1024 * 1024);
-const xzPreset = Number(process.env.BENCH_XZ_PRESET || 6);
 assert(Number.isInteger(repetitions) && repetitions > 0);
 assert(Number.isInteger(corpusBytes) && corpusBytes > 0);
-assert(Number.isInteger(xzPreset) && xzPreset >= 0 && xzPreset <= 6);
 
 fs.rmSync(work, { recursive: true, force: true });
 fs.rmSync(resultsDir, { recursive: true, force: true });
@@ -41,10 +39,7 @@ const corpora = definitions.map(([kind, label, create]) => {
 
 fs.copyFileSync(path.join(root, 'wasm', 'brotli.wasm'), path.join(work, 'brotli.wasm'));
 
-fs.copyFileSync(
-  path.join(root, 'node_modules', 'node-liblzma', 'lib', 'wasm', 'liblzma.wasm'),
-  path.join(work, 'liblzma.wasm')
-);
+const xzWasmBytes = embeddedWasmBytes(path.join(root, 'node_modules', 'lzma-wasm'));
 
 await build({
   entryPoints: [path.join(here, 'browser-harness.mjs')],
@@ -59,7 +54,6 @@ const server = http.createServer((request, response) => {
   const pathname = new URL(request.url, 'http://localhost').pathname;
   if (pathname === '/') return send(response, path.join(work, 'index.html'), 'text/html');
   if (pathname === '/harness.js') return send(response, path.join(work, 'harness.js'), 'text/javascript');
-  if (pathname === '/liblzma.wasm') return send(response, path.join(work, 'liblzma.wasm'), 'application/wasm');
   if (pathname === '/brotli.wasm') return send(response, path.join(work, 'brotli.wasm'), 'application/wasm');
   const corpus = corpora.find(item => item.url === pathname);
   if (corpus) return send(response, corpus.file, 'application/octet-stream');
@@ -84,7 +78,7 @@ try {
   await page.waitForFunction(() => typeof window.runCompressionBenchmark === 'function');
   const browserResult = await page.evaluate(
     async config => window.runCompressionBenchmark(config),
-    { corpora: corpora.map(({ kind, label, url }) => ({ kind, label, url })), repetitions, xzPreset }
+    { corpora: corpora.map(({ kind, label, url }) => ({ kind, label, url })), repetitions }
   );
   const output = {
     metadata: {
@@ -98,7 +92,8 @@ try {
       corpusBytes,
       repetitions,
       warmupRuns: 1,
-      xzPreset,
+      xzPresets: browserResult.xzPresets,
+      xzWasmBytes,
       brotliQualities: browserResult.brotliQualities,
       brotliWasmBytes: browserResult.brotliWasmBytes,
       browser: browserResult.userAgent,
@@ -122,4 +117,18 @@ function send(response, file, contentType) {
     'Cache-Control': 'no-store'
   });
   fs.createReadStream(file).pipe(response);
+}
+
+function embeddedWasmBytes(packageDir) {
+  for (const entry of fs.readdirSync(packageDir, { recursive: true })) {
+    const file = path.join(packageDir, entry);
+    if (!fs.statSync(file).isFile() || !/\.(?:js|mjs|cjs)$/.test(file)) continue;
+    const source = fs.readFileSync(file, 'utf8');
+    const matches = source.match(/[A-Za-z0-9+/]{100000,}={0,2}/g) || [];
+    for (const encoded of matches.sort((a, b) => b.length - a.length)) {
+      const bytes = Buffer.from(encoded, 'base64');
+      if (bytes.length > 8 && bytes[0] === 0x00 && bytes[1] === 0x61 && bytes[2] === 0x73 && bytes[3] === 0x6d) return bytes.byteLength;
+    }
+  }
+  throw new Error('Unable to locate lzma-wasm embedded WASM payload');
 }
