@@ -3,11 +3,13 @@ import { compress as xzCompress, decompress as xzDecompress, initWasm as initXzW
 const NATIVE_FORMATS = ['gzip', 'deflate', 'deflate-raw', 'brotli', 'zstd'];
 const BROTLI_QUALITIES = [1, 4, 6, 9, 11];
 const XZ_PRESETS = [1, 4, 6, 9];
+const ZSTD_LEVELS = [1, 4, 6, 9, 11];
 
 window.runCompressionBenchmark = async ({ corpora, repetitions }) => {
   const support = Object.fromEntries(NATIVE_FORMATS.map(format => [format, supportsNative(format)]));
   await initXzWasm();
   const brotli = await createBrotliWasm();
+  const zstd = await createZstdWasm();
   const results = [];
   for (const corpus of corpora) {
     const input = new Uint8Array(await (await fetch(corpus.url)).arrayBuffer());
@@ -27,6 +29,12 @@ window.runCompressionBenchmark = async ({ corpora, repetitions }) => {
         decompress: data => brotli.decompress(data, input.byteLength)
       }));
     }
+    for (const level of ZSTD_LEVELS) {
+      results.push(await measureCodec(corpus.kind, `zstd-wasm-l${level}`, input, repetitions, {
+        compress: data => zstd.compress(data, level),
+        decompress: data => zstd.decompress(data, input.byteLength)
+      }));
+    }
     for (const preset of XZ_PRESETS) {
       results.push(await measureCodec(corpus.kind, `xz-wasm-p${preset}`, input, repetitions, {
         compress: data => Promise.resolve(xzCompress(data, { format: 'xz', level: preset })),
@@ -42,6 +50,8 @@ window.runCompressionBenchmark = async ({ corpora, repetitions }) => {
     xzPresets: XZ_PRESETS,
     brotliQualities: BROTLI_QUALITIES,
     brotliWasmBytes: brotli.wasmBytes,
+    zstdLevels: ZSTD_LEVELS,
+    zstdWasmBytes: zstd.wasmBytes,
     results
   };
 };
@@ -151,6 +161,36 @@ async function createBrotliWasm() {
         if (!e.br_decompress(inPtr, input.byteLength, outPtr, sizePtr)) throw new Error('Brotli decompression failed');
         return new Uint8Array(e.memory.buffer, outPtr, u32(sizePtr)[0]).slice();
       } finally { e.br_free(sizePtr); e.br_free(outPtr); e.br_free(inPtr); }
+    }
+  };
+}
+
+async function createZstdWasm() {
+  const bytes = new Uint8Array(await (await fetch('/zstd.wasm')).arrayBuffer());
+  const { instance } = await WebAssembly.instantiate(bytes, { env: { emscripten_notify_memory_growth: () => {} }, wasi_snapshot_preview1: { proc_exit: code => { throw new Error(`Zstd WASM proc_exit ${code}`); } } });
+  const e = instance.exports;
+  return {
+    wasmBytes: bytes.byteLength,
+    compress(input, level) {
+      const inPtr = e.zs_malloc(input.byteLength);
+      const cap = Number(e.zs_compress_bound(input.byteLength));
+      const outPtr = e.zs_malloc(cap);
+      try {
+        new Uint8Array(e.memory.buffer, inPtr, input.byteLength).set(input);
+        const size = Number(e.zs_compress(level, inPtr, input.byteLength, outPtr, cap));
+        if (e.zs_is_error(size)) throw new Error('Zstd compression failed');
+        return new Uint8Array(e.memory.buffer, outPtr, size).slice();
+      } finally { e.zs_free(outPtr); e.zs_free(inPtr); }
+    },
+    decompress(input, expectedBytes) {
+      const inPtr = e.zs_malloc(input.byteLength);
+      const outPtr = e.zs_malloc(expectedBytes);
+      try {
+        new Uint8Array(e.memory.buffer, inPtr, input.byteLength).set(input);
+        const size = Number(e.zs_decompress(inPtr, input.byteLength, outPtr, expectedBytes));
+        if (e.zs_is_error(size)) throw new Error('Zstd decompression failed');
+        return new Uint8Array(e.memory.buffer, outPtr, size).slice();
+      } finally { e.zs_free(outPtr); e.zs_free(inPtr); }
     }
   };
 }
