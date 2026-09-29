@@ -101,7 +101,10 @@ try {
       zstdLevels: browserResult.zstdLevels,
       zstdWasmBytes: browserResult.zstdWasmBytes,
       browser: browserResult.userAgent,
-      browserHardwareConcurrency: browserResult.hardwareConcurrency
+      browserHardwareConcurrency: browserResult.hardwareConcurrency,
+      emscriptenVersion: '3.1.51',
+      buildOptimization: { brotli: '-Os', zstd: '-Os', xz: '-Os' },
+      upstreamCommits: { brotli: 'd5d3f45973da91c386dd7e1086b13facecfb4087', zstd: '01b7154f1172432f8abe9b3bb9909e14a1176b7d', xz: '3b1efb04d17c3a9ef7f473d73af13f1531428ffe' }
     },
     codecSupport: browserResult.support,
     corpora: corpora.map(({ file, url, ...rest }) => rest),
