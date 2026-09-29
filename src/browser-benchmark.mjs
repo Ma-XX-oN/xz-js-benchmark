@@ -38,8 +38,8 @@ const corpora = definitions.map(([kind, label, create]) => {
 });
 
 fs.copyFileSync(path.join(root, 'wasm', 'brotli.wasm'), path.join(work, 'brotli.wasm'));
-
-const xzWasmBytes = embeddedWasmBytes(path.join(root, 'node_modules', 'lzma-wasm'));
+fs.copyFileSync(path.join(root, 'wasm', 'zstd.wasm'), path.join(work, 'zstd.wasm'));
+fs.copyFileSync(path.join(root, 'wasm', 'xz.wasm'), path.join(work, 'xz.wasm'));
 
 await build({
   entryPoints: [path.join(here, 'browser-harness.mjs')],
@@ -55,6 +55,8 @@ const server = http.createServer((request, response) => {
   if (pathname === '/') return send(response, path.join(work, 'index.html'), 'text/html');
   if (pathname === '/harness.js') return send(response, path.join(work, 'harness.js'), 'text/javascript');
   if (pathname === '/brotli.wasm') return send(response, path.join(work, 'brotli.wasm'), 'application/wasm');
+  if (pathname === '/zstd.wasm') return send(response, path.join(work, 'zstd.wasm'), 'application/wasm');
+  if (pathname === '/xz.wasm') return send(response, path.join(work, 'xz.wasm'), 'application/wasm');
   const corpus = corpora.find(item => item.url === pathname);
   if (corpus) return send(response, corpus.file, 'application/octet-stream');
   response.writeHead(404).end();
@@ -93,11 +95,16 @@ try {
       repetitions,
       warmupRuns: 1,
       xzPresets: browserResult.xzPresets,
-      xzWasmBytes,
+      xzWasmBytes: browserResult.xzWasmBytes,
       brotliQualities: browserResult.brotliQualities,
       brotliWasmBytes: browserResult.brotliWasmBytes,
+      zstdLevels: browserResult.zstdLevels,
+      zstdWasmBytes: browserResult.zstdWasmBytes,
       browser: browserResult.userAgent,
-      browserHardwareConcurrency: browserResult.hardwareConcurrency
+      browserHardwareConcurrency: browserResult.hardwareConcurrency,
+      emscriptenVersion: '3.1.51',
+      buildOptimization: { brotli: '-Os', zstd: '-Os', xz: '-Os' },
+      upstreamCommits: { brotli: 'd5d3f45973da91c386dd7e1086b13facecfb4087', zstd: '01b7154f1172432f8abe9b3bb9909e14a1176b7d', xz: '3b1efb04d17c3a9ef7f473d73af13f1531428ffe' }
     },
     codecSupport: browserResult.support,
     corpora: corpora.map(({ file, url, ...rest }) => rest),
@@ -119,16 +126,3 @@ function send(response, file, contentType) {
   fs.createReadStream(file).pipe(response);
 }
 
-function embeddedWasmBytes(packageDir) {
-  for (const entry of fs.readdirSync(packageDir, { recursive: true })) {
-    const file = path.join(packageDir, entry);
-    if (!fs.statSync(file).isFile() || !/\.(?:js|mjs|cjs)$/.test(file)) continue;
-    const source = fs.readFileSync(file, 'utf8');
-    const matches = source.match(/[A-Za-z0-9+/]{100000,}={0,2}/g) || [];
-    for (const encoded of matches.sort((a, b) => b.length - a.length)) {
-      const bytes = Buffer.from(encoded, 'base64');
-      if (bytes.length > 8 && bytes[0] === 0x00 && bytes[1] === 0x61 && bytes[2] === 0x73 && bytes[3] === 0x6d) return bytes.byteLength;
-    }
-  }
-  throw new Error('Unable to locate lzma-wasm embedded WASM payload');
-}

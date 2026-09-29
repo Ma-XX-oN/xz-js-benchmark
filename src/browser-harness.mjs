@@ -1,13 +1,15 @@
-import { compress as xzCompress, decompress as xzDecompress, initWasm as initXzWasm } from 'lzma-wasm';
-
 const NATIVE_FORMATS = ['gzip', 'deflate', 'deflate-raw', 'brotli', 'zstd'];
 const BROTLI_QUALITIES = [1, 4, 6, 9, 11];
 const XZ_PRESETS = [1, 4, 6, 9];
+const ZSTD_LEVELS = [1, 4, 6, 9, 11];
 
 window.runCompressionBenchmark = async ({ corpora, repetitions }) => {
   const support = Object.fromEntries(NATIVE_FORMATS.map(format => [format, supportsNative(format)]));
-  await initXzWasm();
+  const xz = await createXzWasm();
   const brotli = await createBrotliWasm();
+  const zstd = await createZstdWasm();
+  await validateCodecFailures(xz, brotli, zstd);
+  await validateDcArchiveApis(xz, brotli, zstd);
   const results = [];
   for (const corpus of corpora) {
     const input = new Uint8Array(await (await fetch(corpus.url)).arrayBuffer());
@@ -22,16 +24,16 @@ window.runCompressionBenchmark = async ({ corpora, repetitions }) => {
       }));
     }
     for (const quality of BROTLI_QUALITIES) {
-      results.push(await measureCodec(corpus.kind, `brotli-wasm-q${quality}`, input, repetitions, {
-        compress: data => brotli.compress(data, quality),
-        decompress: data => brotli.decompress(data, input.byteLength)
-      }));
+      results.push(await measureArchiveApi(corpus.kind, `brotli-wasm-q${quality}`, input, repetitions,
+        createDcArchiveApi(brotli, quality, input.byteLength)));
+    }
+    for (const level of ZSTD_LEVELS) {
+      results.push(await measureArchiveApi(corpus.kind, `zstd-wasm-l${level}`, input, repetitions,
+        createDcArchiveApi(zstd, level, input.byteLength)));
     }
     for (const preset of XZ_PRESETS) {
-      results.push(await measureCodec(corpus.kind, `xz-wasm-p${preset}`, input, repetitions, {
-        compress: data => Promise.resolve(xzCompress(data, { format: 'xz', level: preset })),
-        decompress: data => Promise.resolve(xzDecompress(data))
-      }));
+      results.push(await measureArchiveApi(corpus.kind, `xz-wasm-p${preset}`, input, repetitions,
+        createDcArchiveApi(xz, preset, input.byteLength)));
     }
   }
   return {
@@ -40,8 +42,11 @@ window.runCompressionBenchmark = async ({ corpora, repetitions }) => {
     support,
     repetitions,
     xzPresets: XZ_PRESETS,
+    xzWasmBytes: xz.wasmBytes,
     brotliQualities: BROTLI_QUALITIES,
     brotliWasmBytes: brotli.wasmBytes,
+    zstdLevels: ZSTD_LEVELS,
+    zstdWasmBytes: zstd.wasmBytes,
     results
   };
 };
@@ -54,6 +59,52 @@ function supportsNative(format) {
   } catch {
     return false;
   }
+}
+
+function createDcArchiveApi(codec, level, expectedBytes) {
+  return {
+    async createArchive(bytes) {
+      const writer = await this.streamingArchiveWriterBegin();
+      this.streamingArchiveWriterAppendBytes(writer, bytes);
+      return this.streamingArchiveWriterFinish(writer);
+    },
+    async extractArchive(archiveBytes) {
+      return codec.decompress(archiveBytes, expectedBytes);
+    },
+    async streamingArchiveWriterBegin() {
+      return { chunks: [], size: 0, finished: false };
+    },
+    streamingArchiveWriterAppendBytes(writer, bytes) {
+      if (writer.finished) throw new Error('Streaming archive writer is already finished.');
+      if (!(bytes instanceof Uint8Array)) throw new TypeError('Archive input must be Uint8Array.');
+      if (!bytes.byteLength) return;
+      writer.chunks.push(bytes.slice());
+      writer.size += bytes.byteLength;
+    },
+    streamingArchiveWriterAppendArchive(writer, archiveBytes) {
+      const raw = codec.decompress(archiveBytes, expectedBytes);
+      this.streamingArchiveWriterAppendBytes(writer, raw);
+      return raw.byteLength;
+    },
+    streamingArchiveWriterFinish(writer) {
+      if (writer.finished) throw new Error('Streaming archive writer is already finished.');
+      writer.finished = true;
+      const raw = new Uint8Array(writer.size);
+      let offset = 0;
+      for (const chunk of writer.chunks) {
+        raw.set(chunk, offset);
+        offset += chunk.byteLength;
+      }
+      return codec.compress(raw, level);
+    }
+  };
+}
+
+async function measureArchiveApi(corpus, codec, input, repetitions, archiveApi) {
+  return measureCodec(corpus, codec, input, repetitions, {
+    compress: data => archiveApi.createArchive(data),
+    decompress: data => archiveApi.extractArchive(data)
+  });
 }
 
 async function measureCodec(corpus, codec, input, repetitions, transforms) {
@@ -122,6 +173,41 @@ function throughput(bytes, ms) {
   return bytes / 1024 / 1024 / (ms / 1000);
 }
 
+async function createXzWasm() {
+  const bytes = new Uint8Array(await (await fetch('/xz.wasm')).arrayBuffer());
+  const { instance } = await WebAssembly.instantiate(bytes, { env: { emscripten_notify_memory_growth: () => {} }, wasi_snapshot_preview1: { proc_exit: code => { throw new Error(`XZ WASM proc_exit ${code}`); } } });
+  const e = instance.exports;
+  const u32 = ptr => new Uint32Array(e.memory.buffer, ptr, 1);
+  return {
+    wasmBytes: bytes.byteLength,
+    compress(input, preset) {
+      const inPtr = e.xz_malloc(input.byteLength);
+      const cap = Number(e.xz_bound(input.byteLength));
+      const outPtr = e.xz_malloc(cap);
+      const sizePtr = e.xz_malloc(4);
+      try {
+        new Uint8Array(e.memory.buffer, inPtr, input.byteLength).set(input);
+        u32(sizePtr)[0] = cap;
+        const ret = e.xz_compress(preset, inPtr, input.byteLength, outPtr, sizePtr);
+        if (ret !== 0) throw new Error(`XZ compression failed: lzma_ret ${ret}`);
+        return new Uint8Array(e.memory.buffer, outPtr, u32(sizePtr)[0]).slice();
+      } finally { e.xz_free(sizePtr); e.xz_free(outPtr); e.xz_free(inPtr); }
+    },
+    decompress(input, expectedBytes) {
+      const inPtr = e.xz_malloc(input.byteLength);
+      const outPtr = e.xz_malloc(expectedBytes);
+      const sizePtr = e.xz_malloc(4);
+      try {
+        new Uint8Array(e.memory.buffer, inPtr, input.byteLength).set(input);
+        u32(sizePtr)[0] = expectedBytes;
+        const ret = e.xz_decompress(inPtr, input.byteLength, outPtr, sizePtr);
+        if (ret !== 0) throw new Error(`XZ decompression failed: lzma_ret ${ret}`);
+        return new Uint8Array(e.memory.buffer, outPtr, u32(sizePtr)[0]).slice();
+      } finally { e.xz_free(sizePtr); e.xz_free(outPtr); e.xz_free(inPtr); }
+    }
+  };
+}
+
 async function createBrotliWasm() {
   const bytes = new Uint8Array(await (await fetch('/brotli.wasm')).arrayBuffer());
   const { instance } = await WebAssembly.instantiate(bytes, { env: { emscripten_notify_memory_growth: () => {} }, wasi_snapshot_preview1: { proc_exit: code => { throw new Error(`Brotli WASM proc_exit ${code}`); } } });
@@ -153,4 +239,78 @@ async function createBrotliWasm() {
       } finally { e.br_free(sizePtr); e.br_free(outPtr); e.br_free(inPtr); }
     }
   };
+}
+
+async function createZstdWasm() {
+  const bytes = new Uint8Array(await (await fetch('/zstd.wasm')).arrayBuffer());
+  const { instance } = await WebAssembly.instantiate(bytes, { env: { emscripten_notify_memory_growth: () => {} }, wasi_snapshot_preview1: { proc_exit: code => { throw new Error(`Zstd WASM proc_exit ${code}`); } } });
+  const e = instance.exports;
+  return {
+    wasmBytes: bytes.byteLength,
+    compress(input, level) {
+      const inPtr = e.zs_malloc(input.byteLength);
+      const cap = Number(e.zs_compress_bound(input.byteLength));
+      const outPtr = e.zs_malloc(cap);
+      try {
+        new Uint8Array(e.memory.buffer, inPtr, input.byteLength).set(input);
+        const size = Number(e.zs_compress(level, inPtr, input.byteLength, outPtr, cap));
+        if (e.zs_is_error(size)) throw new Error('Zstd compression failed');
+        return new Uint8Array(e.memory.buffer, outPtr, size).slice();
+      } finally { e.zs_free(outPtr); e.zs_free(inPtr); }
+    },
+    decompress(input, expectedBytes) {
+      const inPtr = e.zs_malloc(input.byteLength);
+      const outPtr = e.zs_malloc(expectedBytes);
+      try {
+        new Uint8Array(e.memory.buffer, inPtr, input.byteLength).set(input);
+        const size = Number(e.zs_decompress(inPtr, input.byteLength, outPtr, expectedBytes));
+        if (e.zs_is_error(size)) throw new Error('Zstd decompression failed');
+        return new Uint8Array(e.memory.buffer, outPtr, size).slice();
+      } finally { e.zs_free(outPtr); e.zs_free(inPtr); }
+    }
+  };
+}
+
+async function validateDcArchiveApis(xz, brotli, zstd) {
+  const input = new TextEncoder().encode('DC archive API contract '.repeat(128));
+  for (const [name, codec] of [['xz', xz], ['brotli', brotli], ['zstd', zstd]]) {
+    const api = createDcArchiveApi(codec, 1, input.byteLength);
+    for (const method of [
+      'createArchive', 'extractArchive', 'streamingArchiveWriterBegin',
+      'streamingArchiveWriterAppendBytes', 'streamingArchiveWriterAppendArchive',
+      'streamingArchiveWriterFinish'
+    ]) {
+      if (typeof api[method] !== 'function') throw new Error(`${name}: missing DC archive API method ${method}`);
+    }
+    const archive = await api.createArchive(input);
+    assertBytesEqual(await api.extractArchive(archive), input, `${name}: DC create/extract`);
+    const writer = await api.streamingArchiveWriterBegin();
+    const split = Math.floor(input.byteLength / 2);
+    api.streamingArchiveWriterAppendBytes(writer, input.slice(0, split));
+    api.streamingArchiveWriterAppendBytes(writer, input.slice(split));
+    const streamed = api.streamingArchiveWriterFinish(writer);
+    assertBytesEqual(await api.extractArchive(streamed), input, `${name}: DC streaming bytes`);
+    const appendWriter = await api.streamingArchiveWriterBegin();
+    const appendedBytes = api.streamingArchiveWriterAppendArchive(appendWriter, archive);
+    if (appendedBytes !== input.byteLength) throw new Error(`${name}: DC appendArchive byte count mismatch`);
+    const appended = api.streamingArchiveWriterFinish(appendWriter);
+    assertBytesEqual(await api.extractArchive(appended), input, `${name}: DC streaming archive`);
+  }
+}
+
+
+async function validateCodecFailures(xz, brotli, zstd) {
+  const input = new TextEncoder().encode('codec validation '.repeat(128));
+  const cases = [
+    ['xz', () => xz.compress(input, 1), data => xz.decompress(data, input.byteLength)],
+    ['brotli', () => brotli.compress(input, 1), data => brotli.decompress(data, input.byteLength)],
+    ['zstd', () => zstd.compress(input, 1), data => zstd.decompress(data, input.byteLength)]
+  ];
+  for (const [name, compress, decompress] of cases) {
+    const encoded = await compress();
+    const truncated = encoded.slice(0, Math.max(1, encoded.byteLength - 3));
+    let failed = false;
+    try { await decompress(truncated); } catch { failed = true; }
+    if (!failed) throw new Error(`${name}: truncated stream was not rejected`);
+  }
 }

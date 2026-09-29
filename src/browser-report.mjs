@@ -15,7 +15,7 @@ fs.writeFileSync(path.join(dir, 'REPORT.md'), renderReport(data));
 
 function renderReport(data) {
   const lines = [
-    '# Browser compression and Brotli/WASM vs XZ/WASM', '',
+    '# Browser compression: Brotli/WASM vs XZ/WASM vs Zstd/WASM', '',
     'This report compares codecs in the same headless Chrome process on the same deterministic corpora.  Each measured result follows one warm-up and uses the median of the measured repetitions.  Every measured codec is decompressed and checked byte-for-byte against its source on every run.', '',
     '## Environment', '',
     `- Browser: ${data.metadata.browser}`,
@@ -23,11 +23,16 @@ function renderReport(data) {
     `- Logical CPUs: ${data.metadata.logicalCpus}`,
     `- Corpus size: ${(data.metadata.corpusBytes / 1024 / 1024).toFixed(2)} MiB each`,
     `- Repetitions: ${data.metadata.repetitions} measured after ${data.metadata.warmupRuns} warm-up`,
-    `- XZ: lzma-wasm 1.0.7 WebAssembly, presets ${[...data.metadata.xzPresets].sort((a, b) => a - b).join(', ')}, binary ${(data.metadata.xzWasmBytes / 1024).toFixed(1)} KiB`,
-    `- Brotli: Google Brotli WebAssembly, qualities ${data.metadata.brotliQualities.join(', ')}, binary ${(data.metadata.brotliWasmBytes / 1024).toFixed(1)} KiB`, '',
+    `- XZ: upstream liblzma WebAssembly, presets ${[...data.metadata.xzPresets].sort((a, b) => a - b).join(', ')}, binary ${(data.metadata.xzWasmBytes / 1024).toFixed(1)} KiB`,
+    `- Brotli: Google Brotli WebAssembly, qualities ${data.metadata.brotliQualities.join(', ')}, binary ${(data.metadata.brotliWasmBytes / 1024).toFixed(1)} KiB`,
+    `- Zstd: Facebook Zstandard WebAssembly, levels ${data.metadata.zstdLevels.join(', ')}, binary ${(data.metadata.zstdWasmBytes / 1024).toFixed(1)} KiB`,
+    `- Emscripten: ${data.metadata.emscriptenVersion}; selected optimization: Brotli ${data.metadata.buildOptimization.brotli}, Zstd ${data.metadata.buildOptimization.zstd}, XZ ${data.metadata.buildOptimization.xz}`,
+    `- Upstream commits: Brotli \`${data.metadata.upstreamCommits.brotli}\`; Zstd \`${data.metadata.upstreamCommits.zstd}\`; XZ \`${data.metadata.upstreamCommits.xz}\``, '',
+    'Compiler optimization selection was established by the checked-in [optimization preflight](../optimization-preflight/SUMMARY.md) before this final benchmark.', '',
     '### WebAssembly payload size', '',
     '| Implementation | WASM bytes | KiB |', '|---|---:|---:|',
     `| Brotli/WASM | ${data.metadata.brotliWasmBytes.toLocaleString('en-US')} | ${(data.metadata.brotliWasmBytes / 1024).toFixed(1)} |`,
+    `| Zstd/WASM | ${data.metadata.zstdWasmBytes.toLocaleString('en-US')} | ${(data.metadata.zstdWasmBytes / 1024).toFixed(1)} |`,
     `| XZ/WASM | ${data.metadata.xzWasmBytes.toLocaleString('en-US')} | ${(data.metadata.xzWasmBytes / 1024).toFixed(1)} |`, '',
     '## Browser codec support', '',
     'Support is runtime-detected in the browser named above.  An unsupported entry means that this browser rejects the corresponding `CompressionStream` / `DecompressionStream` format; it does not mean the compression algorithm is absent from the browser\'s HTTP stack.', '',
@@ -57,53 +62,58 @@ function renderReport(data) {
 
 function tradeoffChart(title, rows, value, suffix) {
   const levels = [1, 4, 6, 9, 11];
-  const series = [
-    { prefix: 'brotli-wasm-q', label: 'Brotli/WASM', marker: 'circle', color: '#0072B2', dash: '' },
-    { prefix: 'xz-wasm-p', label: 'XZ/WASM', marker: 'square', color: '#D55E00', dash: '8 5' }
+  const schemes = [
+    { prefix: 'brotli-wasm-q', label: 'Brotli/WASM', color: '#0072B2' },
+    { prefix: 'xz-wasm-p', label: 'XZ/WASM', color: '#D55E00' },
+    { prefix: 'zstd-wasm-l', label: 'Zstd/WASM', color: '#009E73' }
   ];
-  const referenceStyles = [
-    { color: '#009E73', dash: '10 4' },
-    { color: '#CC79A7', dash: '3 4' },
-    { color: '#56B4E9', dash: '10 3 2 3' }
+  const corpusStyles = [
+    { corpus: 'jsonl', label: 'JSONL', dash: '', marker: 'circle' },
+    { corpus: 'moderate', label: 'Moderate', dash: '9 5', marker: 'square' },
+    { corpus: 'incompressible', label: 'Incompressible', dash: '2 4', marker: 'triangle' }
   ];
-  const corpora = [...new Set(rows.map(row => row.corpus))];
-  const width = 1000, panelHeight = 300, height = 60 + corpora.length * panelHeight;
-  const left = 85, right = 40, plotWidth = width - left - right;
+  const native = [
+    { codec: 'gzip', color: '#CC79A7', dash: '10 4' },
+    { codec: 'deflate', color: '#E69F00', dash: '4 4' },
+    { codec: 'deflate-raw', color: '#56B4E9', dash: '10 3 2 3' }
+  ];
+  const width = 1200, height = 650, left = 90, right = 45, top = 95, bottom = 555;
+  const plotWidth = width - left - right;
   const x = level => left + (level - 1) / 10 * plotWidth;
-  const panels = corpora.map((corpus, panelIndex) => {
-    const subset = rows.filter(row => row.corpus === corpus);
-    const curveRows = subset.filter(row => series.some(s => row.codec.startsWith(s.prefix)));
-    const baselines = subset.filter(row => ['gzip', 'deflate', 'deflate-raw'].includes(row.codec));
-    const max = Math.max(...curveRows.map(value), ...baselines.map(value), 1);
-    const top = 65 + panelIndex * panelHeight, bottom = top + 205;
-    const y = v => bottom - v / max * 180;
-    const grid = levels.map(level => `<line x1="${x(level)}" y1="${top}" x2="${x(level)}" y2="${bottom}" stroke="#ddd"/><text x="${x(level)}" y="${bottom + 22}" text-anchor="middle" font-size="12">${level}</text>`).join('');
-    const curves = series.map(s => {
-      const points = curveRows
-        .filter(row => row.codec.startsWith(s.prefix))
-        .map(row => ({ row, level: Number(row.codec.slice(s.prefix.length)) }))
-        .sort((a, b) => a.level - b.level);
-      const path = points.map((p, i) => `${i ? 'L' : 'M'} ${x(p.level)} ${y(value(p.row))}`).join(' ');
-      const nodes = points.map(p => marker(s.marker, x(p.level), y(value(p.row)), s.color) + `<text x="${x(p.level) + 7}" y="${y(value(p.row)) - 7}" font-size="10" fill="${s.color}">${formatValue(value(p.row), suffix)}</text>`).join('');
-      const dash = s.dash ? ` stroke-dasharray="${s.dash}"` : '';
-      return `<path d="${path}" fill="none" stroke="${s.color}" stroke-width="2.5"${dash}/>${nodes}`;
-    }).join('');
-    const refs = baselines.map((row, i) => {
-      const yy = y(value(row));
-      const style = referenceStyles[i];
-      const labelY = yy - 5 - i * 12;
-      return `<line x1="${left}" y1="${yy}" x2="${width - right}" y2="${yy}" stroke="${style.color}" stroke-width="1.75" stroke-dasharray="${style.dash}"/><text x="${width - right - 4}" y="${labelY}" text-anchor="end" font-size="10" fill="${style.color}">${escapeXml(row.codec)} ${formatValue(value(row), suffix)}</text>`;
-    }).join('');
-    return `<text x="20" y="${top - 18}" font-size="15" font-weight="bold">${escapeXml(corpus)}</text>${grid}${refs}${curves}<text x="${left + plotWidth / 2}" y="${bottom + 43}" text-anchor="middle" font-size="12">Quality / preset level</text>`;
+  const curveRows = rows.filter(row => schemes.some(s => row.codec.startsWith(s.prefix)));
+  const baselineRows = rows.filter(row => native.some(n => row.codec === n.codec));
+  const max = Math.max(...curveRows.map(value), ...baselineRows.map(value), 1);
+  const y = v => bottom - v / max * (bottom - top - 15);
+  const grid = levels.map(level => `<line x1="${x(level)}" y1="${top}" x2="${x(level)}" y2="${bottom}" stroke="#ddd"/><text x="${x(level)}" y="${bottom + 24}" text-anchor="middle" font-size="12">${level}</text>`).join('');
+  const curves = schemes.flatMap(s => corpusStyles.map(cs => {
+    const points = curveRows.filter(row => row.corpus === cs.corpus && row.codec.startsWith(s.prefix))
+      .map(row => ({ row, level: Number(row.codec.slice(s.prefix.length)) })).sort((a, b) => a.level - b.level);
+    if (!points.length) return '';
+    const path = points.map((p, i) => `${i ? 'L' : 'M'} ${x(p.level)} ${y(value(p.row))}`).join(' ');
+    const dash = cs.dash ? ` stroke-dasharray="${cs.dash}"` : '';
+    const nodes = points.map(p => marker(cs.marker, x(p.level), y(value(p.row)), s.color)).join('');
+    return `<path d="${path}" fill="none" stroke="${s.color}" stroke-width="2.5"${dash}/>${nodes}`;
+  })).join('');
+  const refs = native.flatMap((n, ni) => corpusStyles.map((cs, ci) => {
+    const row = baselineRows.find(r => r.codec === n.codec && r.corpus === cs.corpus);
+    if (!row) return '';
+    const yy = y(value(row));
+    const dash = cs.dash || n.dash;
+    return `<line x1="${left}" y1="${yy}" x2="${width - right}" y2="${yy}" stroke="${n.color}" stroke-width="1.3" stroke-dasharray="${dash}" opacity="0.65"/>`;
+  })).join('');
+  const schemeLegend = schemes.map((s, i) => `<line x1="${620 + i * 180}" y1="25" x2="${645 + i * 180}" y2="25" stroke="${s.color}" stroke-width="3"/><text x="${652 + i * 180}" y="29" font-size="12">${s.label}</text>`).join('');
+  const corpusLegend = corpusStyles.map((cs, i) => {
+    const xx = 620 + i * 180, yy = 55;
+    const dash = cs.dash ? ` stroke-dasharray="${cs.dash}"` : '';
+    return `<line x1="${xx}" y1="${yy}" x2="${xx + 25}" y2="${yy}" stroke="#333" stroke-width="2.5"${dash}/>${marker(cs.marker, xx + 12.5, yy, '#333')}<text x="${xx + 32}" y="${yy + 4}" font-size="12">${cs.label}</text>`;
   }).join('');
-  const legend = `<line x1="700" y1="25" x2="724" y2="25" stroke="#0072B2" stroke-width="2.5"/><circle cx="712" cy="25" r="5" fill="white" stroke="#0072B2" stroke-width="2.5"/><text x="732" y="29" font-size="12">Brotli/WASM</text><line x1="820" y1="25" x2="844" y2="25" stroke="#D55E00" stroke-width="2.5" stroke-dasharray="8 5"/><rect x="827" y="20" width="10" height="10" fill="white" stroke="#D55E00" stroke-width="2.5"/><text x="850" y="29" font-size="12">XZ/WASM</text>`;
-  return `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}"><rect width="100%" height="100%" fill="white"/><text x="20" y="28" font-size="18" font-weight="bold">${escapeXml(title)}</text>${legend}${panels}</svg>\n`;
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}"><rect width="100%" height="100%" fill="white"/><text x="20" y="28" font-size="18" font-weight="bold">${escapeXml(title)}</text>${schemeLegend}${corpusLegend}${grid}${refs}${curves}<text x="${left + plotWidth / 2}" y="${bottom + 48}" text-anchor="middle" font-size="12">Quality / preset / level</text></svg>\n`;
 }
 
 function marker(kind, x, y, color) {
-  return kind === 'square'
-    ? `<rect x="${x - 5}" y="${y - 5}" width="10" height="10" fill="white" stroke="${color}" stroke-width="2.5"/>`
-    : `<circle cx="${x}" cy="${y}" r="5" fill="white" stroke="${color}" stroke-width="2.5"/>`;
+  if (kind === 'square') return `<rect x="${x - 5}" y="${y - 5}" width="10" height="10" fill="white" stroke="${color}" stroke-width="2.5"/>`;
+  if (kind === 'triangle') return `<path d="M ${x} ${y - 6} L ${x + 6} ${y + 5} L ${x - 6} ${y + 5} Z" fill="white" stroke="${color}" stroke-width="2.5"/>`;
+  return `<circle cx="${x}" cy="${y}" r="5" fill="white" stroke="${color}" stroke-width="2.5"/>`;
 }
 
 function formatValue(value, suffix) {

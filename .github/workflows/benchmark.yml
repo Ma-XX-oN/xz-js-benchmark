@@ -5,64 +5,70 @@ on:
   push:
     branches: [main]
 
+permissions:
+  contents: write
+
 jobs:
   benchmark:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - name: Install native xz
-        run: sudo apt-get update && sudo apt-get install -y xz-utils
+      - name: Install native tools
+        run: sudo apt-get update && sudo apt-get install -y xz-utils zstd autoconf automake libtool gettext autopoint
       - name: Install Emscripten
         uses: mymindstorm/setup-emsdk@4528d102f7230f0e7b276855c01ea1159be0e984
         with:
           version: 3.1.51
           no-cache: true
+      - name: Checkout XZ source
+        uses: actions/checkout@v4
+        with:
+          repository: tukaani-project/xz
+          ref: 3b1efb04d17c3a9ef7f473d73af13f1531428ffe
+          path: .xz-src
+      - name: Checkout Zstd source
+        uses: actions/checkout@v4
+        with:
+          repository: facebook/zstd
+          ref: 01b7154f1172432f8abe9b3bb9909e14a1176b7d
+          path: .zstd-src
       - name: Checkout Brotli source
         uses: actions/checkout@v4
         with:
           repository: google/brotli
           ref: d5d3f45973da91c386dd7e1086b13facecfb4087
           path: .brotli-src
-      - name: Build Brotli WASM
-        run: |
-          mkdir -p wasm
-          emcc \
-            src/brotli-wasm-wrapper.c \
-            .brotli-src/c/common/*.c \
-            .brotli-src/c/enc/*.c \
-            .brotli-src/c/dec/*.c \
-            -I.brotli-src/c/include \
-            -O3 \
-            -s STANDALONE_WASM=1 \
-            -s ALLOW_MEMORY_GROWTH=1 \
-            -Wl,--no-entry \
-            -Wl,--export=br_max_compressed_size \
-            -Wl,--export=br_compress \
-            -Wl,--export=br_decompress \
-            -Wl,--export=br_malloc \
-            -Wl,--export=br_free \
-            -o wasm/brotli.wasm
       - name: Install dependencies
         run: npm install
       - name: Test
         run: npm test
+      - name: Build selected WASM codecs
+        env:
+          BROTLI_OPT: -Os
+          ZSTD_OPT: -Os
+          XZ_COPT: -Os
+          BUILD_TAG: selected
+        run: bash scripts/build-wasm-codecs.sh
       - name: Benchmark
         if: github.ref == 'refs/heads/main'
         run: npm run benchmark
-      - name: Browser-native comparison
+      - name: Browser comparison
         run: npm run benchmark:browser
       - name: Generate browser report
         run: npm run report:browser
+      - name: Validate generated browser report
+        run: node src/validate-browser-report.mjs
       - name: Upload browser comparison
         uses: actions/upload-artifact@v4
         with:
           name: browser-compression-benchmark-results
           path: browser-benchmark-results/
       - name: Upload results
+        if: github.ref == 'refs/heads/main'
         uses: actions/upload-artifact@v4
         with:
           name: xz-js-benchmark-results
