@@ -124,8 +124,11 @@ function embeddedWasmBytes(packageDir) {
     const file = path.join(packageDir, entry);
     if (!fs.statSync(file).isFile() || !/\.(?:js|mjs|cjs)$/.test(file)) continue;
     const source = fs.readFileSync(file, 'utf8');
-    const match = source.match(/WASM_BASE64\s*=\s*[\x60'\"]([^\x60'\"]+)/);
-    if (match) return Buffer.from(match[1], 'base64').byteLength;
+    const matches = source.match(/[A-Za-z0-9+/]{100000,}={0,2}/g) || [];
+    for (const encoded of matches.sort((a, b) => b.length - a.length)) {
+      const bytes = Buffer.from(encoded, 'base64');
+      if (bytes.length > 8 && bytes[0] === 0x00 && bytes[1] === 0x61 && bytes[2] === 0x73 && bytes[3] === 0x6d) return bytes.byteLength;
+    }
   }
   throw new Error('Unable to locate lzma-wasm embedded WASM payload');
 }
