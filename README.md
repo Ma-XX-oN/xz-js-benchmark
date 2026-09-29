@@ -14,7 +14,7 @@ Work is tracked in issue #1.
 
 ## Browser-native codec comparison
 
-Issue #5 adds an in-browser comparison of the browser's native `CompressionStream` / `DecompressionStream` codecs against the repository's XZ/WASM implementation.  The benchmark detects codec support at runtime, uses the same deterministic corpora, verifies every round trip byte-for-byte, and records compression/decompression throughput plus output size.
+The browser benchmark compares native `CompressionStream` / `DecompressionStream` codecs, official Google Brotli/WASM at qualities 1, 4, 6, 9, and 11, and XZ/WASM at presets 1, 4, 6, and 9.  The benchmark detects native codec support at runtime, uses the same deterministic corpora, verifies every round trip byte-for-byte, and records compression/decompression throughput, output size, and the Brotli/XZ WASM payload sizes.  Issue #9 tracks the symmetric Brotli/XZ comparison; DC's intended XZ setting is preset 9.
 
 Measured results and graphs: [browser-benchmark-results/REPORT.md](browser-benchmark-results/REPORT.md)
 
