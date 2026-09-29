@@ -5,10 +5,13 @@
   "type": "module",
   "scripts": {
     "test": "node --test",
-    "benchmark": "node src/benchmark.mjs"
+    "benchmark": "node src/benchmark.mjs",
+    "benchmark:browser": "node src/browser-benchmark.mjs"
   },
   "dependencies": {
     "lzma-wasm": "1.0.7",
-    "node-liblzma": "5.1.3"
+    "node-liblzma": "5.1.3",
+    "esbuild": "0.25.10",
+    "puppeteer-core": "24.23.0"
   }
 }
