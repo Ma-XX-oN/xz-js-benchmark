@@ -1,27 +1,1134 @@
-{"metadata":{"timestamp":"2026-09-29T02:50:48.354Z","gitSha":"4451b9fb74c8a1dc3bf0a9ad09d76bea14d8ef08","workflowRunId":"36513813896","platform":"linux x64","cpuModel":"AMD EPYC 9V74 80-Core Processor","logicalCpus":4,"corpusBytes":33554432,"repetitions":3,"warmupRuns":1,"xzPreset":6,"brotliQualities":[1,4,6,9,11],"brotliWasmBytes":796677,"browser":"HeadlessChrome/153.0.0.0"},"codecSupport":{"gzip":true,"deflate":true,"deflate-raw":true,"brotli":false,"zstd":false},"results":[
-{"corpus":"jsonl","codec":"gzip","archiveBytes":365083,"ratio":0.010880321264266968,"compressionMiBPerSec":245.77572964670287,"decompressionMiBPerSec":723.9819004525364},
-{"corpus":"jsonl","codec":"deflate","archiveBytes":365071,"ratio":0.010879963636398315,"compressionMiBPerSec":245.58710667689397,"decompressionMiBPerSec":756.5011820330449},
-{"corpus":"jsonl","codec":"deflate-raw","archiveBytes":365065,"ratio":0.01087978482246399,"compressionMiBPerSec":250.39123630672356,"decompressionMiBPerSec":778.5888077857778},
-{"corpus":"jsonl","codec":"brotli-wasm-q1","archiveBytes":172686,"ratio":0.005146443843841553,"compressionMiBPerSec":3333.3333333363653,"decompressionMiBPerSec":2499.9999999994316},
-{"corpus":"jsonl","codec":"brotli-wasm-q4","archiveBytes":122405,"ratio":0.0036479532718658447,"compressionMiBPerSec":228.7348105789945,"decompressionMiBPerSec":2758.6206896537883},
-{"corpus":"jsonl","codec":"brotli-wasm-q6","archiveBytes":86366,"ratio":0.0025739073753356934,"compressionMiBPerSec":202.27560050569272,"decompressionMiBPerSec":3018.8679245307885},
-{"corpus":"jsonl","codec":"brotli-wasm-q9","archiveBytes":85749,"ratio":0.0025555193424224854,"compressionMiBPerSec":132.6150020721078,"decompressionMiBPerSec":3076.923076924799},
-{"corpus":"jsonl","codec":"brotli-wasm-q11","archiveBytes":88117,"ratio":0.002626091241836548,"compressionMiBPerSec":2.024675735526732,"decompressionMiBPerSec":2857.1428571473116},
-{"corpus":"jsonl","codec":"xz-wasm","archiveBytes":92172,"ratio":0.0027469396591186523,"compressionMiBPerSec":12.261006168818755,"decompressionMiBPerSec":327.86885245899686},
-{"corpus":"moderate","codec":"gzip","archiveBytes":16928281,"ratio":0.5045020878314972,"compressionMiBPerSec":81.79959100204255,"decompressionMiBPerSec":427.2363150868156},
-{"corpus":"moderate","codec":"deflate-raw","archiveBytes":16928263,"ratio":0.5045015513896942,"compressionMiBPerSec":84.03361344538072,"decompressionMiBPerSec":442.600276625066},
-{"corpus":"moderate","codec":"brotli-wasm-q1","archiveBytes":16787648,"ratio":0.5003108978271484,"compressionMiBPerSec":551.7241379310344,"decompressionMiBPerSec":632.4110671939669},
-{"corpus":"moderate","codec":"brotli-wasm-q4","archiveBytes":16779081,"ratio":0.500055581331253,"compressionMiBPerSec":203.82165605095543,"decompressionMiBPerSec":642.5702811242727},
-{"corpus":"moderate","codec":"brotli-wasm-q6","archiveBytes":16779197,"ratio":0.50005903840065,"compressionMiBPerSec":75.187969924811,"decompressionMiBPerSec":643.8631790746729},
-{"corpus":"moderate","codec":"brotli-wasm-q9","archiveBytes":16780278,"ratio":0.5000912547111511,"compressionMiBPerSec":17.987633501967398,"decompressionMiBPerSec":643.8631790742958},
-{"corpus":"moderate","codec":"brotli-wasm-q11","archiveBytes":16779573,"ratio":0.5000702440738678,"compressionMiBPerSec":0.7671616457535209,"decompressionMiBPerSec":646.4646464646464},
-{"corpus":"moderate","codec":"xz-wasm","archiveBytes":16997048,"ratio":0.5065515041351318,"compressionMiBPerSec":6.221807435059942,"decompressionMiBPerSec":37.322136692329686},
-{"corpus":"incompressible","codec":"gzip","archiveBytes":33564695,"ratio":1.000305861234665,"compressionMiBPerSec":45.63605248146339,"decompressionMiBPerSec":418.30065359477123},
-{"corpus":"incompressible","codec":"deflate-raw","archiveBytes":33564677,"ratio":1.000305324792862,"compressionMiBPerSec":45.67513559806033,"decompressionMiBPerSec":428.38018741593146},
-{"corpus":"incompressible","codec":"brotli-wasm-q1","archiveBytes":33554465,"ratio":1.0000009834766388,"compressionMiBPerSec":1481.4814814830784,"decompressionMiBPerSec":3200},
-{"corpus":"incompressible","codec":"brotli-wasm-q4","archiveBytes":33554449,"ratio":1.0000005066394806,"compressionMiBPerSec":347.44842562440925,"decompressionMiBPerSec":3137.2549019393005},
-{"corpus":"incompressible","codec":"brotli-wasm-q6","archiveBytes":33554512,"ratio":1.000002384185791,"compressionMiBPerSec":89.66096945922642,"decompressionMiBPerSec":3106.796116490809},
-{"corpus":"incompressible","codec":"brotli-wasm-q9","archiveBytes":33554520,"ratio":1.0000026226043701,"compressionMiBPerSec":55.488122073861845,"decompressionMiBPerSec":3076.9230769161886},
-{"corpus":"incompressible","codec":"brotli-wasm-q11","archiveBytes":33554536,"ratio":1.0000030994415283,"compressionMiBPerSec":1.4113205550018053,"decompressionMiBPerSec":3018.867924534933},
-{"corpus":"incompressible","codec":"xz-wasm","archiveBytes":33556156,"ratio":1.0000513792037964,"compressionMiBPerSec":2.470584602081463,"decompressionMiBPerSec":236.33677991133308}
-]}
+{
+  "metadata": {
+    "timestamp": "2026-09-29T04:28:15.940Z",
+    "gitSha": "dd5f206479e72881f747d5b9170547d32aa97427",
+    "workflowRunId": "36520778333",
+    "platform": "linux x64",
+    "release": "6.17.0-1022-azure",
+    "cpuModel": "AMD EPYC 7763 64-Core Processor",
+    "logicalCpus": 4,
+    "corpusBytes": 33554432,
+    "repetitions": 3,
+    "warmupRuns": 1,
+    "xzPresets": [
+      1,
+      4,
+      6,
+      9
+    ],
+    "xzWasmBytes": 197376,
+    "brotliQualities": [
+      1,
+      4,
+      6,
+      9,
+      11
+    ],
+    "brotliWasmBytes": 796677,
+    "browser": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.0.0 Safari/537.36",
+    "browserHardwareConcurrency": 4
+  },
+  "codecSupport": {
+    "gzip": true,
+    "deflate": true,
+    "deflate-raw": true,
+    "brotli": false,
+    "zstd": false
+  },
+  "corpora": [
+    {
+      "kind": "jsonl",
+      "label": "Highly compressible JSONL",
+      "sha256": "3fec3db74e60484971ac37edac58e79393363c62bd518a783312f88a891bc020",
+      "bytes": 33554432
+    },
+    {
+      "kind": "moderate",
+      "label": "Moderately compressible 50/50 mixed data",
+      "sha256": "c360bdf14a52de7e4770bce8f28ea8858d97e1481d0e0716625f8cd381a9ddb1",
+      "bytes": 33554432
+    },
+    {
+      "kind": "incompressible",
+      "label": "Incompressible high-entropy data",
+      "sha256": "4ebde0a4ab4ad834b5050ae9ca02ce83267cc3d7384ae6577ddc89031ee19ee1",
+      "bytes": 33554432
+    }
+  ],
+  "results": [
+    {
+      "corpus": "jsonl",
+      "codec": "gzip",
+      "supported": true,
+      "inputBytes": 33554432,
+      "archiveBytes": 365083,
+      "ratio": 0.010880321264266968,
+      "compressionMs": 197.79999999998836,
+      "decompressionMs": 48.60000000000582,
+      "compressionMiBPerSec": 161.7795753286243,
+      "decompressionMiBPerSec": 658.4362139916907,
+      "runs": [
+        {
+          "compressionMs": 197.79999999998836,
+          "decompressionMs": 48.60000000000582,
+          "archiveBytes": 365083
+        },
+        {
+          "compressionMs": 194.39999999999418,
+          "decompressionMs": 50.20000000001164,
+          "archiveBytes": 365083
+        },
+        {
+          "compressionMs": 201.20000000001164,
+          "decompressionMs": 47,
+          "archiveBytes": 365083
+        }
+      ]
+    },
+    {
+      "corpus": "jsonl",
+      "codec": "deflate",
+      "supported": true,
+      "inputBytes": 33554432,
+      "archiveBytes": 365071,
+      "ratio": 0.010879963636398315,
+      "compressionMs": 195.39999999999418,
+      "decompressionMs": 47,
+      "compressionMiBPerSec": 163.76663254862308,
+      "decompressionMiBPerSec": 680.8510638297872,
+      "runs": [
+        {
+          "compressionMs": 193.89999999999418,
+          "decompressionMs": 47,
+          "archiveBytes": 365071
+        },
+        {
+          "compressionMs": 195.39999999999418,
+          "decompressionMs": 49.39999999999418,
+          "archiveBytes": 365071
+        },
+        {
+          "compressionMs": 214.30000000001746,
+          "decompressionMs": 46.5,
+          "archiveBytes": 365071
+        }
+      ]
+    },
+    {
+      "corpus": "jsonl",
+      "codec": "deflate-raw",
+      "supported": true,
+      "inputBytes": 33554432,
+      "archiveBytes": 365065,
+      "ratio": 0.01087978482246399,
+      "compressionMs": 191.39999999999418,
+      "decompressionMs": 45.10000000000582,
+      "compressionMiBPerSec": 167.18913270637916,
+      "decompressionMiBPerSec": 709.5343680708618,
+      "runs": [
+        {
+          "compressionMs": 191.39999999999418,
+          "decompressionMs": 45,
+          "archiveBytes": 365065
+        },
+        {
+          "compressionMs": 191.29999999998836,
+          "decompressionMs": 45.10000000000582,
+          "archiveBytes": 365065
+        },
+        {
+          "compressionMs": 191.70000000001164,
+          "decompressionMs": 46.5,
+          "archiveBytes": 365065
+        }
+      ]
+    },
+    {
+      "corpus": "jsonl",
+      "codec": "brotli",
+      "supported": false
+    },
+    {
+      "corpus": "jsonl",
+      "codec": "zstd",
+      "supported": false
+    },
+    {
+      "corpus": "jsonl",
+      "codec": "brotli-wasm-q1",
+      "supported": true,
+      "inputBytes": 33554432,
+      "archiveBytes": 172686,
+      "ratio": 0.005146443843841553,
+      "compressionMs": 15.299999999988358,
+      "decompressionMs": 13.800000000017462,
+      "compressionMiBPerSec": 2091.5032679754477,
+      "decompressionMiBPerSec": 2318.840579707211,
+      "runs": [
+        {
+          "compressionMs": 14.5,
+          "decompressionMs": 13.800000000017462,
+          "archiveBytes": 172686
+        },
+        {
+          "compressionMs": 15.299999999988358,
+          "decompressionMs": 14.5,
+          "archiveBytes": 172686
+        },
+        {
+          "compressionMs": 15.60000000000582,
+          "decompressionMs": 13.700000000011642,
+          "archiveBytes": 172686
+        }
+      ]
+    },
+    {
+      "corpus": "jsonl",
+      "codec": "brotli-wasm-q4",
+      "supported": true,
+      "inputBytes": 33554432,
+      "archiveBytes": 122405,
+      "ratio": 0.0036479532718658447,
+      "compressionMs": 80.5,
+      "decompressionMs": 17.60000000000582,
+      "compressionMiBPerSec": 397.51552795031057,
+      "decompressionMiBPerSec": 1818.181818181217,
+      "runs": [
+        {
+          "compressionMs": 260.3999999999942,
+          "decompressionMs": 17.79999999998836,
+          "archiveBytes": 122405
+        },
+        {
+          "compressionMs": 80.5,
+          "decompressionMs": 17.60000000000582,
+          "archiveBytes": 122405
+        },
+        {
+          "compressionMs": 80,
+          "decompressionMs": 17.5,
+          "archiveBytes": 122405
+        }
+      ]
+    },
+    {
+      "corpus": "jsonl",
+      "codec": "brotli-wasm-q6",
+      "supported": true,
+      "inputBytes": 33554432,
+      "archiveBytes": 86366,
+      "ratio": 0.0025739073753356934,
+      "compressionMs": 251.60000000000582,
+      "decompressionMs": 11.200000000011642,
+      "compressionMiBPerSec": 127.18600953894777,
+      "decompressionMiBPerSec": 2857.1428571398874,
+      "runs": [
+        {
+          "compressionMs": 252,
+          "decompressionMs": 11.200000000011642,
+          "archiveBytes": 86366
+        },
+        {
+          "compressionMs": 251.39999999999418,
+          "decompressionMs": 12.299999999988358,
+          "archiveBytes": 86366
+        },
+        {
+          "compressionMs": 251.60000000000582,
+          "decompressionMs": 11.200000000011642,
+          "archiveBytes": 86366
+        }
+      ]
+    },
+    {
+      "corpus": "jsonl",
+      "codec": "brotli-wasm-q9",
+      "supported": true,
+      "inputBytes": 33554432,
+      "archiveBytes": 85749,
+      "ratio": 0.0025555193424224854,
+      "compressionMs": 355.70000000001164,
+      "decompressionMs": 11,
+      "compressionMiBPerSec": 89.9634523474809,
+      "decompressionMiBPerSec": 2909.0909090909095,
+      "runs": [
+        {
+          "compressionMs": 400.70000000001164,
+          "decompressionMs": 11.39999999999418,
+          "archiveBytes": 85749
+        },
+        {
+          "compressionMs": 355.20000000001164,
+          "decompressionMs": 10.89999999999418,
+          "archiveBytes": 85749
+        },
+        {
+          "compressionMs": 355.70000000001164,
+          "decompressionMs": 11,
+          "archiveBytes": 85749
+        }
+      ]
+    },
+    {
+      "corpus": "jsonl",
+      "codec": "brotli-wasm-q11",
+      "supported": true,
+      "inputBytes": 33554432,
+      "archiveBytes": 88117,
+      "ratio": 0.002626091241836548,
+      "compressionMs": 19620.79999999999,
+      "decompressionMs": 12.099999999976717,
+      "compressionMiBPerSec": 1.6309222865530466,
+      "decompressionMiBPerSec": 2644.6280991786425,
+      "runs": [
+        {
+          "compressionMs": 19620.79999999999,
+          "decompressionMs": 12.300000000017462,
+          "archiveBytes": 88117
+        },
+        {
+          "compressionMs": 19734.70000000001,
+          "decompressionMs": 12.099999999976717,
+          "archiveBytes": 88117
+        },
+        {
+          "compressionMs": 19555.5,
+          "decompressionMs": 12.099999999976717,
+          "archiveBytes": 88117
+        }
+      ]
+    },
+    {
+      "corpus": "jsonl",
+      "codec": "xz-wasm-p1",
+      "supported": true,
+      "inputBytes": 33554432,
+      "archiveBytes": 148808,
+      "ratio": 0.004434823989868164,
+      "compressionMs": 503.5999999999767,
+      "decompressionMs": 120.90000000002328,
+      "compressionMiBPerSec": 63.54249404289412,
+      "decompressionMiBPerSec": 264.68155500408466,
+      "runs": [
+        {
+          "compressionMs": 501.8999999999651,
+          "decompressionMs": 121.20000000001164,
+          "archiveBytes": 148808
+        },
+        {
+          "compressionMs": 504.9000000000233,
+          "decompressionMs": 120.79999999998836,
+          "archiveBytes": 148808
+        },
+        {
+          "compressionMs": 503.5999999999767,
+          "decompressionMs": 120.90000000002328,
+          "archiveBytes": 148808
+        }
+      ]
+    },
+    {
+      "corpus": "jsonl",
+      "codec": "xz-wasm-p4",
+      "supported": true,
+      "inputBytes": 33554432,
+      "archiveBytes": 134240,
+      "ratio": 0.004000663757324219,
+      "compressionMs": 1272.4000000000233,
+      "decompressionMs": 119.79999999998836,
+      "compressionMiBPerSec": 25.149324111914034,
+      "decompressionMiBPerSec": 267.11185308850673,
+      "runs": [
+        {
+          "compressionMs": 1272.4000000000233,
+          "decompressionMs": 119.79999999998836,
+          "archiveBytes": 134240
+        },
+        {
+          "compressionMs": 1271.600000000035,
+          "decompressionMs": 119.79999999998836,
+          "archiveBytes": 134240
+        },
+        {
+          "compressionMs": 1272.7000000000116,
+          "decompressionMs": 119.70000000001164,
+          "archiveBytes": 134240
+        }
+      ]
+    },
+    {
+      "corpus": "jsonl",
+      "codec": "xz-wasm-p6",
+      "supported": true,
+      "inputBytes": 33554432,
+      "archiveBytes": 92132,
+      "ratio": 0.0027457475662231445,
+      "compressionMs": 4082.2999999999884,
+      "decompressionMs": 121.10000000003492,
+      "compressionMiBPerSec": 7.838718369546601,
+      "decompressionMiBPerSec": 264.2444260940609,
+      "runs": [
+        {
+          "compressionMs": 4073.9000000000233,
+          "decompressionMs": 119.90000000002328,
+          "archiveBytes": 92132
+        },
+        {
+          "compressionMs": 4090.1999999999534,
+          "decompressionMs": 122.10000000003492,
+          "archiveBytes": 92132
+        },
+        {
+          "compressionMs": 4082.2999999999884,
+          "decompressionMs": 121.10000000003492,
+          "archiveBytes": 92132
+        }
+      ]
+    },
+    {
+      "corpus": "jsonl",
+      "codec": "xz-wasm-p9",
+      "supported": true,
+      "inputBytes": 33554432,
+      "archiveBytes": 84452,
+      "ratio": 0.0025168657302856445,
+      "compressionMs": 4016.5,
+      "decompressionMs": 121,
+      "compressionMiBPerSec": 7.9671355657911125,
+      "decompressionMiBPerSec": 264.4628099173554,
+      "runs": [
+        {
+          "compressionMs": 4023,
+          "decompressionMs": 121,
+          "archiveBytes": 84452
+        },
+        {
+          "compressionMs": 4016.5,
+          "decompressionMs": 121.20000000001164,
+          "archiveBytes": 84452
+        },
+        {
+          "compressionMs": 4014.2999999999884,
+          "decompressionMs": 121,
+          "archiveBytes": 84452
+        }
+      ]
+    },
+    {
+      "corpus": "moderate",
+      "codec": "gzip",
+      "supported": true,
+      "inputBytes": 33554432,
+      "archiveBytes": 16928281,
+      "ratio": 0.5045020878314972,
+      "compressionMs": 456.29999999998836,
+      "decompressionMs": 84,
+      "compressionMiBPerSec": 70.12930089853346,
+      "decompressionMiBPerSec": 380.9523809523809,
+      "runs": [
+        {
+          "compressionMs": 456.29999999998836,
+          "decompressionMs": 83.90000000002328,
+          "archiveBytes": 16928281
+        },
+        {
+          "compressionMs": 457.5,
+          "decompressionMs": 84,
+          "archiveBytes": 16928281
+        },
+        {
+          "compressionMs": 455.1000000000349,
+          "decompressionMs": 84.19999999995343,
+          "archiveBytes": 16928281
+        }
+      ]
+    },
+    {
+      "corpus": "moderate",
+      "codec": "deflate",
+      "supported": true,
+      "inputBytes": 33554432,
+      "archiveBytes": 16928269,
+      "ratio": 0.5045017302036285,
+      "compressionMs": 452.1000000000349,
+      "decompressionMs": 81.89999999996508,
+      "compressionMiBPerSec": 70.78080070780254,
+      "decompressionMiBPerSec": 390.72039072055736,
+      "runs": [
+        {
+          "compressionMs": 453.79999999998836,
+          "decompressionMs": 81.89999999996508,
+          "archiveBytes": 16928269
+        },
+        {
+          "compressionMs": 452.1000000000349,
+          "decompressionMs": 82.09999999997672,
+          "archiveBytes": 16928269
+        },
+        {
+          "compressionMs": 451.29999999998836,
+          "decompressionMs": 80.70000000001164,
+          "archiveBytes": 16928269
+        }
+      ]
+    },
+    {
+      "corpus": "moderate",
+      "codec": "deflate-raw",
+      "supported": true,
+      "inputBytes": 33554432,
+      "archiveBytes": 16928263,
+      "ratio": 0.5045015513896942,
+      "compressionMs": 451.8999999999651,
+      "decompressionMs": 81.59999999997672,
+      "compressionMiBPerSec": 70.81212657668173,
+      "decompressionMiBPerSec": 392.15686274520993,
+      "runs": [
+        {
+          "compressionMs": 467.5,
+          "decompressionMs": 81.59999999997672,
+          "archiveBytes": 16928263
+        },
+        {
+          "compressionMs": 451.8999999999651,
+          "decompressionMs": 81.29999999998836,
+          "archiveBytes": 16928263
+        },
+        {
+          "compressionMs": 451.29999999998836,
+          "decompressionMs": 81.59999999997672,
+          "archiveBytes": 16928263
+        }
+      ]
+    },
+    {
+      "corpus": "moderate",
+      "codec": "brotli",
+      "supported": false
+    },
+    {
+      "corpus": "moderate",
+      "codec": "zstd",
+      "supported": false
+    },
+    {
+      "corpus": "moderate",
+      "codec": "brotli-wasm-q1",
+      "supported": true,
+      "inputBytes": 33554432,
+      "archiveBytes": 16787648,
+      "ratio": 0.5003108978271484,
+      "compressionMs": 71.29999999998836,
+      "decompressionMs": 61.5,
+      "compressionMiBPerSec": 448.8078541375207,
+      "decompressionMiBPerSec": 520.3252032520326,
+      "runs": [
+        {
+          "compressionMs": 70.79999999998836,
+          "decompressionMs": 61.5,
+          "archiveBytes": 16787648
+        },
+        {
+          "compressionMs": 71.5,
+          "decompressionMs": 61.5,
+          "archiveBytes": 16787648
+        },
+        {
+          "compressionMs": 71.29999999998836,
+          "decompressionMs": 61.5,
+          "archiveBytes": 16787648
+        }
+      ]
+    },
+    {
+      "corpus": "moderate",
+      "codec": "brotli-wasm-q4",
+      "supported": true,
+      "inputBytes": 33554432,
+      "archiveBytes": 16779081,
+      "ratio": 0.500055581331253,
+      "compressionMs": 196.40000000002328,
+      "decompressionMs": 60.29999999998836,
+      "compressionMiBPerSec": 162.93279022401327,
+      "decompressionMiBPerSec": 530.6799336651108,
+      "runs": [
+        {
+          "compressionMs": 198,
+          "decompressionMs": 60.399999999965075,
+          "archiveBytes": 16779081
+        },
+        {
+          "compressionMs": 196.40000000002328,
+          "decompressionMs": 60.29999999998836,
+          "archiveBytes": 16779081
+        },
+        {
+          "compressionMs": 195.59999999997672,
+          "decompressionMs": 60,
+          "archiveBytes": 16779081
+        }
+      ]
+    },
+    {
+      "corpus": "moderate",
+      "codec": "brotli-wasm-q6",
+      "supported": true,
+      "inputBytes": 33554432,
+      "archiveBytes": 16779197,
+      "ratio": 0.50005903840065,
+      "compressionMs": 375.8999999999651,
+      "decompressionMs": 60.300000000046566,
+      "compressionMiBPerSec": 85.12902367651762,
+      "decompressionMiBPerSec": 530.6799336645985,
+      "runs": [
+        {
+          "compressionMs": 375.8999999999651,
+          "decompressionMs": 60.300000000046566,
+          "archiveBytes": 16779197
+        },
+        {
+          "compressionMs": 378.0999999999767,
+          "decompressionMs": 60.40000000002328,
+          "archiveBytes": 16779197
+        },
+        {
+          "compressionMs": 375.5,
+          "decompressionMs": 60.29999999998836,
+          "archiveBytes": 16779197
+        }
+      ]
+    },
+    {
+      "corpus": "moderate",
+      "codec": "brotli-wasm-q9",
+      "supported": true,
+      "inputBytes": 33554432,
+      "archiveBytes": 16780278,
+      "ratio": 0.5000912547111511,
+      "compressionMs": 2248.5,
+      "decompressionMs": 63.40000000002328,
+      "compressionMiBPerSec": 14.23171002890816,
+      "decompressionMiBPerSec": 504.7318611985528,
+      "runs": [
+        {
+          "compressionMs": 2248.5,
+          "decompressionMs": 63.20000000001164,
+          "archiveBytes": 16780278
+        },
+        {
+          "compressionMs": 2238.7999999999884,
+          "decompressionMs": 63.40000000002328,
+          "archiveBytes": 16780278
+        },
+        {
+          "compressionMs": 2250.7999999999884,
+          "decompressionMs": 63.600000000034925,
+          "archiveBytes": 16780278
+        }
+      ]
+    },
+    {
+      "corpus": "moderate",
+      "codec": "brotli-wasm-q11",
+      "supported": true,
+      "inputBytes": 33554432,
+      "archiveBytes": 16779573,
+      "ratio": 0.5000702440738678,
+      "compressionMs": 48559.09999999998,
+      "decompressionMs": 60.5,
+      "compressionMiBPerSec": 0.658990796781654,
+      "decompressionMiBPerSec": 528.9256198347108,
+      "runs": [
+        {
+          "compressionMs": 48517.59999999998,
+          "decompressionMs": 60.5,
+          "archiveBytes": 16779573
+        },
+        {
+          "compressionMs": 48559.09999999998,
+          "decompressionMs": 110.20000000001164,
+          "archiveBytes": 16779573
+        },
+        {
+          "compressionMs": 48620.79999999999,
+          "decompressionMs": 60.20000000006985,
+          "archiveBytes": 16779573
+        }
+      ]
+    },
+    {
+      "corpus": "moderate",
+      "codec": "xz-wasm-p1",
+      "supported": true,
+      "inputBytes": 33554432,
+      "archiveBytes": 17030372,
+      "ratio": 0.5075446367263794,
+      "compressionMs": 2876.8000000000466,
+      "decompressionMs": 1077.2999999999302,
+      "compressionMiBPerSec": 11.123470522802934,
+      "decompressionMiBPerSec": 29.703889353014084,
+      "runs": [
+        {
+          "compressionMs": 2874,
+          "decompressionMs": 1079.5999999999767,
+          "archiveBytes": 17030372
+        },
+        {
+          "compressionMs": 2880,
+          "decompressionMs": 1077,
+          "archiveBytes": 17030372
+        },
+        {
+          "compressionMs": 2876.8000000000466,
+          "decompressionMs": 1077.2999999999302,
+          "archiveBytes": 17030372
+        }
+      ]
+    },
+    {
+      "corpus": "moderate",
+      "codec": "xz-wasm-p4",
+      "supported": true,
+      "inputBytes": 33554432,
+      "archiveBytes": 17009244,
+      "ratio": 0.5069149732589722,
+      "compressionMs": 4044.70000000007,
+      "decompressionMs": 1076.5,
+      "compressionMiBPerSec": 7.911588004054552,
+      "decompressionMiBPerSec": 29.725963771481652,
+      "runs": [
+        {
+          "compressionMs": 4099.099999999977,
+          "decompressionMs": 1076.5,
+          "archiveBytes": 17009244
+        },
+        {
+          "compressionMs": 4044.70000000007,
+          "decompressionMs": 1077,
+          "archiveBytes": 17009244
+        },
+        {
+          "compressionMs": 3983.0999999999767,
+          "decompressionMs": 1076,
+          "archiveBytes": 17009244
+        }
+      ]
+    },
+    {
+      "corpus": "moderate",
+      "codec": "xz-wasm-p6",
+      "supported": true,
+      "inputBytes": 33554432,
+      "archiveBytes": 17008564,
+      "ratio": 0.5068947076797485,
+      "compressionMs": 5713.699999999953,
+      "decompressionMs": 1072.7000000000698,
+      "compressionMiBPerSec": 5.600574058841077,
+      "decompressionMiBPerSec": 29.83126689661407,
+      "runs": [
+        {
+          "compressionMs": 5652.70000000007,
+          "decompressionMs": 1071.6999999999534,
+          "archiveBytes": 17008564
+        },
+        {
+          "compressionMs": 5749.900000000023,
+          "decompressionMs": 1073.0999999999767,
+          "archiveBytes": 17008564
+        },
+        {
+          "compressionMs": 5713.699999999953,
+          "decompressionMs": 1072.7000000000698,
+          "archiveBytes": 17008564
+        }
+      ]
+    },
+    {
+      "corpus": "moderate",
+      "codec": "xz-wasm-p9",
+      "supported": true,
+      "inputBytes": 33554432,
+      "archiveBytes": 17008772,
+      "ratio": 0.5069009065628052,
+      "compressionMs": 5900.899999999907,
+      "decompressionMs": 1072.5,
+      "compressionMiBPerSec": 5.422901591282772,
+      "decompressionMiBPerSec": 29.836829836829835,
+      "runs": [
+        {
+          "compressionMs": 5927.29999999993,
+          "decompressionMs": 1072.5,
+          "archiveBytes": 17008772
+        },
+        {
+          "compressionMs": 5900.899999999907,
+          "decompressionMs": 1072.2000000000698,
+          "archiveBytes": 17008772
+        },
+        {
+          "compressionMs": 5876.900000000023,
+          "decompressionMs": 1072.6999999999534,
+          "archiveBytes": 17008772
+        }
+      ]
+    },
+    {
+      "corpus": "incompressible",
+      "codec": "gzip",
+      "supported": true,
+      "inputBytes": 33554432,
+      "archiveBytes": 33564695,
+      "ratio": 1.000305861234665,
+      "compressionMs": 759.5,
+      "decompressionMs": 83.19999999995343,
+      "compressionMiBPerSec": 42.132982225148126,
+      "decompressionMiBPerSec": 384.61538461559985,
+      "runs": [
+        {
+          "compressionMs": 757.9000000000233,
+          "decompressionMs": 82.69999999995343,
+          "archiveBytes": 33564695
+        },
+        {
+          "compressionMs": 759.5,
+          "decompressionMs": 127.09999999997672,
+          "archiveBytes": 33564695
+        },
+        {
+          "compressionMs": 764.9000000000233,
+          "decompressionMs": 83.19999999995343,
+          "archiveBytes": 33564695
+        }
+      ]
+    },
+    {
+      "corpus": "incompressible",
+      "codec": "deflate",
+      "supported": true,
+      "inputBytes": 33554432,
+      "archiveBytes": 33564683,
+      "ratio": 1.0003055036067963,
+      "compressionMs": 755.8000000000466,
+      "decompressionMs": 83.69999999995343,
+      "compressionMiBPerSec": 42.33924318602544,
+      "decompressionMiBPerSec": 382.3178016728531,
+      "runs": [
+        {
+          "compressionMs": 752.5999999999767,
+          "decompressionMs": 120,
+          "archiveBytes": 33564683
+        },
+        {
+          "compressionMs": 761.8000000000466,
+          "decompressionMs": 83.69999999995343,
+          "archiveBytes": 33564683
+        },
+        {
+          "compressionMs": 755.8000000000466,
+          "decompressionMs": 83,
+          "archiveBytes": 33564683
+        }
+      ]
+    },
+    {
+      "corpus": "incompressible",
+      "codec": "deflate-raw",
+      "supported": true,
+      "inputBytes": 33554432,
+      "archiveBytes": 33564677,
+      "ratio": 1.000305324792862,
+      "compressionMs": 752.7000000000698,
+      "decompressionMs": 80.70000000006985,
+      "compressionMiBPerSec": 42.51361764314738,
+      "decompressionMiBPerSec": 396.53035935529493,
+      "runs": [
+        {
+          "compressionMs": 760.9000000000233,
+          "decompressionMs": 80.70000000006985,
+          "archiveBytes": 33564677
+        },
+        {
+          "compressionMs": 751.1999999999534,
+          "decompressionMs": 79.59999999997672,
+          "archiveBytes": 33564677
+        },
+        {
+          "compressionMs": 752.7000000000698,
+          "decompressionMs": 120.29999999993015,
+          "archiveBytes": 33564677
+        }
+      ]
+    },
+    {
+      "corpus": "incompressible",
+      "codec": "brotli",
+      "supported": false
+    },
+    {
+      "corpus": "incompressible",
+      "codec": "zstd",
+      "supported": false
+    },
+    {
+      "corpus": "incompressible",
+      "codec": "brotli-wasm-q1",
+      "supported": true,
+      "inputBytes": 33554432,
+      "archiveBytes": 33554465,
+      "ratio": 1.0000009834766388,
+      "compressionMs": 27.199999999953434,
+      "decompressionMs": 13.70000000006985,
+      "compressionMiBPerSec": 1176.4705882373082,
+      "decompressionMiBPerSec": 2335.7664233457554,
+      "runs": [
+        {
+          "compressionMs": 26.900000000023283,
+          "decompressionMs": 13.70000000006985,
+          "archiveBytes": 33554465
+        },
+        {
+          "compressionMs": 27.199999999953434,
+          "decompressionMs": 13.599999999976717,
+          "archiveBytes": 33554465
+        },
+        {
+          "compressionMs": 27.900000000023283,
+          "decompressionMs": 13.70000000006985,
+          "archiveBytes": 33554465
+        }
+      ]
+    },
+    {
+      "corpus": "incompressible",
+      "codec": "brotli-wasm-q4",
+      "supported": true,
+      "inputBytes": 33554432,
+      "archiveBytes": 33554449,
+      "ratio": 1.0000005066394806,
+      "compressionMs": 101.59999999997672,
+      "decompressionMs": 13.599999999976717,
+      "compressionMiBPerSec": 314.960629921332,
+      "decompressionMiBPerSec": 2352.9411764746164,
+      "runs": [
+        {
+          "compressionMs": 101.5,
+          "decompressionMs": 13.699999999953434,
+          "archiveBytes": 33554449
+        },
+        {
+          "compressionMs": 101.60000000009313,
+          "decompressionMs": 13.399999999906868,
+          "archiveBytes": 33554449
+        },
+        {
+          "compressionMs": 101.59999999997672,
+          "decompressionMs": 13.599999999976717,
+          "archiveBytes": 33554449
+        }
+      ]
+    },
+    {
+      "corpus": "incompressible",
+      "codec": "brotli-wasm-q6",
+      "supported": true,
+      "inputBytes": 33554432,
+      "archiveBytes": 33554512,
+      "ratio": 1.000002384185791,
+      "compressionMs": 471.9000000000233,
+      "decompressionMs": 14.199999999953434,
+      "compressionMiBPerSec": 67.81097690188264,
+      "decompressionMiBPerSec": 2253.5211267679533,
+      "runs": [
+        {
+          "compressionMs": 471.9000000000233,
+          "decompressionMs": 14.5,
+          "archiveBytes": 33554512
+        },
+        {
+          "compressionMs": 472.70000000006985,
+          "decompressionMs": 13.399999999906868,
+          "archiveBytes": 33554512
+        },
+        {
+          "compressionMs": 470,
+          "decompressionMs": 14.199999999953434,
+          "archiveBytes": 33554512
+        }
+      ]
+    },
+    {
+      "corpus": "incompressible",
+      "codec": "brotli-wasm-q9",
+      "supported": true,
+      "inputBytes": 33554432,
+      "archiveBytes": 33554520,
+      "ratio": 1.0000026226043701,
+      "compressionMs": 660.5,
+      "decompressionMs": 13.70000000006985,
+      "compressionMiBPerSec": 48.448145344436035,
+      "decompressionMiBPerSec": 2335.7664233457554,
+      "runs": [
+        {
+          "compressionMs": 673.3999999999069,
+          "decompressionMs": 13.70000000006985,
+          "archiveBytes": 33554520
+        },
+        {
+          "compressionMs": 660,
+          "decompressionMs": 13.599999999976717,
+          "archiveBytes": 33554520
+        },
+        {
+          "compressionMs": 660.5,
+          "decompressionMs": 13.70000000006985,
+          "archiveBytes": 33554520
+        }
+      ]
+    },
+    {
+      "corpus": "incompressible",
+      "codec": "brotli-wasm-q11",
+      "supported": true,
+      "inputBytes": 33554432,
+      "archiveBytes": 33554536,
+      "ratio": 1.0000030994415283,
+      "compressionMs": 22769,
+      "decompressionMs": 13.899999999906868,
+      "compressionMiBPerSec": 1.405419649523475,
+      "decompressionMiBPerSec": 2302.15827339672,
+      "runs": [
+        {
+          "compressionMs": 22346.699999999953,
+          "decompressionMs": 13.800000000046566,
+          "archiveBytes": 33554536
+        },
+        {
+          "compressionMs": 22769,
+          "decompressionMs": 13.900000000023283,
+          "archiveBytes": 33554536
+        },
+        {
+          "compressionMs": 22819.50000000006,
+          "decompressionMs": 13.899999999906868,
+          "archiveBytes": 33554536
+        }
+      ]
+    },
+    {
+      "corpus": "incompressible",
+      "codec": "xz-wasm-p1",
+      "supported": true,
+      "inputBytes": 33554432,
+      "archiveBytes": 33556056,
+      "ratio": 1.0000483989715576,
+      "compressionMs": 6025.399999999907,
+      "decompressionMs": 122.5,
+      "compressionMiBPerSec": 5.310850731901699,
+      "decompressionMiBPerSec": 261.2244897959184,
+      "runs": [
+        {
+          "compressionMs": 6037.5,
+          "decompressionMs": 122.5,
+          "archiveBytes": 33556056
+        },
+        {
+          "compressionMs": 6025.399999999907,
+          "decompressionMs": 122.19999999995343,
+          "archiveBytes": 33556056
+        },
+        {
+          "compressionMs": 5982.699999999953,
+          "decompressionMs": 123,
+          "archiveBytes": 33556056
+        }
+      ]
+    },
+    {
+      "corpus": "incompressible",
+      "codec": "xz-wasm-p4",
+      "supported": true,
+      "inputBytes": 33554432,
+      "archiveBytes": 33556056,
+      "ratio": 1.0000483989715576,
+      "compressionMs": 8959.90000000014,
+      "decompressionMs": 122.69999999995343,
+      "compressionMiBPerSec": 3.571468431567261,
+      "decompressionMiBPerSec": 260.79869600661897,
+      "runs": [
+        {
+          "compressionMs": 8959.90000000014,
+          "decompressionMs": 122.5999999998603,
+          "archiveBytes": 33556056
+        },
+        {
+          "compressionMs": 8930.300000000047,
+          "decompressionMs": 122.69999999995343,
+          "archiveBytes": 33556056
+        },
+        {
+          "compressionMs": 9712,
+          "decompressionMs": 123,
+          "archiveBytes": 33556056
+        }
+      ]
+    },
+    {
+      "corpus": "incompressible",
+      "codec": "xz-wasm-p6",
+      "supported": true,
+      "inputBytes": 33554432,
+      "archiveBytes": 33556056,
+      "ratio": 1.0000483989715576,
+      "compressionMs": 10983.200000000186,
+      "decompressionMs": 123.10000000009313,
+      "compressionMiBPerSec": 2.913540680311699,
+      "decompressionMiBPerSec": 259.95125913871476,
+      "runs": [
+        {
+          "compressionMs": 11581.899999999907,
+          "decompressionMs": 123.10000000009313,
+          "archiveBytes": 33556056
+        },
+        {
+          "compressionMs": 10770.59999999986,
+          "decompressionMs": 123.5,
+          "archiveBytes": 33556056
+        },
+        {
+          "compressionMs": 10983.200000000186,
+          "decompressionMs": 122.69999999995343,
+          "archiveBytes": 33556056
+        }
+      ]
+    },
+    {
+      "corpus": "incompressible",
+      "codec": "xz-wasm-p9",
+      "supported": true,
+      "inputBytes": 33554432,
+      "archiveBytes": 33556056,
+      "ratio": 1.0000483989715576,
+      "compressionMs": 10492.800000000047,
+      "decompressionMs": 126,
+      "compressionMiBPerSec": 3.0497102775236216,
+      "decompressionMiBPerSec": 253.96825396825398,
+      "runs": [
+        {
+          "compressionMs": 10458.699999999953,
+          "decompressionMs": 126,
+          "archiveBytes": 33556056
+        },
+        {
+          "compressionMs": 10492.800000000047,
+          "decompressionMs": 125.5999999998603,
+          "archiveBytes": 33556056
+        },
+        {
+          "compressionMs": 10510.800000000047,
+          "decompressionMs": 126.19999999995343,
+          "archiveBytes": 33556056
+        }
+      ]
+    }
+  ]
+}
