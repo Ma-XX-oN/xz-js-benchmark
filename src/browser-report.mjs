@@ -23,7 +23,7 @@ function renderReport(data) {
     `- Logical CPUs: ${data.metadata.logicalCpus}`,
     `- Corpus size: ${(data.metadata.corpusBytes / 1024 / 1024).toFixed(2)} MiB each`,
     `- Repetitions: ${data.metadata.repetitions} measured after ${data.metadata.warmupRuns} warm-up`,
-    `- XZ: node-liblzma 5.1.3 WebAssembly, presets ${[...data.metadata.xzPresets].sort((a, b) => a - b).join(', ')}, binary ${(data.metadata.xzWasmBytes / 1024).toFixed(1)} KiB`,
+    `- XZ: node-liblzma 5.1.3 WebAssembly, measured presets 1, 4, 6; preset 9 is explicitly unsupported by this browser/WASM build (256 MiB memory limit); binary ${(data.metadata.xzWasmBytes / 1024).toFixed(1)} KiB`,
     `- Brotli: Google Brotli WebAssembly, qualities ${data.metadata.brotliQualities.join(', ')}, binary ${(data.metadata.brotliWasmBytes / 1024).toFixed(1)} KiB`, '',
     '### WebAssembly payload size', '',
     '| Implementation | WASM bytes | KiB |', '|---|---:|---:|',
