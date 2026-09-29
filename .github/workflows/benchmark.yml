@@ -21,6 +21,7 @@ jobs:
       - name: Test
         run: npm test
       - name: Benchmark
+        if: github.ref == 'refs/heads/main'
         run: npm run benchmark
       - name: Browser-native comparison
         run: npm run benchmark:browser
