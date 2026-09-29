@@ -34,3 +34,6 @@ assert(report.includes('Brotli/WASM supported and measured'));
 assert(report.includes('Zstd/WASM supported and measured'));
 assert(report.includes('XZ/WASM supported and measured'));
 console.log('Generated benchmark report validation passed.');
+
+assert(!/unsupported/i.test(report), 'REPORT.md must not contain misleading unsupported wording');
+assert(!/^\| (brotli|zstd) \|/m.test(report), 'Unavailable browser-native Brotli/Zstd rows must not appear in measurements');
