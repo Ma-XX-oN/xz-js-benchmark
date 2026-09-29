@@ -48,7 +48,7 @@ jobs:
         run: |
           mkdir -p optimization-preflight
           for opt in O2 O3 Os Oz; do
-            BUILD_TAG="$opt" ./scripts/build-wasm-codecs.sh "-$opt"
+            BUILD_TAG="$opt" bash scripts/build-wasm-codecs.sh "-$opt"
             BENCH_CORPUS_BYTES=4194304 BENCH_REPETITIONS=3 npm run benchmark:browser
             cp browser-benchmark-results/results.json "optimization-preflight/$opt.json"
           done
