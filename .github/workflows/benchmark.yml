@@ -3,7 +3,7 @@ name: XZ benchmark
 on:
   workflow_dispatch:
   push:
-    branches: [main]
+    branches: [main, issue-16-zstd]
 
 jobs:
   benchmark:
@@ -15,12 +15,24 @@ jobs:
         with:
           node-version: '22'
       - name: Install native xz
-        run: sudo apt-get update && sudo apt-get install -y xz-utils
+        run: sudo apt-get update && sudo apt-get install -y xz-utils autoconf automake libtool gettext
       - name: Install Emscripten
         uses: mymindstorm/setup-emsdk@4528d102f7230f0e7b276855c01ea1159be0e984
         with:
           version: 3.1.51
           no-cache: true
+      - name: Checkout XZ source
+        uses: actions/checkout@v4
+        with:
+          repository: tukaani-project/xz
+          ref: 3b1efb04d17c3a9ef7f473d73af13f1531428ffe
+          path: .xz-src
+      - name: Checkout Zstd source
+        uses: actions/checkout@v4
+        with:
+          repository: facebook/zstd
+          ref: 01b7154f1172432f8abe9b3bb9909e14a1176b7d
+          path: .zstd-src
       - name: Checkout Brotli source
         uses: actions/checkout@v4
         with:
@@ -46,6 +58,26 @@ jobs:
             -Wl,--export=br_malloc \
             -Wl,--export=br_free \
             -o wasm/brotli.wasm
+      - name: Build Zstd WASM
+        run: |
+          emcc src/zstd-wasm-wrapper.c .zstd-src/lib/common/*.c .zstd-src/lib/compress/*.c .zstd-src/lib/decompress/*.c \
+            -I.zstd-src/lib -O3 -s STANDALONE_WASM=1 -s ALLOW_MEMORY_GROWTH=1 -Wl,--no-entry \
+            -Wl,--export=zs_compress_bound -Wl,--export=zs_compress -Wl,--export=zs_decompress \
+            -Wl,--export=zs_is_error -Wl,--export=zs_malloc -Wl,--export=zs_free -o wasm/zstd.wasm
+      - name: Build XZ WASM
+        run: |
+          cd .xz-src
+          ./autogen.sh
+          cd ..
+          mkdir .xz-build
+          cd .xz-build
+          emconfigure ../.xz-src/configure CFLAGS="-O3" --disable-shared --enable-static --disable-xz --disable-xzdec --disable-lzmadec --disable-lzmainfo --disable-lzma-links --disable-scripts --disable-doc
+          emmake make -j2 -C src/liblzma
+          cd ..
+          emcc src/xz-wasm-wrapper.c .xz-build/src/liblzma/.libs/liblzma.a -I.xz-build/src/liblzma/api -I.xz-src/src/liblzma/api \
+            -O3 -s STANDALONE_WASM=1 -s ALLOW_MEMORY_GROWTH=1 -Wl,--no-entry \
+            -Wl,--export=xz_bound -Wl,--export=xz_compress -Wl,--export=xz_decompress \
+            -Wl,--export=xz_malloc -Wl,--export=xz_free -o wasm/xz.wasm
       - name: Install dependencies
         run: npm install
       - name: Test
@@ -53,7 +85,14 @@ jobs:
       - name: Benchmark
         if: github.ref == 'refs/heads/main'
         run: npm run benchmark
+      - name: Browser codec preflight
+        if: github.ref == 'refs/heads/issue-16-zstd'
+        env:
+          BENCH_CORPUS_BYTES: 1048576
+          BENCH_REPETITIONS: 1
+        run: npm run benchmark:browser
       - name: Browser-native comparison
+        if: github.ref == 'refs/heads/main'
         run: npm run benchmark:browser
       - name: Generate browser report
         run: npm run report:browser
