@@ -34,11 +34,13 @@ function renderReport(data) {
     `| Brotli/WASM | ${data.metadata.brotliWasmBytes.toLocaleString('en-US')} | ${(data.metadata.brotliWasmBytes / 1024).toFixed(1)} |`,
     `| Zstd/WASM | ${data.metadata.zstdWasmBytes.toLocaleString('en-US')} | ${(data.metadata.zstdWasmBytes / 1024).toFixed(1)} |`,
     `| XZ/WASM | ${data.metadata.xzWasmBytes.toLocaleString('en-US')} | ${(data.metadata.xzWasmBytes / 1024).toFixed(1)} |`, '',
-    '## Browser codec support', '',
-    'Support is runtime-detected in the browser named above.  An unsupported entry means that this browser rejects the corresponding `CompressionStream` / `DecompressionStream` format; it does not mean the compression algorithm is absent from the browser\'s HTTP stack.', '',
+    '## Browser-native CompressionStream support', '',
+    'The WASM implementations benchmarked in this report are supported and measured independently of this table.  The entries below refer **only** to the browser-native `CompressionStream` / `DecompressionStream` API.', '',
+    'Native API support is runtime-detected in the browser named above.  An unsupported entry means that this browser rejects the corresponding `CompressionStream` / `DecompressionStream` format; it does not mean the compression algorithm is absent from the browser\'s HTTP stack.', '',
     'As of September 2026, Chromium/Chrome does **not** expose Brotli through `CompressionStream`, despite supporting Brotli HTTP content encoding.  Chromium issue 463397980 tracks that still-unshipped API support.  Firefox 147+ and Safari 18.4+ do expose native Brotli through `CompressionStream`.  Therefore this Chrome run cannot produce a legitimate browser-native Brotli measurement.', ''
   ];
-  for (const [codec, available] of Object.entries(data.codecSupport)) lines.push(`- ${available ? 'Supported' : 'Unsupported'}: \`${codec}\``);
+  for (const [codec, available] of Object.entries(data.codecSupport)) lines.push(`- Browser-native ${available ? 'supported' : 'unsupported'}: \`${codec}\``);
+  lines.push('', '- WASM benchmark: **Brotli/WASM supported and measured**', '- WASM benchmark: **Zstd/WASM supported and measured**', '- WASM benchmark: **XZ/WASM supported and measured**');
   lines.push('', '## Graphs', '', '### Compression ability', '', '![Compressed size](compression-ratio.svg)', '', '### Compression speed', '', '![Compression speed](compression-speed.svg)', '', '### Decompression speed', '', '![Decompression speed](decompression-speed.svg)', '', '## Measurements', '');
   for (const corpus of data.corpora) {
     lines.push(`### ${corpus.label}`, '', '| Codec | Compressed bytes | Ratio | Compress ms | Compress MiB/s | Decompress ms | Decompress MiB/s |', '|---|---:|---:|---:|---:|---:|---:|');
@@ -77,13 +79,21 @@ function tradeoffChart(title, rows, value, suffix) {
     { codec: 'deflate', color: '#E69F00', dash: '4 4' },
     { codec: 'deflate-raw', color: '#56B4E9', dash: '10 3 2 3' }
   ];
-  const width = 1200, height = 650, left = 90, right = 45, top = 95, bottom = 555;
+  const width = 1200, height = 650, left = 115, right = 45, top = 95, bottom = 555;
   const plotWidth = width - left - right;
   const x = level => left + (level - 1) / 10 * plotWidth;
   const curveRows = rows.filter(row => schemes.some(s => row.codec.startsWith(s.prefix)));
   const baselineRows = rows.filter(row => native.some(n => row.codec === n.codec));
   const max = Math.max(...curveRows.map(value), ...baselineRows.map(value), 1);
-  const y = v => bottom - v / max * (bottom - top - 15);
+  const plotHeight = bottom - top - 15;
+  const y = v => bottom - v / max * plotHeight;
+  const yTicks = Array.from({ length: 6 }, (_, i) => max * i / 5);
+  const yGrid = yTicks.map(v => {
+    const yy = y(v);
+    return `<line x1="${left}" y1="${yy}" x2="${width - right}" y2="${yy}" stroke="#e5e5e5"/><text x="${left - 10}" y="${yy + 4}" text-anchor="end" font-size="12">${formatAxisValue(v, suffix)}</text>`;
+  }).join('');
+  const yUnit = suffix === '%' ? 'Percent of input (%)' : 'Throughput (MiB/s)';
+  const yAxisLabel = `<text x="22" y="${top + plotHeight / 2}" text-anchor="middle" font-size="12" transform="rotate(-90 22 ${top + plotHeight / 2})">${yUnit}</text>`;
   const grid = levels.map(level => `<line x1="${x(level)}" y1="${top}" x2="${x(level)}" y2="${bottom}" stroke="#ddd"/><text x="${x(level)}" y="${bottom + 24}" text-anchor="middle" font-size="12">${level}</text>`).join('');
   const curves = schemes.flatMap(s => corpusStyles.map(cs => {
     const points = curveRows.filter(row => row.corpus === cs.corpus && row.codec.startsWith(s.prefix))
@@ -107,13 +117,19 @@ function tradeoffChart(title, rows, value, suffix) {
     const dash = cs.dash ? ` stroke-dasharray="${cs.dash}"` : '';
     return `<line x1="${xx}" y1="${yy}" x2="${xx + 25}" y2="${yy}" stroke="#333" stroke-width="2.5"${dash}/>${marker(cs.marker, xx + 12.5, yy, '#333')}<text x="${xx + 32}" y="${yy + 4}" font-size="12">${cs.label}</text>`;
   }).join('');
-  return `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}"><rect width="100%" height="100%" fill="white"/><text x="20" y="28" font-size="18" font-weight="bold">${escapeXml(title)}</text>${schemeLegend}${corpusLegend}${grid}${refs}${curves}<text x="${left + plotWidth / 2}" y="${bottom + 48}" text-anchor="middle" font-size="12">Quality / preset / level</text></svg>\n`;
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}"><rect width="100%" height="100%" fill="white"/><text x="20" y="28" font-size="18" font-weight="bold">${escapeXml(title)}</text>${schemeLegend}${corpusLegend}${yGrid}${yAxisLabel}${grid}${refs}${curves}<text x="${left + plotWidth / 2}" y="${bottom + 48}" text-anchor="middle" font-size="12">Quality / preset / level</text></svg>\n`;
 }
 
 function marker(kind, x, y, color) {
   if (kind === 'square') return `<rect x="${x - 5}" y="${y - 5}" width="10" height="10" fill="white" stroke="${color}" stroke-width="2.5"/>`;
   if (kind === 'triangle') return `<path d="M ${x} ${y - 6} L ${x + 6} ${y + 5} L ${x - 6} ${y + 5} Z" fill="white" stroke="${color}" stroke-width="2.5"/>`;
   return `<circle cx="${x}" cy="${y}" r="5" fill="white" stroke="${color}" stroke-width="2.5"/>`;
+}
+
+function formatAxisValue(value, suffix) {
+  if (suffix === '%') return `${value.toFixed(value < 1 && value !== 0 ? 2 : 0)}%`;
+  if (value >= 1000) return `${(value / 1000).toFixed(value >= 10000 ? 0 : 1)}k`;
+  return value.toFixed(value < 10 && value !== 0 ? 1 : 0);
 }
 
 function formatValue(value, suffix) {
