@@ -23,22 +23,16 @@ window.runCompressionBenchmark = async ({ corpora, repetitions }) => {
       }));
     }
     for (const quality of BROTLI_QUALITIES) {
-      results.push(await measureCodec(corpus.kind, `brotli-wasm-q${quality}`, input, repetitions, {
-        compress: data => brotli.compress(data, quality),
-        decompress: data => brotli.decompress(data, input.byteLength)
-      }));
+      results.push(await measureArchiveApi(corpus.kind, `brotli-wasm-q${quality}`, input, repetitions,
+        createDcArchiveApi(brotli, quality, input.byteLength)));
     }
     for (const level of ZSTD_LEVELS) {
-      results.push(await measureCodec(corpus.kind, `zstd-wasm-l${level}`, input, repetitions, {
-        compress: data => zstd.compress(data, level),
-        decompress: data => zstd.decompress(data, input.byteLength)
-      }));
+      results.push(await measureArchiveApi(corpus.kind, `zstd-wasm-l${level}`, input, repetitions,
+        createDcArchiveApi(zstd, level, input.byteLength)));
     }
     for (const preset of XZ_PRESETS) {
-      results.push(await measureCodec(corpus.kind, `xz-wasm-p${preset}`, input, repetitions, {
-        compress: data => xz.compress(data, preset),
-        decompress: data => xz.decompress(data, input.byteLength)
-      }));
+      results.push(await measureArchiveApi(corpus.kind, `xz-wasm-p${preset}`, input, repetitions,
+        createDcArchiveApi(xz, preset, input.byteLength)));
     }
   }
   return {
@@ -64,6 +58,52 @@ function supportsNative(format) {
   } catch {
     return false;
   }
+}
+
+function createDcArchiveApi(codec, level, expectedBytes) {
+  return {
+    async createArchive(bytes) {
+      const writer = await this.streamingArchiveWriterBegin();
+      this.streamingArchiveWriterAppendBytes(writer, bytes);
+      return this.streamingArchiveWriterFinish(writer);
+    },
+    async extractArchive(archiveBytes) {
+      return codec.decompress(archiveBytes, expectedBytes);
+    },
+    async streamingArchiveWriterBegin() {
+      return { chunks: [], size: 0, finished: false };
+    },
+    streamingArchiveWriterAppendBytes(writer, bytes) {
+      if (writer.finished) throw new Error('Streaming archive writer is already finished.');
+      if (!(bytes instanceof Uint8Array)) throw new TypeError('Archive input must be Uint8Array.');
+      if (!bytes.byteLength) return;
+      writer.chunks.push(bytes.slice());
+      writer.size += bytes.byteLength;
+    },
+    streamingArchiveWriterAppendArchive(writer, archiveBytes) {
+      const raw = codec.decompress(archiveBytes, expectedBytes);
+      this.streamingArchiveWriterAppendBytes(writer, raw);
+      return raw.byteLength;
+    },
+    streamingArchiveWriterFinish(writer) {
+      if (writer.finished) throw new Error('Streaming archive writer is already finished.');
+      writer.finished = true;
+      const raw = new Uint8Array(writer.size);
+      let offset = 0;
+      for (const chunk of writer.chunks) {
+        raw.set(chunk, offset);
+        offset += chunk.byteLength;
+      }
+      return codec.compress(raw, level);
+    }
+  };
+}
+
+async function measureArchiveApi(corpus, codec, input, repetitions, archiveApi) {
+  return measureCodec(corpus, codec, input, repetitions, {
+    compress: data => archiveApi.createArchive(data),
+    decompress: data => archiveApi.extractArchive(data)
+  });
 }
 
 async function measureCodec(corpus, codec, input, repetitions, transforms) {
