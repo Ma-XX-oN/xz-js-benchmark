@@ -3,7 +3,7 @@ name: XZ benchmark
 on:
   workflow_dispatch:
   push:
-    branches: [main, issue-18-chart-axes]
+    branches: [main, issue-18-remove-unsupported]
 
 permissions:
   contents: write
