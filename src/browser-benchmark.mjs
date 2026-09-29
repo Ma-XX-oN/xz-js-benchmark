@@ -73,6 +73,7 @@ const executablePath = process.env.CHROME_BIN || '/usr/bin/google-chrome';
 const browser = await puppeteer.launch({
   executablePath,
   headless: true,
+  protocolTimeout: 15 * 60 * 1000,
   args: ['--no-sandbox', '--disable-dev-shm-usage']
 });
 try {
