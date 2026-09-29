@@ -1,10 +1,12 @@
 import { createUnxz, createXz, initModule } from 'node-liblzma';
 
 const NATIVE_FORMATS = ['gzip', 'deflate', 'deflate-raw', 'brotli', 'zstd'];
+const BROTLI_QUALITIES = [1, 4, 6, 9, 11];
 
 window.runCompressionBenchmark = async ({ corpora, repetitions, xzPreset }) => {
   const support = Object.fromEntries(NATIVE_FORMATS.map(format => [format, supportsNative(format)]));
   await initModule();
+  const brotli = await createBrotliWasm();
   const results = [];
   for (const corpus of corpora) {
     const input = new Uint8Array(await (await fetch(corpus.url)).arrayBuffer());
@@ -18,6 +20,12 @@ window.runCompressionBenchmark = async ({ corpora, repetitions, xzPreset }) => {
         decompress: data => nativeTransform(data, new DecompressionStream(format))
       }));
     }
+    for (const quality of BROTLI_QUALITIES) {
+      results.push(await measureCodec(corpus.kind, `brotli-wasm-q${quality}`, input, repetitions, {
+        compress: data => brotli.compress(data, quality),
+        decompress: data => brotli.decompress(data, input.byteLength)
+      }));
+    }
     results.push(await measureCodec(corpus.kind, 'xz-wasm', input, repetitions, {
       compress: data => nativeTransform(data, createXz({ preset: xzPreset })),
       decompress: data => nativeTransform(data, createUnxz())
@@ -29,6 +37,8 @@ window.runCompressionBenchmark = async ({ corpora, repetitions, xzPreset }) => {
     support,
     repetitions,
     xzPreset,
+    brotliQualities: BROTLI_QUALITIES,
+    brotliWasmBytes: brotli.wasmBytes,
     results
   };
 };
@@ -107,4 +117,37 @@ function median(values) {
 
 function throughput(bytes, ms) {
   return bytes / 1024 / 1024 / (ms / 1000);
+}
+
+async function createBrotliWasm() {
+  const bytes = new Uint8Array(await (await fetch('/brotli.wasm')).arrayBuffer());
+  const { instance } = await WebAssembly.instantiate(bytes, { wasi_snapshot_preview1: { proc_exit: code => { throw new Error(\`Brotli WASM proc_exit \${code}\`); } } });
+  const e = instance.exports;
+  const u32 = ptr => new Uint32Array(e.memory.buffer, ptr, 1);
+  return {
+    wasmBytes: bytes.byteLength,
+    compress(input, quality) {
+      const inPtr = e.br_malloc(input.byteLength);
+      const cap = Number(e.br_max_compressed_size(input.byteLength));
+      const outPtr = e.br_malloc(cap);
+      const sizePtr = e.br_malloc(4);
+      try {
+        new Uint8Array(e.memory.buffer, inPtr, input.byteLength).set(input);
+        u32(sizePtr)[0] = cap;
+        if (!e.br_compress(quality, 22, 0, inPtr, input.byteLength, outPtr, sizePtr)) throw new Error('Brotli compression failed');
+        return new Uint8Array(e.memory.buffer, outPtr, u32(sizePtr)[0]).slice();
+      } finally { e.br_free(sizePtr); e.br_free(outPtr); e.br_free(inPtr); }
+    },
+    decompress(input, expectedBytes) {
+      const inPtr = e.br_malloc(input.byteLength);
+      const outPtr = e.br_malloc(expectedBytes);
+      const sizePtr = e.br_malloc(4);
+      try {
+        new Uint8Array(e.memory.buffer, inPtr, input.byteLength).set(input);
+        u32(sizePtr)[0] = expectedBytes;
+        if (!e.br_decompress(inPtr, input.byteLength, outPtr, sizePtr)) throw new Error('Brotli decompression failed');
+        return new Uint8Array(e.memory.buffer, outPtr, u32(sizePtr)[0]).slice();
+      } finally { e.br_free(sizePtr); e.br_free(outPtr); e.br_free(inPtr); }
+    }
+  };
 }
