@@ -9,6 +9,7 @@ window.runCompressionBenchmark = async ({ corpora, repetitions }) => {
   const brotli = await createBrotliWasm();
   const zstd = await createZstdWasm();
   await validateCodecFailures(xz, brotli, zstd);
+  await validateDcArchiveApis(xz, brotli, zstd);
   const results = [];
   for (const corpus of corpora) {
     const input = new Uint8Array(await (await fetch(corpus.url)).arrayBuffer());
@@ -269,6 +270,34 @@ async function createZstdWasm() {
     }
   };
 }
+
+async function validateDcArchiveApis(xz, brotli, zstd) {
+  const input = new TextEncoder().encode('DC archive API contract '.repeat(128));
+  for (const [name, codec] of [['xz', xz], ['brotli', brotli], ['zstd', zstd]]) {
+    const api = createDcArchiveApi(codec, 1, input.byteLength);
+    for (const method of [
+      'createArchive', 'extractArchive', 'streamingArchiveWriterBegin',
+      'streamingArchiveWriterAppendBytes', 'streamingArchiveWriterAppendArchive',
+      'streamingArchiveWriterFinish'
+    ]) {
+      if (typeof api[method] !== 'function') throw new Error(`${name}: missing DC archive API method ${method}`);
+    }
+    const archive = await api.createArchive(input);
+    assertBytesEqual(await api.extractArchive(archive), input, `${name}: DC create/extract`);
+    const writer = await api.streamingArchiveWriterBegin();
+    const split = Math.floor(input.byteLength / 2);
+    api.streamingArchiveWriterAppendBytes(writer, input.slice(0, split));
+    api.streamingArchiveWriterAppendBytes(writer, input.slice(split));
+    const streamed = api.streamingArchiveWriterFinish(writer);
+    assertBytesEqual(await api.extractArchive(streamed), input, `${name}: DC streaming bytes`);
+    const appendWriter = await api.streamingArchiveWriterBegin();
+    const appendedBytes = api.streamingArchiveWriterAppendArchive(appendWriter, archive);
+    if (appendedBytes !== input.byteLength) throw new Error(`${name}: DC appendArchive byte count mismatch`);
+    const appended = api.streamingArchiveWriterFinish(appendWriter);
+    assertBytesEqual(await api.extractArchive(appended), input, `${name}: DC streaming archive`);
+  }
+}
+
 
 async function validateCodecFailures(xz, brotli, zstd) {
   const input = new TextEncoder().encode('codec validation '.repeat(128));
