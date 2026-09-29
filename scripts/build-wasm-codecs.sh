@@ -8,22 +8,6 @@ tag="${BUILD_TAG:-selected}"
 
 mkdir -p wasm
 
-emcc src/brotli-wasm-wrapper.c \
-  .brotli-src/c/common/*.c .brotli-src/c/enc/*.c .brotli-src/c/dec/*.c \
-  -I.brotli-src/c/include "$brotli_opt" \
-  -s STANDALONE_WASM=1 -s ALLOW_MEMORY_GROWTH=1 -Wl,--no-entry \
-  -Wl,--export=br_max_compressed_size -Wl,--export=br_compress \
-  -Wl,--export=br_decompress -Wl,--export=br_malloc -Wl,--export=br_free \
-  -o wasm/brotli.wasm
-
-emcc src/zstd-wasm-wrapper.c \
-  .zstd-src/lib/common/*.c .zstd-src/lib/compress/*.c .zstd-src/lib/decompress/*.c \
-  -I.zstd-src/lib "$zstd_opt" \
-  -s STANDALONE_WASM=1 -s ALLOW_MEMORY_GROWTH=1 -Wl,--no-entry \
-  -Wl,--export=zs_compress_bound -Wl,--export=zs_compress \
-  -Wl,--export=zs_decompress -Wl,--export=zs_is_error \
-  -Wl,--export=zs_malloc -Wl,--export=zs_free -o wasm/zstd.wasm
-
 build_dir=".xz-build-$tag"
 rm -rf "$build_dir"
 emcmake cmake -S .xz-src -B "$build_dir" \
@@ -43,3 +27,25 @@ emcc src/xz-wasm-wrapper.c "$xz_library" \
   -s STANDALONE_WASM=1 -s ALLOW_MEMORY_GROWTH=1 -Wl,--no-entry \
   -Wl,--export=xz_bound -Wl,--export=xz_compress -Wl,--export=xz_decompress \
   -Wl,--export=xz_malloc -Wl,--export=xz_free -o wasm/xz.wasm
+
+emcc src/brotli-wasm-wrapper.c \
+  .brotli-src/c/common/*.c .brotli-src/c/enc/*.c .brotli-src/c/dec/*.c \
+  -I.brotli-src/c/include "$brotli_opt" \
+  -s STANDALONE_WASM=1 -s ALLOW_MEMORY_GROWTH=1 -Wl,--no-entry \
+  -Wl,--export=br_max_compressed_size -Wl,--export=br_compress \
+  -Wl,--export=br_decompress -Wl,--export=br_malloc -Wl,--export=br_free \
+  -o wasm/brotli.wasm
+
+emcc src/zstd-wasm-wrapper.c \
+  .zstd-src/lib/common/*.c .zstd-src/lib/compress/*.c .zstd-src/lib/decompress/*.c \
+  -I.zstd-src/lib "$zstd_opt" \
+  -s STANDALONE_WASM=1 -s ALLOW_MEMORY_GROWTH=1 -Wl,--no-entry \
+  -Wl,--export=zs_compress_bound -Wl,--export=zs_compress \
+  -Wl,--export=zs_decompress -Wl,--export=zs_is_error \
+  -Wl,--export=zs_malloc -Wl,--export=zs_free -o wasm/zstd.wasm
+
+
+for file in wasm/brotli.wasm wasm/zstd.wasm wasm/xz.wasm; do
+  test -s "$file" || { echo "missing built WASM: $file" >&2; exit 1; }
+done
+ls -l wasm/*.wasm
