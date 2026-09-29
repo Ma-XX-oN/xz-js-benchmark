@@ -6,7 +6,8 @@
   "scripts": {
     "test": "node --test",
     "benchmark": "node src/benchmark.mjs",
-    "benchmark:browser": "node src/browser-benchmark.mjs"
+    "benchmark:browser": "node src/browser-benchmark.mjs",
+    "report:browser": "node src/browser-report.mjs"
   },
   "dependencies": {
     "lzma-wasm": "1.0.7",
