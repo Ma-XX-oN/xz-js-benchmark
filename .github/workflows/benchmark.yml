@@ -71,7 +71,7 @@ jobs:
           cd ..
           mkdir .xz-build
           cd .xz-build
-          emconfigure ../.xz-src/configure CFLAGS="-O3" --disable-shared --enable-static --disable-xz --disable-xzdec --disable-lzmadec --disable-lzmainfo --disable-lzma-links --disable-scripts --disable-doc
+          emconfigure ../.xz-src/configure --host=wasm32-unknown-emscripten CFLAGS="-O3" --disable-threads --disable-shared --enable-static --disable-xz --disable-xzdec --disable-lzmadec --disable-lzmainfo --disable-lzma-links --disable-scripts --disable-doc
           emmake make -j2 -C src/liblzma
           cd ..
           emcc src/xz-wasm-wrapper.c .xz-build/src/liblzma/.libs/liblzma.a -I.xz-build/src/liblzma/api -I.xz-src/src/liblzma/api \
