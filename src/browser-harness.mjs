@@ -121,7 +121,7 @@ function throughput(bytes, ms) {
 
 async function createBrotliWasm() {
   const bytes = new Uint8Array(await (await fetch('/brotli.wasm')).arrayBuffer());
-  const { instance } = await WebAssembly.instantiate(bytes, { env: {}, wasi_snapshot_preview1: { proc_exit: code => { throw new Error(`Brotli WASM proc_exit ${code}`); } } });
+  const { instance } = await WebAssembly.instantiate(bytes, { env: { emscripten_notify_memory_growth: () => {} }, wasi_snapshot_preview1: { proc_exit: code => { throw new Error(`Brotli WASM proc_exit ${code}`); } } });
   const e = instance.exports;
   const u32 = ptr => new Uint32Array(e.memory.buffer, ptr, 1);
   return {
