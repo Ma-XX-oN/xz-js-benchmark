@@ -47,7 +47,7 @@ jobs:
         env:
           BROTLI_OPT: -Os
           ZSTD_OPT: -Os
-          XZ_OPT: -Os
+          XZ_COPT: -Os
           BUILD_TAG: selected
         run: bash scripts/build-wasm-codecs.sh
       - name: Benchmark
