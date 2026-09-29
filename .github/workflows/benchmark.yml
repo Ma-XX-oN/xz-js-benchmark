@@ -3,7 +3,7 @@ name: XZ benchmark
 on:
   workflow_dispatch:
   push:
-    branches: [main, issue-9-brotli-wasm]
+    branches: [main]
 
 jobs:
   benchmark:
