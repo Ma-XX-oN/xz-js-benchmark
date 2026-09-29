@@ -3,7 +3,7 @@ name: XZ benchmark
 on:
   workflow_dispatch:
   push:
-    branches: [main]
+    branches: [main, issue-9-xz-presets]
 
 jobs:
   benchmark:
