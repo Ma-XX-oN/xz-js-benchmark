@@ -1,35 +1,14 @@
-# Browser-native compression vs XZ/WASM
+# Browser compression and Brotli/WASM vs XZ/WASM
 
-This report compares codecs in the same headless Chrome process on the same deterministic corpora.  Each measured result follows one warm-up and uses the median of the measured repetitions.  Every measured codec is decompressed and checked byte-for-byte against its source on every run.
+Same headless Chrome process, deterministic 32 MiB corpora, one warm-up, median of three measured runs. Every measured codec was decompressed and verified byte-for-byte.
 
-## Environment
-
-- Browser: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.0.0 Safari/537.36
-- CPU: AMD EPYC 7763 64-Core Processor
-- Logical CPUs: 4
-- Corpus size: 32.00 MiB each
-- Repetitions: 3 measured after 1 warm-up
-- XZ: node-liblzma 5.1.3 WebAssembly, preset 6
-
-## Browser codec support
-
-- Supported: `gzip`
-- Supported: `deflate`
-- Supported: `deflate-raw`
-- Unsupported: `brotli`
-- Unsupported: `zstd`
+Brotli/WASM: official Google Brotli, qualities 1, 4, 6, 9, 11, binary 778.0 KiB. XZ/WASM: preset 6.
 
 ## Graphs
 
-### Compression ability
-
 ![Compressed size](compression-ratio.svg)
 
-### Compression speed
-
 ![Compression speed](compression-speed.svg)
-
-### Decompression speed
 
 ![Decompression speed](decompression-speed.svg)
 
@@ -37,41 +16,56 @@ This report compares codecs in the same headless Chrome process on the same dete
 
 ### Highly compressible JSONL
 
-| Codec | Compressed bytes | Ratio | Compress ms | Compress MiB/s | Decompress ms | Decompress MiB/s |
-|---|---:|---:|---:|---:|---:|---:|
-| gzip | 365,083 | 1.0880% | 204.6 | 156.40 | 47.8 | 669.46 |
-| deflate | 365,071 | 1.0880% | 195.1 | 164.02 | 47.6 | 672.27 |
-| deflate-raw | 365,065 | 1.0880% | 194.4 | 164.61 | 46.0 | 695.65 |
-| brotli | unsupported | unsupported | unsupported | unsupported | unsupported | unsupported |
-| zstd | unsupported | unsupported | unsupported | unsupported | unsupported | unsupported |
-| xz-wasm | 92,172 | 0.2747% | 3102.9 | 10.31 | 108.8 | 294.12 |
+| Codec | Bytes | Ratio | Compress MiB/s | Decompress MiB/s |
+|---|---:|---:|---:|---:|
+| gzip | 365,083 | 1.0880% | 245.78 | 723.98 |
+| deflate | 365,071 | 1.0880% | 245.59 | 756.50 |
+| deflate-raw | 365,065 | 1.0880% | 250.39 | 778.59 |
+| brotli | unsupported | unsupported | unsupported | unsupported |
+| zstd | unsupported | unsupported | unsupported | unsupported |
+| brotli-wasm-q1 | 172,686 | 0.5146% | 3333.33 | 2500.00 |
+| brotli-wasm-q4 | 122,405 | 0.3648% | 228.73 | 2758.62 |
+| brotli-wasm-q6 | 86,366 | 0.2574% | 202.28 | 3018.87 |
+| brotli-wasm-q9 | 85,749 | 0.2556% | 132.62 | 3076.92 |
+| brotli-wasm-q11 | 88,117 | 0.2626% | 2.02 | 2857.14 |
+| xz-wasm | 92,172 | 0.2747% | 12.26 | 327.87 |
 
 ### Moderately compressible 50/50 mixed data
 
-| Codec | Compressed bytes | Ratio | Compress ms | Compress MiB/s | Decompress ms | Decompress MiB/s |
-|---|---:|---:|---:|---:|---:|---:|
-| gzip | 16,928,281 | 50.4502% | 467.4 | 68.46 | 86.5 | 369.94 |
-| deflate | 16,928,269 | 50.4502% | 457.8 | 69.90 | 82.0 | 390.24 |
-| deflate-raw | 16,928,263 | 50.4502% | 454.8 | 70.36 | 81.5 | 392.64 |
-| brotli | unsupported | unsupported | unsupported | unsupported | unsupported | unsupported |
-| zstd | unsupported | unsupported | unsupported | unsupported | unsupported | unsupported |
-| xz-wasm | 16,997,048 | 50.6552% | 4848.6 | 6.60 | 979.1 | 32.68 |
+| Codec | Bytes | Ratio | Compress MiB/s | Decompress MiB/s |
+|---|---:|---:|---:|---:|
+| gzip | 16,928,281 | 50.4502% | 81.80 | 427.24 |
+| deflate | 16,928,269 | 50.4502% | 82.41 | 430.11 |
+| deflate-raw | 16,928,263 | 50.4502% | 84.03 | 442.60 |
+| brotli | unsupported | unsupported | unsupported | unsupported |
+| zstd | unsupported | unsupported | unsupported | unsupported |
+| brotli-wasm-q1 | 16,787,648 | 50.0311% | 551.72 | 632.41 |
+| brotli-wasm-q4 | 16,779,081 | 50.0056% | 203.82 | 642.57 |
+| brotli-wasm-q6 | 16,779,197 | 50.0059% | 75.19 | 643.86 |
+| brotli-wasm-q9 | 16,780,278 | 50.0091% | 17.99 | 643.86 |
+| brotli-wasm-q11 | 16,779,573 | 50.0070% | 0.77 | 646.46 |
+| xz-wasm | 16,997,048 | 50.6552% | 6.22 | 37.32 |
 
 ### Incompressible high-entropy data
 
-| Codec | Compressed bytes | Ratio | Compress ms | Compress MiB/s | Decompress ms | Decompress MiB/s |
-|---|---:|---:|---:|---:|---:|---:|
-| gzip | 33,564,695 | 100.0306% | 769.2 | 41.60 | 87.2 | 366.97 |
-| deflate | 33,564,683 | 100.0306% | 759.5 | 42.13 | 83.1 | 385.08 |
-| deflate-raw | 33,564,677 | 100.0305% | 753.1 | 42.49 | 85.0 | 376.47 |
-| brotli | unsupported | unsupported | unsupported | unsupported | unsupported | unsupported |
-| zstd | unsupported | unsupported | unsupported | unsupported | unsupported | unsupported |
-| xz-wasm | 33,556,156 | 100.0051% | 10477.8 | 3.05 | 154.4 | 207.25 |
+| Codec | Bytes | Ratio | Compress MiB/s | Decompress MiB/s |
+|---|---:|---:|---:|---:|
+| gzip | 33,564,695 | 100.0306% | 45.64 | 418.30 |
+| deflate | 33,564,683 | 100.0306% | 43.91 | 298.23 |
+| deflate-raw | 33,564,677 | 100.0305% | 45.68 | 428.38 |
+| brotli | unsupported | unsupported | unsupported | unsupported |
+| zstd | unsupported | unsupported | unsupported | unsupported |
+| brotli-wasm-q1 | 33,554,465 | 100.0001% | 1481.48 | 3200.00 |
+| brotli-wasm-q4 | 33,554,449 | 100.0001% | 347.45 | 3137.25 |
+| brotli-wasm-q6 | 33,554,512 | 100.0002% | 89.66 | 3106.80 |
+| brotli-wasm-q9 | 33,554,520 | 100.0003% | 55.49 | 3076.92 |
+| brotli-wasm-q11 | 33,554,536 | 100.0003% | 1.41 | 3018.87 |
+| xz-wasm | 33,556,156 | 100.0051% | 2.47 | 236.34 |
 
 ## Interpretation
 
-- **Highly compressible JSONL:** smallest output: **xz-wasm** (0.2747%); fastest compression: **deflate-raw** (164.61 MiB/s); fastest decompression: **deflate-raw** (695.65 MiB/s).
-- **Moderately compressible 50/50 mixed data:** smallest output: **deflate-raw** (50.4502%); fastest compression: **deflate-raw** (70.36 MiB/s); fastest decompression: **deflate-raw** (392.64 MiB/s).
-- **Incompressible high-entropy data:** smallest output: **xz-wasm** (100.0051%); fastest compression: **deflate-raw** (42.49 MiB/s); fastest decompression: **deflate** (385.08 MiB/s).
+For highly compressible JSONL, Brotli/WASM q9 produced **85,749 bytes (0.2556%)** versus XZ/WASM preset 6 at **92,172 bytes (0.2747%)**. q9 compressed at **132.62 MiB/s** versus XZ at **12.26 MiB/s**, and decompressed at **3,076.92 MiB/s** versus **327.87 MiB/s**.
 
-The graphs and conclusions above are generated directly from results.json; unsupported codecs remain explicitly visible in the support section and measurement tables.
+Brotli q6 was slightly larger (86,366 bytes) but faster (202.28 MiB/s). q11 was both slower and larger than q9 on this corpus.
+
+Chrome 153 did not expose native Brotli or Zstd through `CompressionStream`; these Brotli rows are the official Google implementation compiled to WebAssembly.
