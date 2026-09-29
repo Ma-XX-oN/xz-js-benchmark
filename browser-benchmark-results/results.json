@@ -1,11 +1,11 @@
 {
   "metadata": {
-    "timestamp": "2026-09-29T17:14:51.393Z",
-    "gitSha": "5e9fd23a33d0baf632eddd15d184a4e4c33245b7",
-    "workflowRunId": "36601735709",
+    "timestamp": "2026-09-29T18:21:47.771Z",
+    "gitSha": "a724587a8f0424b4e34a24ec42ec2136b453bfd1",
+    "workflowRunId": "36609547665",
     "platform": "linux x64",
     "release": "6.17.0-1022-azure",
-    "cpuModel": "AMD EPYC 7763 64-Core Processor",
+    "cpuModel": "AMD EPYC 9V74 80-Core Processor",
     "logicalCpus": 4,
     "corpusBytes": 33554432,
     "repetitions": 3,
@@ -82,24 +82,24 @@
       "inputBytes": 33554432,
       "archiveBytes": 365083,
       "ratio": 0.010880321264266968,
-      "compressionMs": 197.69999999998254,
-      "decompressionMs": 49,
-      "compressionMiBPerSec": 161.86140617098042,
-      "decompressionMiBPerSec": 653.0612244897959,
+      "compressionMs": 165,
+      "decompressionMs": 54.09999999997672,
+      "compressionMiBPerSec": 193.93939393939394,
+      "decompressionMiBPerSec": 591.4972273570013,
       "runs": [
         {
-          "compressionMs": 197.69999999998254,
-          "decompressionMs": 51.10000000000582,
+          "compressionMs": 163.39999999999418,
+          "decompressionMs": 56.20000000001164,
           "archiveBytes": 365083
         },
         {
-          "compressionMs": 204.19999999998254,
-          "decompressionMs": 48.80000000001746,
+          "compressionMs": 170.20000000001164,
+          "decompressionMs": 53.89999999999418,
           "archiveBytes": 365083
         },
         {
-          "compressionMs": 195.39999999999418,
-          "decompressionMs": 49,
+          "compressionMs": 165,
+          "decompressionMs": 54.09999999997672,
           "archiveBytes": 365083
         }
       ]
@@ -111,24 +111,24 @@
       "inputBytes": 33554432,
       "archiveBytes": 365071,
       "ratio": 0.010879963636398315,
-      "compressionMs": 198.20000000001164,
-      "decompressionMs": 48.89999999999418,
-      "compressionMiBPerSec": 161.45307769928417,
-      "decompressionMiBPerSec": 654.3967280164378,
+      "compressionMs": 163.80000000001746,
+      "decompressionMs": 53.29999999998836,
+      "compressionMiBPerSec": 195.36019536017454,
+      "decompressionMiBPerSec": 600.3752345217072,
       "runs": [
         {
-          "compressionMs": 198.20000000001164,
-          "decompressionMs": 76.09999999997672,
+          "compressionMs": 163.80000000001746,
+          "decompressionMs": 81.39999999999418,
           "archiveBytes": 365071
         },
         {
-          "compressionMs": 206.10000000000582,
-          "decompressionMs": 48.89999999999418,
+          "compressionMs": 167.10000000000582,
+          "decompressionMs": 53.29999999998836,
           "archiveBytes": 365071
         },
         {
-          "compressionMs": 195.20000000001164,
-          "decompressionMs": 48,
+          "compressionMs": 160.59999999997672,
+          "decompressionMs": 51.60000000000582,
           "archiveBytes": 365071
         }
       ]
@@ -140,24 +140,24 @@
       "inputBytes": 33554432,
       "archiveBytes": 365065,
       "ratio": 0.01087978482246399,
-      "compressionMs": 197.60000000000582,
-      "decompressionMs": 47.89999999999418,
-      "compressionMiBPerSec": 161.9433198380519,
-      "decompressionMiBPerSec": 668.0584551149037,
+      "compressionMs": 161.20000000001164,
+      "decompressionMs": 51.89999999999418,
+      "compressionMiBPerSec": 198.5111662530874,
+      "decompressionMiBPerSec": 616.5703275530557,
       "runs": [
         {
-          "compressionMs": 197.60000000000582,
-          "decompressionMs": 47.89999999999418,
+          "compressionMs": 161.20000000001164,
+          "decompressionMs": 51.70000000001164,
           "archiveBytes": 365065
         },
         {
-          "compressionMs": 197,
-          "decompressionMs": 48.89999999999418,
+          "compressionMs": 158.10000000000582,
+          "decompressionMs": 52,
           "archiveBytes": 365065
         },
         {
-          "compressionMs": 199.09999999997672,
-          "decompressionMs": 47.60000000000582,
+          "compressionMs": 162.89999999999418,
+          "decompressionMs": 51.89999999999418,
           "archiveBytes": 365065
         }
       ]
@@ -179,24 +179,24 @@
       "inputBytes": 33554432,
       "archiveBytes": 172686,
       "ratio": 0.005146443843841553,
-      "compressionMs": 23.60000000000582,
-      "decompressionMs": 15.300000000017462,
-      "compressionMiBPerSec": 1355.932203389496,
-      "decompressionMiBPerSec": 2091.503267971469,
+      "compressionMs": 20.60000000000582,
+      "decompressionMs": 15.39999999999418,
+      "compressionMiBPerSec": 1553.3980582519882,
+      "decompressionMiBPerSec": 2077.9220779228635,
       "runs": [
         {
-          "compressionMs": 23.79999999998836,
-          "decompressionMs": 15.300000000017462,
+          "compressionMs": 20.60000000000582,
+          "decompressionMs": 15.39999999999418,
           "archiveBytes": 172686
         },
         {
-          "compressionMs": 22.79999999998836,
-          "decompressionMs": 15.300000000017462,
+          "compressionMs": 20.20000000001164,
+          "decompressionMs": 15.299999999988358,
           "archiveBytes": 172686
         },
         {
-          "compressionMs": 23.60000000000582,
-          "decompressionMs": 14.60000000000582,
+          "compressionMs": 21.300000000017462,
+          "decompressionMs": 15.39999999999418,
           "archiveBytes": 172686
         }
       ]
@@ -208,24 +208,24 @@
       "inputBytes": 33554432,
       "archiveBytes": 122405,
       "ratio": 0.0036479532718658447,
-      "compressionMs": 150.20000000001164,
-      "decompressionMs": 17.699999999982538,
-      "compressionMiBPerSec": 213.04926764312597,
-      "decompressionMiBPerSec": 1807.9096045215576,
+      "compressionMs": 107.89999999999418,
+      "decompressionMs": 13.200000000011642,
+      "compressionMiBPerSec": 296.5708989805535,
+      "decompressionMiBPerSec": 2424.2424242402863,
       "runs": [
         {
-          "compressionMs": 286.5,
-          "decompressionMs": 17.79999999998836,
+          "compressionMs": 219.70000000001164,
+          "decompressionMs": 13.199999999982538,
           "archiveBytes": 122405
         },
         {
-          "compressionMs": 149,
-          "decompressionMs": 17.699999999982538,
+          "compressionMs": 107.89999999999418,
+          "decompressionMs": 13.200000000011642,
           "archiveBytes": 122405
         },
         {
-          "compressionMs": 150.20000000001164,
-          "decompressionMs": 17.699999999982538,
+          "compressionMs": 106.60000000000582,
+          "decompressionMs": 13.799999999988358,
           "archiveBytes": 122405
         }
       ]
@@ -237,24 +237,24 @@
       "inputBytes": 33554432,
       "archiveBytes": 86366,
       "ratio": 0.0025739073753356934,
-      "compressionMs": 274.5,
-      "decompressionMs": 12,
-      "compressionMiBPerSec": 116.57559198542805,
-      "decompressionMiBPerSec": 2666.6666666666665,
+      "compressionMs": 213.5,
+      "decompressionMs": 12.39999999999418,
+      "compressionMiBPerSec": 149.88290398126463,
+      "decompressionMiBPerSec": 2580.645161291534,
       "runs": [
         {
-          "compressionMs": 274.20000000001164,
-          "decompressionMs": 12,
+          "compressionMs": 215.70000000001164,
+          "decompressionMs": 12.39999999999418,
           "archiveBytes": 86366
         },
         {
-          "compressionMs": 274.5,
-          "decompressionMs": 11.89999999999418,
+          "compressionMs": 213.19999999998254,
+          "decompressionMs": 12.10000000000582,
           "archiveBytes": 86366
         },
         {
-          "compressionMs": 276.0999999999767,
-          "decompressionMs": 12,
+          "compressionMs": 213.5,
+          "decompressionMs": 12.60000000000582,
           "archiveBytes": 86366
         }
       ]
@@ -266,24 +266,24 @@
       "inputBytes": 33554432,
       "archiveBytes": 85749,
       "ratio": 0.0025555193424224854,
-      "compressionMs": 374.5999999999767,
-      "decompressionMs": 11.60000000000582,
-      "compressionMiBPerSec": 85.42445274960488,
-      "decompressionMiBPerSec": 2758.6206896537883,
+      "compressionMs": 356.79999999998836,
+      "decompressionMs": 12.60000000000582,
+      "compressionMiBPerSec": 89.68609865471144,
+      "decompressionMiBPerSec": 2539.6825396813665,
       "runs": [
         {
-          "compressionMs": 372.8999999999942,
-          "decompressionMs": 11.60000000000582,
+          "compressionMs": 356.79999999998836,
+          "decompressionMs": 12.89999999999418,
           "archiveBytes": 85749
         },
         {
-          "compressionMs": 378,
-          "decompressionMs": 12.699999999982538,
+          "compressionMs": 357.19999999998254,
+          "decompressionMs": 12.60000000000582,
           "archiveBytes": 85749
         },
         {
-          "compressionMs": 374.5999999999767,
-          "decompressionMs": 11.400000000023283,
+          "compressionMs": 355.5,
+          "decompressionMs": 12.299999999988358,
           "archiveBytes": 85749
         }
       ]
@@ -295,24 +295,24 @@
       "inputBytes": 33554432,
       "archiveBytes": 88117,
       "ratio": 0.002626091241836548,
-      "compressionMs": 20085.79999999999,
-      "decompressionMs": 13.200000000011642,
-      "compressionMiBPerSec": 1.593165320773881,
-      "decompressionMiBPerSec": 2424.2424242402863,
+      "compressionMs": 20841.79999999999,
+      "decompressionMs": 13.400000000023283,
+      "compressionMiBPerSec": 1.5353760231841789,
+      "decompressionMiBPerSec": 2388.059701488388,
       "runs": [
         {
-          "compressionMs": 20084,
-          "decompressionMs": 14.299999999988358,
+          "compressionMs": 20841.79999999999,
+          "decompressionMs": 13.5,
           "archiveBytes": 88117
         },
         {
-          "compressionMs": 20273.399999999994,
+          "compressionMs": 21039.600000000006,
           "decompressionMs": 13.200000000011642,
           "archiveBytes": 88117
         },
         {
-          "compressionMs": 20085.79999999999,
-          "decompressionMs": 12.700000000011642,
+          "compressionMs": 20835.099999999977,
+          "decompressionMs": 13.400000000023283,
           "archiveBytes": 88117
         }
       ]
@@ -324,24 +324,24 @@
       "inputBytes": 33554432,
       "archiveBytes": 152699,
       "ratio": 0.0045507848262786865,
-      "compressionMs": 28.5,
-      "decompressionMs": 8.5,
-      "compressionMiBPerSec": 1122.8070175438595,
-      "decompressionMiBPerSec": 3764.705882352941,
+      "compressionMs": 18.70000000001164,
+      "decompressionMs": 7.400000000023283,
+      "compressionMiBPerSec": 1711.229946522999,
+      "decompressionMiBPerSec": 4324.324324310718,
       "runs": [
         {
-          "compressionMs": 29,
-          "decompressionMs": 8.899999999965075,
+          "compressionMs": 21.79999999998836,
+          "decompressionMs": 8,
           "archiveBytes": 152699
         },
         {
-          "compressionMs": 28.5,
-          "decompressionMs": 8.299999999988358,
+          "compressionMs": 18.70000000001164,
+          "decompressionMs": 7.400000000023283,
           "archiveBytes": 152699
         },
         {
-          "compressionMs": 26.29999999998836,
-          "decompressionMs": 8.5,
+          "compressionMs": 18.599999999976717,
+          "decompressionMs": 7.2999999999883585,
           "archiveBytes": 152699
         }
       ]
@@ -353,24 +353,24 @@
       "inputBytes": 33554432,
       "archiveBytes": 150874,
       "ratio": 0.004496395587921143,
-      "compressionMs": 32.40000000002328,
-      "decompressionMs": 16.20000000001164,
-      "compressionMiBPerSec": 987.6543209869445,
-      "decompressionMiBPerSec": 1975.308641973889,
+      "compressionMs": 28.400000000023283,
+      "decompressionMs": 8.599999999976717,
+      "compressionMiBPerSec": 1126.760563379358,
+      "decompressionMiBPerSec": 3720.9302325682133,
       "runs": [
         {
-          "compressionMs": 32.5,
-          "decompressionMs": 16.20000000001164,
+          "compressionMs": 27.900000000023283,
+          "decompressionMs": 8.599999999976717,
           "archiveBytes": 150874
         },
         {
-          "compressionMs": 31.699999999953434,
-          "decompressionMs": 16.600000000034925,
+          "compressionMs": 28.400000000023283,
+          "decompressionMs": 9,
           "archiveBytes": 150874
         },
         {
-          "compressionMs": 32.40000000002328,
-          "decompressionMs": 16.20000000001164,
+          "compressionMs": 28.400000000023283,
+          "decompressionMs": 7.599999999976717,
           "archiveBytes": 150874
         }
       ]
@@ -382,24 +382,24 @@
       "inputBytes": 33554432,
       "archiveBytes": 118512,
       "ratio": 0.003531932830810547,
-      "compressionMs": 94.60000000003492,
-      "decompressionMs": 8.700000000011642,
-      "compressionMiBPerSec": 338.2663847778878,
-      "decompressionMiBPerSec": 3678.1609195353085,
+      "compressionMs": 83.20000000001164,
+      "decompressionMs": 7.7999999999883585,
+      "compressionMiBPerSec": 384.6153846153308,
+      "decompressionMiBPerSec": 4102.564102570225,
       "runs": [
         {
-          "compressionMs": 99.79999999998836,
-          "decompressionMs": 10,
+          "compressionMs": 83.20000000001164,
+          "decompressionMs": 8.899999999965075,
           "archiveBytes": 118512
         },
         {
-          "compressionMs": 94.60000000003492,
-          "decompressionMs": 8.700000000011642,
+          "compressionMs": 84,
+          "decompressionMs": 7.7999999999883585,
           "archiveBytes": 118512
         },
         {
-          "compressionMs": 94.40000000002328,
-          "decompressionMs": 8.699999999953434,
+          "compressionMs": 82.5,
+          "decompressionMs": 7.7000000000116415,
           "archiveBytes": 118512
         }
       ]
@@ -411,24 +411,24 @@
       "inputBytes": 33554432,
       "archiveBytes": 129967,
       "ratio": 0.0038733184337615967,
-      "compressionMs": 110.70000000001164,
-      "decompressionMs": 11,
-      "compressionMiBPerSec": 289.0695573622099,
-      "decompressionMiBPerSec": 2909.0909090909095,
+      "compressionMs": 99.70000000001164,
+      "decompressionMs": 7.2999999999883585,
+      "compressionMiBPerSec": 320.9628886659605,
+      "decompressionMiBPerSec": 4383.561643842607,
       "runs": [
         {
-          "compressionMs": 110.70000000001164,
-          "decompressionMs": 11,
+          "compressionMs": 101.29999999998836,
+          "decompressionMs": 7.2999999999883585,
           "archiveBytes": 129967
         },
         {
-          "compressionMs": 112.39999999996508,
-          "decompressionMs": 10.900000000023283,
+          "compressionMs": 98.79999999998836,
+          "decompressionMs": 7.2999999999883585,
           "archiveBytes": 129967
         },
         {
-          "compressionMs": 110.5,
-          "decompressionMs": 11,
+          "compressionMs": 99.70000000001164,
+          "decompressionMs": 7.5,
           "archiveBytes": 129967
         }
       ]
@@ -440,24 +440,24 @@
       "inputBytes": 33554432,
       "archiveBytes": 131863,
       "ratio": 0.003929823637008667,
-      "compressionMs": 144.29999999998836,
-      "decompressionMs": 8.399999999965075,
-      "compressionMiBPerSec": 221.76022176023966,
-      "decompressionMiBPerSec": 3809.523809539648,
+      "compressionMs": 129.69999999995343,
+      "decompressionMs": 7.5,
+      "compressionMiBPerSec": 246.7232074017848,
+      "decompressionMiBPerSec": 4266.666666666667,
       "runs": [
         {
-          "compressionMs": 144.5,
-          "decompressionMs": 8.399999999965075,
+          "compressionMs": 129.60000000003492,
+          "decompressionMs": 7.7999999999883585,
           "archiveBytes": 131863
         },
         {
-          "compressionMs": 144.29999999998836,
-          "decompressionMs": 8,
+          "compressionMs": 131.80000000004657,
+          "decompressionMs": 7.5,
           "archiveBytes": 131863
         },
         {
-          "compressionMs": 144,
-          "decompressionMs": 8.399999999965075,
+          "compressionMs": 129.69999999995343,
+          "decompressionMs": 7.5,
           "archiveBytes": 131863
         }
       ]
@@ -469,24 +469,24 @@
       "inputBytes": 33554432,
       "archiveBytes": 148816,
       "ratio": 0.004435062408447266,
-      "compressionMs": 378.29999999998836,
-      "decompressionMs": 53.800000000046566,
-      "compressionMiBPerSec": 84.58895056833461,
-      "decompressionMiBPerSec": 594.7955390329424,
+      "compressionMs": 340,
+      "decompressionMs": 58.800000000046566,
+      "compressionMiBPerSec": 94.11764705882352,
+      "decompressionMiBPerSec": 544.217687074399,
       "runs": [
         {
-          "compressionMs": 379.5999999999767,
-          "decompressionMs": 53.800000000046566,
+          "compressionMs": 340.0999999999767,
+          "decompressionMs": 58.5,
           "archiveBytes": 148816
         },
         {
-          "compressionMs": 378.29999999998836,
-          "decompressionMs": 53.59999999997672,
+          "compressionMs": 339.3999999999651,
+          "decompressionMs": 58.90000000002328,
           "archiveBytes": 148816
         },
         {
-          "compressionMs": 377.79999999998836,
-          "decompressionMs": 54.20000000001164,
+          "compressionMs": 340,
+          "decompressionMs": 58.800000000046566,
           "archiveBytes": 148816
         }
       ]
@@ -498,24 +498,24 @@
       "inputBytes": 33554432,
       "archiveBytes": 134240,
       "ratio": 0.004000663757324219,
-      "compressionMs": 989.2000000000116,
-      "decompressionMs": 52.79999999998836,
-      "compressionMiBPerSec": 32.34937323089327,
-      "decompressionMiBPerSec": 606.0606060607397,
+      "compressionMs": 1063.7000000000116,
+      "decompressionMs": 57.90000000002328,
+      "compressionMiBPerSec": 30.083670207765017,
+      "decompressionMiBPerSec": 552.677029360745,
       "runs": [
         {
-          "compressionMs": 993,
-          "decompressionMs": 52.40000000002328,
+          "compressionMs": 1063.0999999999767,
+          "decompressionMs": 58,
           "archiveBytes": 134240
         },
         {
-          "compressionMs": 986.7000000000116,
-          "decompressionMs": 53.600000000034925,
+          "compressionMs": 1069.5999999999767,
+          "decompressionMs": 57.70000000001164,
           "archiveBytes": 134240
         },
         {
-          "compressionMs": 989.2000000000116,
-          "decompressionMs": 52.79999999998836,
+          "compressionMs": 1063.7000000000116,
+          "decompressionMs": 57.90000000002328,
           "archiveBytes": 134240
         }
       ]
@@ -527,24 +527,24 @@
       "inputBytes": 33554432,
       "archiveBytes": 92180,
       "ratio": 0.002747178077697754,
-      "compressionMs": 3051.7999999999884,
-      "decompressionMs": 49.899999999965075,
-      "compressionMiBPerSec": 10.485615046857632,
-      "decompressionMiBPerSec": 641.2825651307094,
+      "compressionMs": 3246,
+      "decompressionMs": 56.5,
+      "compressionMiBPerSec": 9.858287122612445,
+      "decompressionMiBPerSec": 566.3716814159292,
       "runs": [
         {
-          "compressionMs": 3051.7999999999884,
-          "decompressionMs": 49.40000000002328,
+          "compressionMs": 3240.0999999999767,
+          "decompressionMs": 55.300000000046566,
           "archiveBytes": 92180
         },
         {
-          "compressionMs": 3023.5,
-          "decompressionMs": 49.899999999965075,
+          "compressionMs": 3246,
+          "decompressionMs": 56.5,
           "archiveBytes": 92180
         },
         {
-          "compressionMs": 3057.7999999999884,
-          "decompressionMs": 50.29999999998836,
+          "compressionMs": 3252,
+          "decompressionMs": 56.5,
           "archiveBytes": 92180
         }
       ]
@@ -556,24 +556,24 @@
       "inputBytes": 33554432,
       "archiveBytes": 84516,
       "ratio": 0.002518773078918457,
-      "compressionMs": 2966.9000000000233,
-      "decompressionMs": 52.59999999997672,
-      "compressionMiBPerSec": 10.785668542923505,
-      "decompressionMiBPerSec": 608.3650190116762,
+      "compressionMs": 3222.2999999999884,
+      "decompressionMs": 59.70000000001164,
+      "compressionMiBPerSec": 9.930794773919287,
+      "decompressionMiBPerSec": 536.0134003349038,
       "runs": [
         {
-          "compressionMs": 2966.4000000000233,
-          "decompressionMs": 52,
+          "compressionMs": 3273.2999999999884,
+          "decompressionMs": 60.5,
           "archiveBytes": 84516
         },
         {
-          "compressionMs": 2966.9000000000233,
-          "decompressionMs": 52.59999999997672,
+          "compressionMs": 3218.5,
+          "decompressionMs": 59.70000000001164,
           "archiveBytes": 84516
         },
         {
-          "compressionMs": 2968.5999999999767,
-          "decompressionMs": 52.800000000046566,
+          "compressionMs": 3222.2999999999884,
+          "decompressionMs": 58.90000000002328,
           "archiveBytes": 84516
         }
       ]
@@ -585,24 +585,24 @@
       "inputBytes": 33554432,
       "archiveBytes": 16928281,
       "ratio": 0.5045020878314972,
-      "compressionMs": 466.5,
-      "decompressionMs": 85.89999999996508,
-      "compressionMiBPerSec": 68.59592711682744,
-      "decompressionMiBPerSec": 372.5261932481142,
+      "compressionMs": 495.1000000000349,
+      "decompressionMs": 93.09999999997672,
+      "compressionMiBPerSec": 64.63340739244141,
+      "decompressionMiBPerSec": 343.7164339420838,
       "runs": [
         {
-          "compressionMs": 465.80000000004657,
-          "decompressionMs": 85.89999999996508,
+          "compressionMs": 495.1000000000349,
+          "decompressionMs": 93.09999999997672,
           "archiveBytes": 16928281
         },
         {
-          "compressionMs": 466.5,
-          "decompressionMs": 86.19999999995343,
+          "compressionMs": 503.8999999999651,
+          "decompressionMs": 122.30000000004657,
           "archiveBytes": 16928281
         },
         {
-          "compressionMs": 468.5999999999767,
-          "decompressionMs": 85.29999999998836,
+          "compressionMs": 495,
+          "decompressionMs": 93,
           "archiveBytes": 16928281
         }
       ]
@@ -614,24 +614,24 @@
       "inputBytes": 33554432,
       "archiveBytes": 16928269,
       "ratio": 0.5045017302036285,
-      "compressionMs": 464.29999999998836,
-      "decompressionMs": 84.5,
-      "compressionMiBPerSec": 68.9209562782701,
-      "decompressionMiBPerSec": 378.698224852071,
+      "compressionMs": 494.0999999999767,
+      "decompressionMs": 92.79999999998836,
+      "compressionMiBPerSec": 64.7642177696853,
+      "decompressionMiBPerSec": 344.82758620693977,
       "runs": [
         {
-          "compressionMs": 464.29999999998836,
-          "decompressionMs": 84.5,
+          "compressionMs": 494.0999999999767,
+          "decompressionMs": 90.59999999997672,
           "archiveBytes": 16928269
         },
         {
-          "compressionMs": 464.80000000004657,
-          "decompressionMs": 85.39999999996508,
+          "compressionMs": 522,
+          "decompressionMs": 94.79999999998836,
           "archiveBytes": 16928269
         },
         {
-          "compressionMs": 461.20000000001164,
-          "decompressionMs": 83.59999999997672,
+          "compressionMs": 493.9000000000233,
+          "decompressionMs": 92.79999999998836,
           "archiveBytes": 16928269
         }
       ]
@@ -643,24 +643,24 @@
       "inputBytes": 33554432,
       "archiveBytes": 16928263,
       "ratio": 0.5045015513896942,
-      "compressionMs": 467.1000000000349,
-      "decompressionMs": 83.39999999996508,
-      "compressionMiBPerSec": 68.50781417254893,
-      "decompressionMiBPerSec": 383.69304556370986,
+      "compressionMs": 493.5999999999767,
+      "decompressionMs": 90.79999999998836,
+      "compressionMiBPerSec": 64.82982171799333,
+      "decompressionMiBPerSec": 352.42290748903196,
       "runs": [
         {
-          "compressionMs": 500.29999999998836,
-          "decompressionMs": 86.59999999997672,
+          "compressionMs": 491.29999999998836,
+          "decompressionMs": 90.60000000003492,
           "archiveBytes": 16928263
         },
         {
-          "compressionMs": 467.1000000000349,
-          "decompressionMs": 83.39999999996508,
+          "compressionMs": 493.5999999999767,
+          "decompressionMs": 133.09999999997672,
           "archiveBytes": 16928263
         },
         {
-          "compressionMs": 461.79999999998836,
-          "decompressionMs": 82,
+          "compressionMs": 495.6000000000349,
+          "decompressionMs": 90.79999999998836,
           "archiveBytes": 16928263
         }
       ]
@@ -682,24 +682,24 @@
       "inputBytes": 33554432,
       "archiveBytes": 16787648,
       "ratio": 0.5003108978271484,
-      "compressionMs": 78.09999999997672,
-      "decompressionMs": 69.5,
-      "compressionMiBPerSec": 409.7311139565882,
-      "decompressionMiBPerSec": 460.431654676259,
+      "compressionMs": 85.10000000003492,
+      "decompressionMs": 66.39999999996508,
+      "compressionMiBPerSec": 376.0282021150043,
+      "decompressionMiBPerSec": 481.92771084362704,
       "runs": [
         {
-          "compressionMs": 77.60000000003492,
-          "decompressionMs": 69.79999999998836,
+          "compressionMs": 85,
+          "decompressionMs": 65.20000000001164,
           "archiveBytes": 16787648
         },
         {
-          "compressionMs": 78.80000000004657,
-          "decompressionMs": 69.5,
+          "compressionMs": 85.10000000003492,
+          "decompressionMs": 66.39999999996508,
           "archiveBytes": 16787648
         },
         {
-          "compressionMs": 78.09999999997672,
-          "decompressionMs": 69.5,
+          "compressionMs": 86,
+          "decompressionMs": 66.59999999997672,
           "archiveBytes": 16787648
         }
       ]
@@ -711,24 +711,24 @@
       "inputBytes": 33554432,
       "archiveBytes": 16779081,
       "ratio": 0.500055581331253,
-      "compressionMs": 353.69999999995343,
-      "decompressionMs": 62.20000000001164,
-      "compressionMiBPerSec": 90.47215154086574,
-      "decompressionMiBPerSec": 514.4694533761095,
+      "compressionMs": 253.79999999998836,
+      "decompressionMs": 65.20000000001164,
+      "compressionMiBPerSec": 126.08353033885527,
+      "decompressionMiBPerSec": 490.79754601218235,
       "runs": [
         {
-          "compressionMs": 325.19999999995343,
-          "decompressionMs": 62.20000000001164,
+          "compressionMs": 250.79999999998836,
+          "decompressionMs": 66,
           "archiveBytes": 16779081
         },
         {
-          "compressionMs": 353.69999999995343,
-          "decompressionMs": 62.100000000034925,
+          "compressionMs": 255.40000000002328,
+          "decompressionMs": 65.20000000001164,
           "archiveBytes": 16779081
         },
         {
-          "compressionMs": 364.29999999998836,
-          "decompressionMs": 63.100000000034925,
+          "compressionMs": 253.79999999998836,
+          "decompressionMs": 64.29999999998836,
           "archiveBytes": 16779081
         }
       ]
@@ -740,24 +740,24 @@
       "inputBytes": 33554432,
       "archiveBytes": 16779197,
       "ratio": 0.50005903840065,
-      "compressionMs": 484.70000000001164,
-      "decompressionMs": 61.90000000002328,
-      "compressionMiBPerSec": 66.02021869197283,
-      "decompressionMiBPerSec": 516.9628432954437,
+      "compressionMs": 382.8999999999651,
+      "decompressionMs": 64.59999999997672,
+      "compressionMiBPerSec": 83.57273439541112,
+      "decompressionMiBPerSec": 495.3560371518813,
       "runs": [
         {
-          "compressionMs": 494.19999999995343,
-          "decompressionMs": 62,
+          "compressionMs": 383.70000000001164,
+          "decompressionMs": 65,
           "archiveBytes": 16779197
         },
         {
-          "compressionMs": 471.8999999999651,
-          "decompressionMs": 61.90000000002328,
+          "compressionMs": 375,
+          "decompressionMs": 64.59999999997672,
           "archiveBytes": 16779197
         },
         {
-          "compressionMs": 484.70000000001164,
-          "decompressionMs": 61.40000000002328,
+          "compressionMs": 382.8999999999651,
+          "decompressionMs": 64.10000000003492,
           "archiveBytes": 16779197
         }
       ]
@@ -769,24 +769,24 @@
       "inputBytes": 33554432,
       "archiveBytes": 16780278,
       "ratio": 0.5000912547111511,
-      "compressionMs": 2583.7999999999884,
-      "decompressionMs": 63.800000000046566,
-      "compressionMiBPerSec": 12.384859509249997,
-      "decompressionMiBPerSec": 501.56739811875616,
+      "compressionMs": 2671,
+      "decompressionMs": 63.899999999965075,
+      "compressionMiBPerSec": 11.980531636091353,
+      "decompressionMiBPerSec": 500.7824726137322,
       "runs": [
         {
-          "compressionMs": 2514.899999999965,
-          "decompressionMs": 63.90000000002328,
+          "compressionMs": 2659.7999999999884,
+          "decompressionMs": 64.29999999998836,
           "archiveBytes": 16780278
         },
         {
-          "compressionMs": 2583.7999999999884,
-          "decompressionMs": 63.800000000046566,
+          "compressionMs": 2671,
+          "decompressionMs": 63.899999999965075,
           "archiveBytes": 16780278
         },
         {
-          "compressionMs": 2593.0999999999767,
-          "decompressionMs": 63.70000000001164,
+          "compressionMs": 2784.4000000000233,
+          "decompressionMs": 63.899999999965075,
           "archiveBytes": 16780278
         }
       ]
@@ -798,24 +798,24 @@
       "inputBytes": 33554432,
       "archiveBytes": 16779573,
       "ratio": 0.5000702440738678,
-      "compressionMs": 51524.69999999995,
-      "decompressionMs": 62.199999999953434,
-      "compressionMiBPerSec": 0.6210613550394283,
-      "decompressionMiBPerSec": 514.469453376591,
+      "compressionMs": 55553.70000000001,
+      "decompressionMs": 65.5,
+      "compressionMiBPerSec": 0.5760192390425839,
+      "decompressionMiBPerSec": 488.54961832061065,
       "runs": [
         {
-          "compressionMs": 51524.69999999995,
-          "decompressionMs": 61.20000000001164,
+          "compressionMs": 55711.600000000035,
+          "decompressionMs": 65,
           "archiveBytes": 16779573
         },
         {
-          "compressionMs": 52573.69999999995,
-          "decompressionMs": 62.5,
+          "compressionMs": 55529,
+          "decompressionMs": 65.5,
           "archiveBytes": 16779573
         },
         {
-          "compressionMs": 51201.5,
-          "decompressionMs": 62.199999999953434,
+          "compressionMs": 55553.70000000001,
+          "decompressionMs": 65.90000000002328,
           "archiveBytes": 16779573
         }
       ]
@@ -827,24 +827,24 @@
       "inputBytes": 33554432,
       "archiveBytes": 16818602,
       "ratio": 0.5012333989143372,
-      "compressionMs": 34.300000000046566,
-      "decompressionMs": 11.900000000023283,
-      "compressionMiBPerSec": 932.9446064127277,
-      "decompressionMiBPerSec": 2689.0756302468394,
+      "compressionMs": 28.5,
+      "decompressionMs": 12.400000000023283,
+      "compressionMiBPerSec": 1122.8070175438595,
+      "decompressionMiBPerSec": 2580.645161285477,
       "runs": [
         {
-          "compressionMs": 34.300000000046566,
-          "decompressionMs": 12.099999999976717,
+          "compressionMs": 28.699999999953434,
+          "decompressionMs": 12.400000000023283,
           "archiveBytes": 16818602
         },
         {
-          "compressionMs": 33.199999999953434,
-          "decompressionMs": 11.800000000046566,
+          "compressionMs": 28.5,
+          "decompressionMs": 12.5,
           "archiveBytes": 16818602
         },
         {
-          "compressionMs": 35.09999999997672,
-          "decompressionMs": 11.900000000023283,
+          "compressionMs": 28.099999999976717,
+          "decompressionMs": 12.29999999993015,
           "archiveBytes": 16818602
         }
       ]
@@ -856,23 +856,23 @@
       "inputBytes": 33554432,
       "archiveBytes": 16786371,
       "ratio": 0.5002728402614594,
-      "compressionMs": 69.90000000002328,
+      "compressionMs": 81,
       "decompressionMs": 10,
-      "compressionMiBPerSec": 457.7968526464856,
+      "compressionMiBPerSec": 395.0617283950617,
       "decompressionMiBPerSec": 3200,
       "runs": [
         {
-          "compressionMs": 69.90000000002328,
-          "decompressionMs": 10.70000000006985,
+          "compressionMs": 79.40000000002328,
+          "decompressionMs": 10.099999999976717,
           "archiveBytes": 16786371
         },
         {
-          "compressionMs": 68.79999999993015,
-          "decompressionMs": 9.800000000046566,
+          "compressionMs": 81.29999999993015,
+          "decompressionMs": 10,
           "archiveBytes": 16786371
         },
         {
-          "compressionMs": 70.69999999995343,
+          "compressionMs": 81,
           "decompressionMs": 10,
           "archiveBytes": 16786371
         }
@@ -885,24 +885,24 @@
       "inputBytes": 33554432,
       "archiveBytes": 16781166,
       "ratio": 0.5001177191734314,
-      "compressionMs": 64.70000000006985,
-      "decompressionMs": 10.5,
-      "compressionMiBPerSec": 494.5904173101306,
-      "decompressionMiBPerSec": 3047.6190476190473,
+      "compressionMs": 62.10000000009313,
+      "decompressionMs": 10.600000000093132,
+      "compressionMiBPerSec": 515.2979066014816,
+      "decompressionMiBPerSec": 3018.867924501778,
       "runs": [
         {
-          "compressionMs": 64.70000000006985,
-          "decompressionMs": 12.199999999953434,
+          "compressionMs": 62.10000000009313,
+          "decompressionMs": 11.099999999976717,
           "archiveBytes": 16781166
         },
         {
-          "compressionMs": 65.19999999995343,
-          "decompressionMs": 10.300000000046566,
+          "compressionMs": 63.09999999997672,
+          "decompressionMs": 10.600000000093132,
           "archiveBytes": 16781166
         },
         {
-          "compressionMs": 63.5,
-          "decompressionMs": 10.5,
+          "compressionMs": 61.79999999993015,
+          "decompressionMs": 10.099999999976717,
           "archiveBytes": 16781166
         }
       ]
@@ -914,24 +914,24 @@
       "inputBytes": 33554432,
       "archiveBytes": 16800733,
       "ratio": 0.5007008612155914,
-      "compressionMs": 84.79999999993015,
-      "decompressionMs": 11.20000000006985,
-      "compressionMiBPerSec": 377.35849056634856,
-      "decompressionMiBPerSec": 2857.1428571250385,
+      "compressionMs": 84.20000000006985,
+      "decompressionMs": 7.699999999953434,
+      "compressionMiBPerSec": 380.04750593792704,
+      "decompressionMiBPerSec": 4155.844155869288,
       "runs": [
         {
-          "compressionMs": 84.79999999993015,
-          "decompressionMs": 11.20000000006985,
+          "compressionMs": 84.20000000006985,
+          "decompressionMs": 7.699999999953434,
           "archiveBytes": 16800733
         },
         {
-          "compressionMs": 86.09999999997672,
-          "decompressionMs": 11.300000000046566,
+          "compressionMs": 90.40000000002328,
+          "decompressionMs": 7.700000000069849,
           "archiveBytes": 16800733
         },
         {
-          "compressionMs": 81.79999999993015,
-          "decompressionMs": 10.900000000023283,
+          "compressionMs": 84,
+          "decompressionMs": 7.699999999953434,
           "archiveBytes": 16800733
         }
       ]
@@ -943,24 +943,24 @@
       "inputBytes": 33554432,
       "archiveBytes": 16800733,
       "ratio": 0.5007008612155914,
-      "compressionMs": 109.09999999997672,
-      "decompressionMs": 11.100000000093132,
-      "compressionMiBPerSec": 293.3088909258188,
-      "decompressionMiBPerSec": 2882.8828828586948,
+      "compressionMs": 106.30000000004657,
+      "decompressionMs": 7.900000000023283,
+      "compressionMiBPerSec": 301.0348071494448,
+      "decompressionMiBPerSec": 4050.6329113804672,
       "runs": [
         {
-          "compressionMs": 109,
-          "decompressionMs": 11.5,
+          "compressionMs": 106.30000000004657,
+          "decompressionMs": 7.900000000023283,
           "archiveBytes": 16800733
         },
         {
-          "compressionMs": 109.09999999997672,
-          "decompressionMs": 11.099999999976717,
+          "compressionMs": 104.19999999995343,
+          "decompressionMs": 7.700000000069849,
           "archiveBytes": 16800733
         },
         {
-          "compressionMs": 109.09999999997672,
-          "decompressionMs": 11.100000000093132,
+          "compressionMs": 107.79999999993015,
+          "decompressionMs": 8,
           "archiveBytes": 16800733
         }
       ]
@@ -972,24 +972,24 @@
       "inputBytes": 33554432,
       "archiveBytes": 17018112,
       "ratio": 0.5071792602539062,
-      "compressionMs": 2735.9000000000233,
-      "decompressionMs": 892.4000000000233,
-      "compressionMiBPerSec": 11.696333930333612,
-      "decompressionMiBPerSec": 35.858359480052854,
+      "compressionMs": 2989,
+      "decompressionMs": 991.6999999999534,
+      "compressionMiBPerSec": 10.705921712947475,
+      "decompressionMiBPerSec": 32.267822930323184,
       "runs": [
         {
-          "compressionMs": 2738.0999999999767,
-          "decompressionMs": 891.9000000000233,
+          "compressionMs": 2989,
+          "decompressionMs": 991.5,
           "archiveBytes": 17018112
         },
         {
-          "compressionMs": 2712.5,
-          "decompressionMs": 892.4000000000233,
+          "compressionMs": 2970.70000000007,
+          "decompressionMs": 992.2999999999302,
           "archiveBytes": 17018112
         },
         {
-          "compressionMs": 2735.9000000000233,
-          "decompressionMs": 908,
+          "compressionMs": 3015,
+          "decompressionMs": 991.6999999999534,
           "archiveBytes": 17018112
         }
       ]
@@ -1001,24 +1001,24 @@
       "inputBytes": 33554432,
       "archiveBytes": 16997244,
       "ratio": 0.5065573453903198,
-      "compressionMs": 4479.20000000007,
-      "decompressionMs": 891.5,
-      "compressionMiBPerSec": 7.144132880871473,
-      "decompressionMiBPerSec": 35.8945597307908,
+      "compressionMs": 5347,
+      "decompressionMs": 996.5,
+      "compressionMiBPerSec": 5.984664297737049,
+      "decompressionMiBPerSec": 32.112393376818865,
       "runs": [
         {
-          "compressionMs": 4465.79999999993,
-          "decompressionMs": 891.5,
+          "compressionMs": 5347,
+          "decompressionMs": 996.5,
           "archiveBytes": 16997244
         },
         {
-          "compressionMs": 4479.20000000007,
-          "decompressionMs": 891.6999999999534,
+          "compressionMs": 5374.900000000023,
+          "decompressionMs": 994,
           "archiveBytes": 16997244
         },
         {
-          "compressionMs": 4841.100000000093,
-          "decompressionMs": 891.3999999999069,
+          "compressionMs": 5201,
+          "decompressionMs": 1002.4000000000233,
           "archiveBytes": 16997244
         }
       ]
@@ -1030,24 +1030,24 @@
       "inputBytes": 33554432,
       "archiveBytes": 16997056,
       "ratio": 0.5065517425537109,
-      "compressionMs": 5625.699999999953,
-      "decompressionMs": 893.5999999999767,
-      "compressionMiBPerSec": 5.688181026361211,
-      "decompressionMiBPerSec": 35.81020590868491,
+      "compressionMs": 6407,
+      "decompressionMs": 994,
+      "compressionMiBPerSec": 4.994537224910254,
+      "decompressionMiBPerSec": 32.19315895372233,
       "runs": [
         {
-          "compressionMs": 5554.900000000023,
-          "decompressionMs": 892.5,
+          "compressionMs": 6407,
+          "decompressionMs": 994,
           "archiveBytes": 16997056
         },
         {
-          "compressionMs": 5670.800000000047,
-          "decompressionMs": 894.5999999999767,
+          "compressionMs": 6480.099999999977,
+          "decompressionMs": 994.4000000000233,
           "archiveBytes": 16997056
         },
         {
-          "compressionMs": 5625.699999999953,
-          "decompressionMs": 893.5999999999767,
+          "compressionMs": 6407,
+          "decompressionMs": 993.1999999999534,
           "archiveBytes": 16997056
         }
       ]
@@ -1059,24 +1059,24 @@
       "inputBytes": 33554432,
       "archiveBytes": 16997120,
       "ratio": 0.5065536499023438,
-      "compressionMs": 5363,
-      "decompressionMs": 891.4000000000233,
-      "compressionMiBPerSec": 5.966809621480514,
-      "decompressionMiBPerSec": 35.8985864931559,
+      "compressionMs": 6322.400000000023,
+      "decompressionMs": 1025.5999999999767,
+      "compressionMiBPerSec": 5.061369100341624,
+      "decompressionMiBPerSec": 31.201248049922704,
       "runs": [
         {
-          "compressionMs": 5414.5,
-          "decompressionMs": 893,
+          "compressionMs": 6318.5,
+          "decompressionMs": 1025.5999999999767,
           "archiveBytes": 16997120
         },
         {
-          "compressionMs": 5313.699999999953,
-          "decompressionMs": 891.4000000000233,
+          "compressionMs": 6322.400000000023,
+          "decompressionMs": 1026.1999999999534,
           "archiveBytes": 16997120
         },
         {
-          "compressionMs": 5363,
-          "decompressionMs": 891,
+          "compressionMs": 6366.699999999953,
+          "decompressionMs": 1025.5,
           "archiveBytes": 16997120
         }
       ]
@@ -1088,24 +1088,24 @@
       "inputBytes": 33554432,
       "archiveBytes": 33564695,
       "ratio": 1.000305861234665,
-      "compressionMs": 770.4000000000233,
-      "decompressionMs": 87.80000000004657,
-      "compressionMiBPerSec": 41.53686396676925,
-      "decompressionMiBPerSec": 364.46469248272246,
+      "compressionMs": 901,
+      "decompressionMs": 93.29999999993015,
+      "compressionMiBPerSec": 35.516093229744726,
+      "decompressionMiBPerSec": 342.979635584394,
       "runs": [
         {
-          "compressionMs": 766.4000000000233,
-          "decompressionMs": 84.90000000002328,
+          "compressionMs": 899.3999999999069,
+          "decompressionMs": 92.40000000002328,
           "archiveBytes": 33564695
         },
         {
-          "compressionMs": 770.8000000000466,
-          "decompressionMs": 128.69999999995343,
+          "compressionMs": 901,
+          "decompressionMs": 140.39999999990687,
           "archiveBytes": 33564695
         },
         {
-          "compressionMs": 770.4000000000233,
-          "decompressionMs": 87.80000000004657,
+          "compressionMs": 907.3999999999069,
+          "decompressionMs": 93.29999999993015,
           "archiveBytes": 33564695
         }
       ]
@@ -1117,24 +1117,24 @@
       "inputBytes": 33554432,
       "archiveBytes": 33564683,
       "ratio": 1.0003055036067963,
-      "compressionMs": 773.9000000000233,
-      "decompressionMs": 89.40000000002328,
-      "compressionMiBPerSec": 41.34901150019258,
-      "decompressionMiBPerSec": 357.94183445180835,
+      "compressionMs": 897.5999999999767,
+      "decompressionMs": 93.59999999997672,
+      "compressionMiBPerSec": 35.650623885918925,
+      "decompressionMiBPerSec": 341.88034188042695,
       "runs": [
         {
-          "compressionMs": 769.6999999999534,
-          "decompressionMs": 128.40000000002328,
+          "compressionMs": 897.5999999999767,
+          "decompressionMs": 135.10000000009313,
           "archiveBytes": 33564683
         },
         {
-          "compressionMs": 782.3000000000466,
-          "decompressionMs": 89.40000000002328,
+          "compressionMs": 902.1999999999534,
+          "decompressionMs": 91.40000000002328,
           "archiveBytes": 33564683
         },
         {
-          "compressionMs": 773.9000000000233,
-          "decompressionMs": 86.40000000002328,
+          "compressionMs": 897.2000000000698,
+          "decompressionMs": 93.59999999997672,
           "archiveBytes": 33564683
         }
       ]
@@ -1146,24 +1146,24 @@
       "inputBytes": 33554432,
       "archiveBytes": 33564677,
       "ratio": 1.000305324792862,
-      "compressionMs": 768.1999999999534,
-      "decompressionMs": 84.60000000009313,
-      "compressionMiBPerSec": 41.655818797190754,
-      "decompressionMiBPerSec": 378.2505910161321,
+      "compressionMs": 896.5999999999767,
+      "decompressionMs": 92.19999999995343,
+      "compressionMiBPerSec": 35.690385902298495,
+      "decompressionMiBPerSec": 347.07158351427506,
       "runs": [
         {
-          "compressionMs": 774.0999999999767,
-          "decompressionMs": 84.60000000009313,
+          "compressionMs": 905.3000000000466,
+          "decompressionMs": 92.19999999995343,
           "archiveBytes": 33564677
         },
         {
-          "compressionMs": 768.1999999999534,
-          "decompressionMs": 84.40000000002328,
+          "compressionMs": 896.5,
+          "decompressionMs": 90.89999999990687,
           "archiveBytes": 33564677
         },
         {
-          "compressionMs": 768.0999999999767,
-          "decompressionMs": 119.90000000002328,
+          "compressionMs": 896.5999999999767,
+          "decompressionMs": 126.5,
           "archiveBytes": 33564677
         }
       ]
@@ -1185,24 +1185,24 @@
       "inputBytes": 33554432,
       "archiveBytes": 33554465,
       "ratio": 1.0000009834766388,
-      "compressionMs": 35.59999999997672,
-      "decompressionMs": 14,
-      "compressionMiBPerSec": 898.8764044949698,
-      "decompressionMiBPerSec": 2285.714285714286,
+      "compressionMs": 34.59999999997672,
+      "decompressionMs": 11.300000000046566,
+      "compressionMiBPerSec": 924.855491330102,
+      "decompressionMiBPerSec": 2831.8584070679763,
       "runs": [
         {
-          "compressionMs": 35.59999999997672,
-          "decompressionMs": 13.900000000023283,
+          "compressionMs": 34.59999999997672,
+          "decompressionMs": 11.599999999976717,
           "archiveBytes": 33554465
         },
         {
-          "compressionMs": 35.5,
-          "decompressionMs": 14,
+          "compressionMs": 34.300000000046566,
+          "decompressionMs": 11.29999999993015,
           "archiveBytes": 33554465
         },
         {
-          "compressionMs": 37,
-          "decompressionMs": 14.5,
+          "compressionMs": 34.89999999990687,
+          "decompressionMs": 11.300000000046566,
           "archiveBytes": 33554465
         }
       ]
@@ -1214,24 +1214,24 @@
       "inputBytes": 33554432,
       "archiveBytes": 33554449,
       "ratio": 1.0000005066394806,
-      "compressionMs": 161.59999999997672,
-      "decompressionMs": 14.199999999953434,
-      "compressionMiBPerSec": 198.01980198022656,
-      "decompressionMiBPerSec": 2253.5211267679533,
+      "compressionMs": 172.19999999995343,
+      "decompressionMs": 12.100000000093132,
+      "compressionMiBPerSec": 185.830429732919,
+      "decompressionMiBPerSec": 2644.6280991531985,
       "runs": [
         {
-          "compressionMs": 161.59999999997672,
-          "decompressionMs": 14.29999999993015,
+          "compressionMs": 165.09999999997672,
+          "decompressionMs": 12.100000000093132,
           "archiveBytes": 33554449
         },
         {
-          "compressionMs": 159.5,
-          "decompressionMs": 14.199999999953434,
+          "compressionMs": 172.19999999995343,
+          "decompressionMs": 12.300000000046566,
           "archiveBytes": 33554449
         },
         {
-          "compressionMs": 169.29999999993015,
-          "decompressionMs": 13.400000000023283,
+          "compressionMs": 181.40000000002328,
+          "decompressionMs": 11.599999999976717,
           "archiveBytes": 33554449
         }
       ]
@@ -1243,24 +1243,24 @@
       "inputBytes": 33554432,
       "archiveBytes": 33554512,
       "ratio": 1.000002384185791,
-      "compressionMs": 485.5999999999767,
-      "decompressionMs": 13.70000000006985,
-      "compressionMiBPerSec": 65.89785831960778,
-      "decompressionMiBPerSec": 2335.7664233457554,
+      "compressionMs": 488.80000000004657,
+      "decompressionMs": 11.699999999953434,
+      "compressionMiBPerSec": 65.46644844516561,
+      "decompressionMiBPerSec": 2735.0427350536206,
       "runs": [
         {
-          "compressionMs": 487.20000000006985,
-          "decompressionMs": 14.099999999976717,
+          "compressionMs": 488.80000000004657,
+          "decompressionMs": 11.599999999976717,
           "archiveBytes": 33554512
         },
         {
-          "compressionMs": 485.5999999999767,
-          "decompressionMs": 13.600000000093132,
+          "compressionMs": 476.5,
+          "decompressionMs": 11.70000000006985,
           "archiveBytes": 33554512
         },
         {
-          "compressionMs": 483.19999999995343,
-          "decompressionMs": 13.70000000006985,
+          "compressionMs": 489,
+          "decompressionMs": 11.699999999953434,
           "archiveBytes": 33554512
         }
       ]
@@ -1272,24 +1272,24 @@
       "inputBytes": 33554432,
       "archiveBytes": 33554520,
       "ratio": 1.0000026226043701,
-      "compressionMs": 705,
-      "decompressionMs": 14,
-      "compressionMiBPerSec": 45.39007092198582,
-      "decompressionMiBPerSec": 2285.714285714286,
+      "compressionMs": 813.2000000000698,
+      "decompressionMs": 12.599999999976717,
+      "compressionMiBPerSec": 39.35071323167394,
+      "decompressionMiBPerSec": 2539.6825396872327,
       "runs": [
         {
-          "compressionMs": 700.0999999999767,
-          "decompressionMs": 14,
+          "compressionMs": 813.2000000000698,
+          "decompressionMs": 11.599999999976717,
           "archiveBytes": 33554520
         },
         {
-          "compressionMs": 759.3000000000466,
-          "decompressionMs": 14.400000000023283,
+          "compressionMs": 832.8000000000466,
+          "decompressionMs": 12.599999999976717,
           "archiveBytes": 33554520
         },
         {
-          "compressionMs": 705,
-          "decompressionMs": 13.900000000023283,
+          "compressionMs": 784.8000000000466,
+          "decompressionMs": 12.599999999976717,
           "archiveBytes": 33554520
         }
       ]
@@ -1301,24 +1301,24 @@
       "inputBytes": 33554432,
       "archiveBytes": 33554536,
       "ratio": 1.0000030994415283,
-      "compressionMs": 27694.79999999999,
-      "decompressionMs": 13.800000000046566,
-      "compressionMiBPerSec": 1.1554515649147137,
-      "decompressionMiBPerSec": 2318.84057970232,
+      "compressionMs": 31919.800000000047,
+      "decompressionMs": 11.70000000006985,
+      "compressionMiBPerSec": 1.0025125470710956,
+      "decompressionMiBPerSec": 2735.0427350264067,
       "runs": [
         {
-          "compressionMs": 27013.29999999993,
-          "decompressionMs": 13.800000000046566,
+          "compressionMs": 32841.5,
+          "decompressionMs": 11.600000000093132,
           "archiveBytes": 33554536
         },
         {
-          "compressionMs": 27694.79999999999,
-          "decompressionMs": 13.699999999953434,
+          "compressionMs": 31919.800000000047,
+          "decompressionMs": 11.79999999993015,
           "archiveBytes": 33554536
         },
         {
-          "compressionMs": 27936.09999999986,
-          "decompressionMs": 14.100000000093132,
+          "compressionMs": 31805.899999999907,
+          "decompressionMs": 11.70000000006985,
           "archiveBytes": 33554536
         }
       ]
@@ -1330,24 +1330,24 @@
       "inputBytes": 33554432,
       "archiveBytes": 33555210,
       "ratio": 1.0000231862068176,
-      "compressionMs": 42.300000000046566,
-      "decompressionMs": 21.600000000093132,
-      "compressionMiBPerSec": 756.5011820322642,
-      "decompressionMiBPerSec": 1481.481481475094,
+      "compressionMs": 38.29999999993015,
+      "decompressionMs": 14.29999999993015,
+      "compressionMiBPerSec": 835.5091383827247,
+      "decompressionMiBPerSec": 2237.762237773168,
       "runs": [
         {
-          "compressionMs": 42.5999999998603,
-          "decompressionMs": 21.600000000093132,
+          "compressionMs": 38.29999999993015,
+          "decompressionMs": 14.20000000006985,
           "archiveBytes": 33555210
         },
         {
-          "compressionMs": 42.200000000186265,
-          "decompressionMs": 21.5999999998603,
+          "compressionMs": 38.40000000002328,
+          "decompressionMs": 14.29999999993015,
           "archiveBytes": 33555210
         },
         {
-          "compressionMs": 42.300000000046566,
-          "decompressionMs": 21.699999999953434,
+          "compressionMs": 38,
+          "decompressionMs": 14.300000000046566,
           "archiveBytes": 33555210
         }
       ]
@@ -1359,24 +1359,24 @@
       "inputBytes": 33554432,
       "archiveBytes": 33555210,
       "ratio": 1.0000231862068176,
-      "compressionMs": 46.800000000046566,
-      "decompressionMs": 21.600000000093132,
-      "compressionMiBPerSec": 683.7606837600034,
-      "decompressionMiBPerSec": 1481.481481475094,
+      "compressionMs": 46.09999999997672,
+      "decompressionMs": 14.79999999993015,
+      "compressionMiBPerSec": 694.1431670285501,
+      "decompressionMiBPerSec": 2162.1621621723666,
       "runs": [
         {
-          "compressionMs": 46.800000000046566,
-          "decompressionMs": 21.100000000093132,
+          "compressionMs": 46,
+          "decompressionMs": 14.29999999993015,
           "archiveBytes": 33555210
         },
         {
-          "compressionMs": 48.199999999953434,
-          "decompressionMs": 21.600000000093132,
+          "compressionMs": 48,
+          "decompressionMs": 14.79999999993015,
           "archiveBytes": 33555210
         },
         {
-          "compressionMs": 46.300000000046566,
-          "decompressionMs": 21.899999999906868,
+          "compressionMs": 46.09999999997672,
+          "decompressionMs": 14.79999999993015,
           "archiveBytes": 33555210
         }
       ]
@@ -1388,24 +1388,24 @@
       "inputBytes": 33554432,
       "archiveBytes": 33555210,
       "ratio": 1.0000231862068176,
-      "compressionMs": 57.799999999813735,
-      "decompressionMs": 20.299999999813735,
-      "compressionMiBPerSec": 553.6332179948637,
-      "decompressionMiBPerSec": 1576.3546798174198,
+      "compressionMs": 54.5,
+      "decompressionMs": 14.199999999953434,
+      "compressionMiBPerSec": 587.1559633027523,
+      "decompressionMiBPerSec": 2253.5211267679533,
       "runs": [
         {
-          "compressionMs": 58.800000000046566,
-          "decompressionMs": 19.899999999906868,
+          "compressionMs": 55.300000000046566,
+          "decompressionMs": 14.29999999993015,
           "archiveBytes": 33555210
         },
         {
-          "compressionMs": 57.799999999813735,
-          "decompressionMs": 20.600000000093132,
+          "compressionMs": 54.5,
+          "decompressionMs": 14.199999999953434,
           "archiveBytes": 33555210
         },
         {
-          "compressionMs": 57.60000000009313,
-          "decompressionMs": 20.299999999813735,
+          "compressionMs": 54,
+          "decompressionMs": 14.099999999976717,
           "archiveBytes": 33555210
         }
       ]
@@ -1417,24 +1417,24 @@
       "inputBytes": 33554432,
       "archiveBytes": 33555210,
       "ratio": 1.0000231862068176,
-      "compressionMs": 63.699999999953434,
-      "decompressionMs": 19.199999999953434,
-      "compressionMiBPerSec": 502.35478806944104,
-      "decompressionMiBPerSec": 1666.6666666707088,
+      "compressionMs": 62.90000000002328,
+      "decompressionMs": 14.300000000046566,
+      "compressionMiBPerSec": 508.74403815561453,
+      "decompressionMiBPerSec": 2237.762237754951,
       "runs": [
         {
-          "compressionMs": 57.699999999953434,
-          "decompressionMs": 19.199999999953434,
+          "compressionMs": 62.90000000002328,
+          "decompressionMs": 14.5,
           "archiveBytes": 33555210
         },
         {
-          "compressionMs": 65,
-          "decompressionMs": 19.100000000093132,
+          "compressionMs": 61.699999999953434,
+          "decompressionMs": 14.300000000046566,
           "archiveBytes": 33555210
         },
         {
-          "compressionMs": 63.699999999953434,
-          "decompressionMs": 19.199999999953434,
+          "compressionMs": 65.19999999995343,
+          "decompressionMs": 14.300000000046566,
           "archiveBytes": 33555210
         }
       ]
@@ -1446,24 +1446,24 @@
       "inputBytes": 33554432,
       "archiveBytes": 33555210,
       "ratio": 1.0000231862068176,
-      "compressionMs": 74,
-      "decompressionMs": 19.199999999953434,
-      "compressionMiBPerSec": 432.43243243243245,
-      "decompressionMiBPerSec": 1666.6666666707088,
+      "compressionMs": 82.19999999995343,
+      "decompressionMs": 14.20000000006985,
+      "compressionMiBPerSec": 389.29440389316454,
+      "decompressionMiBPerSec": 2253.5211267494783,
       "runs": [
         {
-          "compressionMs": 71.5,
-          "decompressionMs": 19.199999999953434,
+          "compressionMs": 86.90000000002328,
+          "decompressionMs": 14.20000000006985,
           "archiveBytes": 33555210
         },
         {
-          "compressionMs": 74,
-          "decompressionMs": 19.199999999953434,
+          "compressionMs": 82.19999999995343,
+          "decompressionMs": 14.099999999976717,
           "archiveBytes": 33555210
         },
         {
-          "compressionMs": 75,
-          "decompressionMs": 19.199999999953434,
+          "compressionMs": 78.30000000004657,
+          "decompressionMs": 14.5,
           "archiveBytes": 33555210
         }
       ]
@@ -1475,24 +1475,24 @@
       "inputBytes": 33554432,
       "archiveBytes": 33556040,
       "ratio": 1.0000479221343994,
-      "compressionMs": 6207.90000000014,
-      "decompressionMs": 48.5,
-      "compressionMiBPerSec": 5.154722208798351,
-      "decompressionMiBPerSec": 659.7938144329896,
+      "compressionMs": 6913.599999999977,
+      "decompressionMs": 55,
+      "compressionMiBPerSec": 4.628558204119432,
+      "decompressionMiBPerSec": 581.8181818181819,
       "runs": [
         {
-          "compressionMs": 6100.59999999986,
-          "decompressionMs": 48.5,
+          "compressionMs": 6720.600000000093,
+          "decompressionMs": 55.5,
           "archiveBytes": 33556040
         },
         {
-          "compressionMs": 6207.90000000014,
-          "decompressionMs": 48.5,
+          "compressionMs": 6913.599999999977,
+          "decompressionMs": 54.40000000002328,
           "archiveBytes": 33556040
         },
         {
-          "compressionMs": 6709.300000000047,
-          "decompressionMs": 48,
+          "compressionMs": 7064.20000000007,
+          "decompressionMs": 55,
           "archiveBytes": 33556040
         }
       ]
@@ -1504,24 +1504,24 @@
       "inputBytes": 33554432,
       "archiveBytes": 33556040,
       "ratio": 1.0000479221343994,
-      "compressionMs": 11535.100000000093,
-      "decompressionMs": 48,
-      "compressionMiBPerSec": 2.7741415332333266,
-      "decompressionMiBPerSec": 666.6666666666666,
+      "compressionMs": 12615.699999999953,
+      "decompressionMs": 54.59999999997672,
+      "compressionMiBPerSec": 2.5365219528048475,
+      "decompressionMiBPerSec": 586.080586080836,
       "runs": [
         {
-          "compressionMs": 11383.800000000047,
-          "decompressionMs": 47.9000000001397,
+          "compressionMs": 12649.900000000023,
+          "decompressionMs": 54.59999999997672,
           "archiveBytes": 33556040
         },
         {
-          "compressionMs": 11579.5,
-          "decompressionMs": 48.10000000009313,
+          "compressionMs": 12434.400000000023,
+          "decompressionMs": 54.39999999990687,
           "archiveBytes": 33556040
         },
         {
-          "compressionMs": 11535.100000000093,
-          "decompressionMs": 48,
+          "compressionMs": 12615.699999999953,
+          "decompressionMs": 54.59999999997672,
           "archiveBytes": 33556040
         }
       ]
@@ -1533,24 +1533,24 @@
       "inputBytes": 33554432,
       "archiveBytes": 33556040,
       "ratio": 1.0000479221343994,
-      "compressionMs": 12579.90000000014,
-      "decompressionMs": 48.199999999953434,
-      "compressionMiBPerSec": 2.5437404112909996,
-      "decompressionMiBPerSec": 663.9004149384008,
+      "compressionMs": 13964.099999999977,
+      "decompressionMs": 54.70000000006985,
+      "compressionMiBPerSec": 2.291590578698237,
+      "decompressionMiBPerSec": 585.0091407670774,
       "runs": [
         {
-          "compressionMs": 12090.300000000047,
-          "decompressionMs": 48.199999999953434,
+          "compressionMs": 13936.79999999993,
+          "decompressionMs": 54.70000000006985,
           "archiveBytes": 33556040
         },
         {
-          "compressionMs": 12579.90000000014,
-          "decompressionMs": 48,
+          "compressionMs": 13964.099999999977,
+          "decompressionMs": 54.59999999997672,
           "archiveBytes": 33556040
         },
         {
-          "compressionMs": 12682.100000000093,
-          "decompressionMs": 48.199999999953434,
+          "compressionMs": 14304.5,
+          "decompressionMs": 54.90000000002328,
           "archiveBytes": 33556040
         }
       ]
@@ -1562,24 +1562,24 @@
       "inputBytes": 33554432,
       "archiveBytes": 33556040,
       "ratio": 1.0000479221343994,
-      "compressionMs": 11302.899999999907,
-      "decompressionMs": 48.199999999953434,
-      "compressionMiBPerSec": 2.831131833423304,
-      "decompressionMiBPerSec": 663.9004149384008,
+      "compressionMs": 12950.400000000023,
+      "decompressionMs": 55.20000000006985,
+      "compressionMiBPerSec": 2.470966147763771,
+      "decompressionMiBPerSec": 579.7101449268027,
       "runs": [
         {
-          "compressionMs": 11302.899999999907,
-          "decompressionMs": 49.199999999953434,
+          "compressionMs": 12950.400000000023,
+          "decompressionMs": 55.20000000006985,
           "archiveBytes": 33556040
         },
         {
-          "compressionMs": 11305.90000000014,
-          "decompressionMs": 48.199999999953434,
+          "compressionMs": 12998.699999999953,
+          "decompressionMs": 55.800000000046566,
           "archiveBytes": 33556040
         },
         {
-          "compressionMs": 11225.800000000047,
-          "decompressionMs": 48.199999999953434,
+          "compressionMs": 12854.599999999977,
+          "decompressionMs": 55.20000000006985,
           "archiveBytes": 33556040
         }
       ]
