@@ -3,7 +3,7 @@ set -euo pipefail
 
 brotli_opt="${BROTLI_OPT:-${1:--O3}}"
 zstd_opt="${ZSTD_OPT:-${1:--O3}}"
-xz_opt="${XZ_OPT:-${1:--O3}}"
+xz_opt="${XZ_COPT:-${1:--O3}}"
 tag="${BUILD_TAG:-selected}"
 
 mkdir -p wasm
