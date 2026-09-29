@@ -3,7 +3,7 @@ name: XZ benchmark
 on:
   workflow_dispatch:
   push:
-    branches: [main]
+    branches: [main, issue-5-browser-native-compression]
 
 jobs:
   benchmark:
@@ -22,6 +22,15 @@ jobs:
         run: npm test
       - name: Benchmark
         run: npm run benchmark
+      - name: Browser-native comparison
+        run: npm run benchmark:browser
+      - name: Generate browser report
+        run: npm run report:browser
+      - name: Upload browser comparison
+        uses: actions/upload-artifact@v4
+        with:
+          name: browser-compression-benchmark-results
+          path: browser-benchmark-results/
       - name: Upload results
         uses: actions/upload-artifact@v4
         with:
