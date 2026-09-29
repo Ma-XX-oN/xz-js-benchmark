@@ -1,6 +1,6 @@
 {
   "name": "xz-js-benchmark",
-  "version": "0.1.0-issue.16.6",
+  "version": "0.1.0",
   "private": true,
   "type": "module",
   "scripts": {
