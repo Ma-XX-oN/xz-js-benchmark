@@ -36,17 +36,16 @@ function renderReport(data) {
     `| XZ/WASM | ${data.metadata.xzWasmBytes.toLocaleString('en-US')} | ${(data.metadata.xzWasmBytes / 1024).toFixed(1)} |`, '',
     '## Browser-native CompressionStream support', '',
     'The WASM implementations benchmarked in this report are supported and measured independently of this table.  The entries below refer **only** to the browser-native `CompressionStream` / `DecompressionStream` API.', '',
-    'Native API support is runtime-detected in the browser named above.  An unsupported entry means that this browser rejects the corresponding `CompressionStream` / `DecompressionStream` format; it does not mean the compression algorithm is absent from the browser\'s HTTP stack.', '',
+    'Native API availability is runtime-detected in the browser named above.  Brotli and Zstd are benchmarked through their WASM implementations regardless of whether this browser exposes those formats through `CompressionStream` / `DecompressionStream`.', '',
     'As of September 2026, Chromium/Chrome does **not** expose Brotli through `CompressionStream`, despite supporting Brotli HTTP content encoding.  Chromium issue 463397980 tracks that still-unshipped API support.  Firefox 147+ and Safari 18.4+ do expose native Brotli through `CompressionStream`.  Therefore this Chrome run cannot produce a legitimate browser-native Brotli measurement.', ''
   ];
-  for (const [codec, available] of Object.entries(data.codecSupport)) lines.push(`- Browser-native ${available ? 'supported' : 'unsupported'}: \`${codec}\``);
+  for (const [codec, available] of Object.entries(data.codecSupport)) lines.push(`- \`${codec}\`: browser-native CompressionStream ${available ? 'available' : 'not available in this Chrome run'}`);
   lines.push('', '- WASM benchmark: **Brotli/WASM supported and measured**', '- WASM benchmark: **Zstd/WASM supported and measured**', '- WASM benchmark: **XZ/WASM supported and measured**');
   lines.push('', '## Graphs', '', '### Compression ability', '', '![Compressed size](compression-ratio.svg)', '', '### Compression speed', '', '![Compression speed](compression-speed.svg)', '', '### Decompression speed', '', '![Decompression speed](decompression-speed.svg)', '', '## Measurements', '');
   for (const corpus of data.corpora) {
     lines.push(`### ${corpus.label}`, '', '| Codec | Compressed bytes | Ratio | Compress ms | Compress MiB/s | Decompress ms | Decompress MiB/s |', '|---|---:|---:|---:|---:|---:|---:|');
-    for (const row of data.results.filter(r => r.corpus === corpus.kind)) {
-      if (!row.supported) lines.push(`| ${row.codec} | unsupported | unsupported | unsupported | unsupported | unsupported | unsupported |`);
-      else lines.push(`| ${row.codec} | ${row.archiveBytes.toLocaleString('en-US')} | ${(row.ratio * 100).toFixed(4)}% | ${row.compressionMs.toFixed(1)} | ${row.compressionMiBPerSec.toFixed(2)} | ${row.decompressionMs.toFixed(1)} | ${row.decompressionMiBPerSec.toFixed(2)} |`);
+    for (const row of data.results.filter(r => r.corpus === corpus.kind && r.supported)) {
+      lines.push(`| ${row.codec} | ${row.archiveBytes.toLocaleString('en-US')} | ${(row.ratio * 100).toFixed(4)}% | ${row.compressionMs.toFixed(1)} | ${row.compressionMiBPerSec.toFixed(2)} | ${row.decompressionMs.toFixed(1)} | ${row.decompressionMiBPerSec.toFixed(2)} |`);
     }
     lines.push('');
   }
@@ -58,7 +57,7 @@ function renderReport(data) {
     const fastestDecompression = [...rows].sort((a, b) => b.decompressionMiBPerSec - a.decompressionMiBPerSec)[0];
     lines.push(`- **${corpus.label}:** smallest output: **${smallest.codec}** (${(smallest.ratio * 100).toFixed(4)}%); fastest compression: **${fastestCompression.codec}** (${fastestCompression.compressionMiBPerSec.toFixed(2)} MiB/s); fastest decompression: **${fastestDecompression.codec}** (${fastestDecompression.decompressionMiBPerSec.toFixed(2)} MiB/s).`);
   }
-  lines.push('', 'The graphs and conclusions above are generated directly from results.json; unsupported codecs remain explicitly visible in the support section and measurement tables.', '');
+  lines.push('', 'The graphs and conclusions above are generated directly from results.json. Browser-native API availability is reported separately from the WASM benchmark measurements.', '');
   return lines.join('\n');
 }
 
