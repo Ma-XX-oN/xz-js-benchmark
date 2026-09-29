@@ -67,7 +67,7 @@ jobs:
       - name: Build XZ WASM
         run: |
           cd .xz-src
-          ./autogen.sh
+          ./autogen.sh --no-po4a
           cd ..
           mkdir .xz-build
           cd .xz-build
