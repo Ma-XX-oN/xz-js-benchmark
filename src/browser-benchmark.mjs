@@ -47,7 +47,9 @@ fs.copyFileSync(
 await build({
   entryPoints: [path.join(here, 'browser-harness.mjs')],
   bundle: true,
-  format: 'esm',
+  format: 'iife',
+  banner: { js: `const import_meta = { url: document.currentScript?.src || location.href };` },
+  define: { 'import.meta': 'import_meta' },
   platform: 'browser',
   target: 'chrome120',
   outfile: path.join(work, 'harness.js')
