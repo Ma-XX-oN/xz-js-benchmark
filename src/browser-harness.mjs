@@ -2,7 +2,8 @@ import { createUnxz, createXz, initModule } from 'node-liblzma';
 
 const NATIVE_FORMATS = ['gzip', 'deflate', 'deflate-raw', 'brotli', 'zstd'];
 const BROTLI_QUALITIES = [1, 4, 6, 9, 11];
-const XZ_PRESETS = [9, 6, 4, 1];
+const XZ_PRESETS = [1, 4, 6];
+const XZ_UNSUPPORTED_PRESETS = [9];
 
 window.runCompressionBenchmark = async ({ corpora, repetitions }) => {
   const support = Object.fromEntries(NATIVE_FORMATS.map(format => [format, supportsNative(format)]));
@@ -33,13 +34,16 @@ window.runCompressionBenchmark = async ({ corpora, repetitions }) => {
         decompress: data => nativeTransform(data, createUnxz())
       }));
     }
+    for (const preset of XZ_UNSUPPORTED_PRESETS) {
+      results.push({ corpus: corpus.kind, codec: `xz-wasm-p${preset}`, supported: false, reason: 'node-liblzma browser/WASM supports presets 0-6 only; presets 7-9 exceed its 256 MiB WASM memory limit' });
+    }
   }
   return {
     userAgent: navigator.userAgent,
     hardwareConcurrency: navigator.hardwareConcurrency,
     support,
     repetitions,
-    xzPresets: XZ_PRESETS,
+    xzPresets: [...XZ_PRESETS, ...XZ_UNSUPPORTED_PRESETS],
     brotliQualities: BROTLI_QUALITIES,
     brotliWasmBytes: brotli.wasmBytes,
     results
