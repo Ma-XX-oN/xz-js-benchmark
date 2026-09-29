@@ -23,8 +23,12 @@ function renderReport(data) {
     `- Logical CPUs: ${data.metadata.logicalCpus}`,
     `- Corpus size: ${(data.metadata.corpusBytes / 1024 / 1024).toFixed(2)} MiB each`,
     `- Repetitions: ${data.metadata.repetitions} measured after ${data.metadata.warmupRuns} warm-up`,
-    `- XZ: node-liblzma 5.1.3 WebAssembly, preset ${data.metadata.xzPreset}`,
+    `- XZ: node-liblzma 5.1.3 WebAssembly, presets ${data.metadata.xzPresets.join(', ')}, binary ${(data.metadata.xzWasmBytes / 1024).toFixed(1)} KiB`,
     `- Brotli: Google Brotli WebAssembly, qualities ${data.metadata.brotliQualities.join(', ')}, binary ${(data.metadata.brotliWasmBytes / 1024).toFixed(1)} KiB`, '',
+    '### WebAssembly payload size', '',
+    '| Implementation | WASM bytes | KiB |', '|---|---:|---:|',
+    `| Brotli/WASM | ${data.metadata.brotliWasmBytes.toLocaleString('en-US')} | ${(data.metadata.brotliWasmBytes / 1024).toFixed(1)} |`,
+    `| XZ/WASM | ${data.metadata.xzWasmBytes.toLocaleString('en-US')} | ${(data.metadata.xzWasmBytes / 1024).toFixed(1)} |`, ''
     '## Browser codec support', '',
     'Support is runtime-detected in the browser named above.  An unsupported entry means that this browser rejects the corresponding `CompressionStream` / `DecompressionStream` format; it does not mean the compression algorithm is absent from the browser\'s HTTP stack.', '',
     'As of September 2026, Chromium/Chrome does **not** expose Brotli through `CompressionStream`, despite supporting Brotli HTTP content encoding.  Chromium issue 463397980 tracks that still-unshipped API support.  Firefox 147+ and Safari 18.4+ do expose native Brotli through `CompressionStream`.  Therefore this Chrome run cannot produce a legitimate browser-native Brotli measurement.', ''
