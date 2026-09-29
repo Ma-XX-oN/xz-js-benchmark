@@ -3,7 +3,7 @@ name: XZ benchmark
 on:
   workflow_dispatch:
   push:
-    branches: [main, issue-5-browser-native-compression]
+    branches: [main]
 
 jobs:
   benchmark:
