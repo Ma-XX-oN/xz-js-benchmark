@@ -2,8 +2,9 @@ import { createUnxz, createXz, initModule } from 'node-liblzma';
 
 const NATIVE_FORMATS = ['gzip', 'deflate', 'deflate-raw', 'brotli', 'zstd'];
 const BROTLI_QUALITIES = [1, 4, 6, 9, 11];
+const XZ_PRESETS = [1, 4, 6, 9];
 
-window.runCompressionBenchmark = async ({ corpora, repetitions, xzPreset }) => {
+window.runCompressionBenchmark = async ({ corpora, repetitions }) => {
   const support = Object.fromEntries(NATIVE_FORMATS.map(format => [format, supportsNative(format)]));
   await initModule();
   const brotli = await createBrotliWasm();
@@ -26,17 +27,19 @@ window.runCompressionBenchmark = async ({ corpora, repetitions, xzPreset }) => {
         decompress: data => brotli.decompress(data, input.byteLength)
       }));
     }
-    results.push(await measureCodec(corpus.kind, 'xz-wasm', input, repetitions, {
-      compress: data => nativeTransform(data, createXz({ preset: xzPreset })),
-      decompress: data => nativeTransform(data, createUnxz())
-    }));
+    for (const preset of XZ_PRESETS) {
+      results.push(await measureCodec(corpus.kind, `xz-wasm-p${preset}`, input, repetitions, {
+        compress: data => nativeTransform(data, createXz({ preset })),
+        decompress: data => nativeTransform(data, createUnxz())
+      }));
+    }
   }
   return {
     userAgent: navigator.userAgent,
     hardwareConcurrency: navigator.hardwareConcurrency,
     support,
     repetitions,
-    xzPreset,
+    xzPresets: XZ_PRESETS,
     brotliQualities: BROTLI_QUALITIES,
     brotliWasmBytes: brotli.wasmBytes,
     results
