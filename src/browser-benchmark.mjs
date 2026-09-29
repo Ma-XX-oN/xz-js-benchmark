@@ -39,6 +39,8 @@ const corpora = definitions.map(([kind, label, create]) => {
   return { kind, label, file, sha256: info.sha256, bytes: info.bytes, url: `/corpora/${kind}.bin` };
 });
 
+fs.copyFileSync(path.join(root, 'wasm', 'brotli.wasm'), path.join(work, 'brotli.wasm'));
+
 fs.copyFileSync(
   path.join(root, 'node_modules', 'node-liblzma', 'lib', 'wasm', 'liblzma.wasm'),
   path.join(work, 'liblzma.wasm')
@@ -58,6 +60,7 @@ const server = http.createServer((request, response) => {
   if (pathname === '/') return send(response, path.join(work, 'index.html'), 'text/html');
   if (pathname === '/harness.js') return send(response, path.join(work, 'harness.js'), 'text/javascript');
   if (pathname === '/liblzma.wasm') return send(response, path.join(work, 'liblzma.wasm'), 'application/wasm');
+  if (pathname === '/brotli.wasm') return send(response, path.join(work, 'brotli.wasm'), 'application/wasm');
   const corpus = corpora.find(item => item.url === pathname);
   if (corpus) return send(response, corpus.file, 'application/octet-stream');
   response.writeHead(404).end();
@@ -95,6 +98,8 @@ try {
       repetitions,
       warmupRuns: 1,
       xzPreset,
+      brotliQualities: browserResult.brotliQualities,
+      brotliWasmBytes: browserResult.brotliWasmBytes,
       browser: browserResult.userAgent,
       browserHardwareConcurrency: browserResult.hardwareConcurrency
     },
