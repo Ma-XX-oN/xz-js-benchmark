@@ -1,5 +1,3 @@
-import { compress as xzCompress, decompress as xzDecompress, initWasm as initXzWasm } from 'lzma-wasm';
-
 const NATIVE_FORMATS = ['gzip', 'deflate', 'deflate-raw', 'brotli', 'zstd'];
 const BROTLI_QUALITIES = [1, 4, 6, 9, 11];
 const XZ_PRESETS = [1, 4, 6, 9];
@@ -7,7 +5,7 @@ const ZSTD_LEVELS = [1, 4, 6, 9, 11];
 
 window.runCompressionBenchmark = async ({ corpora, repetitions }) => {
   const support = Object.fromEntries(NATIVE_FORMATS.map(format => [format, supportsNative(format)]));
-  await initXzWasm();
+  const xz = await createXzWasm();
   const brotli = await createBrotliWasm();
   const zstd = await createZstdWasm();
   const results = [];
@@ -37,8 +35,8 @@ window.runCompressionBenchmark = async ({ corpora, repetitions }) => {
     }
     for (const preset of XZ_PRESETS) {
       results.push(await measureCodec(corpus.kind, `xz-wasm-p${preset}`, input, repetitions, {
-        compress: data => Promise.resolve(xzCompress(data, { format: 'xz', level: preset })),
-        decompress: data => Promise.resolve(xzDecompress(data))
+        compress: data => xz.compress(data, preset),
+        decompress: data => xz.decompress(data, input.byteLength)
       }));
     }
   }
@@ -48,6 +46,7 @@ window.runCompressionBenchmark = async ({ corpora, repetitions }) => {
     support,
     repetitions,
     xzPresets: XZ_PRESETS,
+    xzWasmBytes: xz.wasmBytes,
     brotliQualities: BROTLI_QUALITIES,
     brotliWasmBytes: brotli.wasmBytes,
     zstdLevels: ZSTD_LEVELS,
@@ -130,6 +129,41 @@ function median(values) {
 
 function throughput(bytes, ms) {
   return bytes / 1024 / 1024 / (ms / 1000);
+}
+
+async function createXzWasm() {
+  const bytes = new Uint8Array(await (await fetch('/xz.wasm')).arrayBuffer());
+  const { instance } = await WebAssembly.instantiate(bytes, { env: { emscripten_notify_memory_growth: () => {} }, wasi_snapshot_preview1: { proc_exit: code => { throw new Error(`XZ WASM proc_exit ${code}`); } } });
+  const e = instance.exports;
+  const u32 = ptr => new Uint32Array(e.memory.buffer, ptr, 1);
+  return {
+    wasmBytes: bytes.byteLength,
+    compress(input, preset) {
+      const inPtr = e.xz_malloc(input.byteLength);
+      const cap = Number(e.xz_bound(input.byteLength));
+      const outPtr = e.xz_malloc(cap);
+      const sizePtr = e.xz_malloc(4);
+      try {
+        new Uint8Array(e.memory.buffer, inPtr, input.byteLength).set(input);
+        u32(sizePtr)[0] = cap;
+        const ret = e.xz_compress(preset, inPtr, input.byteLength, outPtr, sizePtr);
+        if (ret !== 0) throw new Error(`XZ compression failed: lzma_ret ${ret}`);
+        return new Uint8Array(e.memory.buffer, outPtr, u32(sizePtr)[0]).slice();
+      } finally { e.xz_free(sizePtr); e.xz_free(outPtr); e.xz_free(inPtr); }
+    },
+    decompress(input, expectedBytes) {
+      const inPtr = e.xz_malloc(input.byteLength);
+      const outPtr = e.xz_malloc(expectedBytes);
+      const sizePtr = e.xz_malloc(4);
+      try {
+        new Uint8Array(e.memory.buffer, inPtr, input.byteLength).set(input);
+        u32(sizePtr)[0] = expectedBytes;
+        const ret = e.xz_decompress(inPtr, input.byteLength, outPtr, sizePtr);
+        if (ret !== 0) throw new Error(`XZ decompression failed: lzma_ret ${ret}`);
+        return new Uint8Array(e.memory.buffer, outPtr, u32(sizePtr)[0]).slice();
+      } finally { e.xz_free(sizePtr); e.xz_free(outPtr); e.xz_free(inPtr); }
+    }
+  };
 }
 
 async function createBrotliWasm() {
