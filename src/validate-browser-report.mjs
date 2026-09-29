@@ -22,8 +22,15 @@ for (const file of ['compression-ratio.svg', 'compression-speed.svg', 'decompres
   assert(svg.includes('<rect'), `${file}: missing square markers`);
   assert(svg.includes(' Z"'), `${file}: missing triangle markers`);
   assert(!svg.includes('panel'), `${file}: unexpected panel marker`);
+  assert(svg.includes('text-anchor="end"'), `${file}: missing numeric Y-axis ticks`);
+  const expectedUnit = file === 'compression-ratio.svg' ? 'Percent of input (%)' : 'Throughput (MiB/s)';
+  assert(svg.includes(expectedUnit), `${file}: missing Y-axis unit ${expectedUnit}`);
 }
 const report = fs.readFileSync(path.join(dir, 'REPORT.md'), 'utf8');
 for (const name of ['Brotli', 'Zstd', 'XZ']) assert(report.includes(name), `report missing ${name}`);
 assert(report.includes('optimization preflight'));
+assert(report.includes('Browser-native CompressionStream support'));
+assert(report.includes('Brotli/WASM supported and measured'));
+assert(report.includes('Zstd/WASM supported and measured'));
+assert(report.includes('XZ/WASM supported and measured'));
 console.log('Generated benchmark report validation passed.');
