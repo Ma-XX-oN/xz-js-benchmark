@@ -39,8 +39,7 @@ const corpora = definitions.map(([kind, label, create]) => {
 
 fs.copyFileSync(path.join(root, 'wasm', 'brotli.wasm'), path.join(work, 'brotli.wasm'));
 fs.copyFileSync(path.join(root, 'wasm', 'zstd.wasm'), path.join(work, 'zstd.wasm'));
-
-const xzWasmBytes = embeddedWasmBytes(path.join(root, 'node_modules', 'lzma-wasm'));
+fs.copyFileSync(path.join(root, 'wasm', 'xz.wasm'), path.join(work, 'xz.wasm'));
 
 await build({
   entryPoints: [path.join(here, 'browser-harness.mjs')],
@@ -57,6 +56,7 @@ const server = http.createServer((request, response) => {
   if (pathname === '/harness.js') return send(response, path.join(work, 'harness.js'), 'text/javascript');
   if (pathname === '/brotli.wasm') return send(response, path.join(work, 'brotli.wasm'), 'application/wasm');
   if (pathname === '/zstd.wasm') return send(response, path.join(work, 'zstd.wasm'), 'application/wasm');
+  if (pathname === '/xz.wasm') return send(response, path.join(work, 'xz.wasm'), 'application/wasm');
   const corpus = corpora.find(item => item.url === pathname);
   if (corpus) return send(response, corpus.file, 'application/octet-stream');
   response.writeHead(404).end();
@@ -95,7 +95,7 @@ try {
       repetitions,
       warmupRuns: 1,
       xzPresets: browserResult.xzPresets,
-      xzWasmBytes,
+      xzWasmBytes: browserResult.xzWasmBytes,
       brotliQualities: browserResult.brotliQualities,
       brotliWasmBytes: browserResult.brotliWasmBytes,
       zstdLevels: browserResult.zstdLevels,
@@ -123,16 +123,3 @@ function send(response, file, contentType) {
   fs.createReadStream(file).pipe(response);
 }
 
-function embeddedWasmBytes(packageDir) {
-  for (const entry of fs.readdirSync(packageDir, { recursive: true })) {
-    const file = path.join(packageDir, entry);
-    if (!fs.statSync(file).isFile() || !/\.(?:js|mjs|cjs)$/.test(file)) continue;
-    const source = fs.readFileSync(file, 'utf8');
-    const matches = source.match(/[A-Za-z0-9+/]{100000,}={0,2}/g) || [];
-    for (const encoded of matches.sort((a, b) => b.length - a.length)) {
-      const bytes = Buffer.from(encoded, 'base64');
-      if (bytes.length > 8 && bytes[0] === 0x00 && bytes[1] === 0x61 && bytes[2] === 0x73 && bytes[3] === 0x6d) return bytes.byteLength;
-    }
-  }
-  throw new Error('Unable to locate lzma-wasm embedded WASM payload');
-}
