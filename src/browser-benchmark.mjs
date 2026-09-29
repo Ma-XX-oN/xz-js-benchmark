@@ -39,9 +39,10 @@ const corpora = definitions.map(([kind, label, create]) => {
 
 fs.copyFileSync(path.join(root, 'wasm', 'brotli.wasm'), path.join(work, 'brotli.wasm'));
 
-const xzWasmSource = path.join(root, 'node_modules', 'node-liblzma', 'lib', 'wasm', 'liblzma.wasm');
-const xzWasmBytes = fs.statSync(xzWasmSource).size;
-fs.copyFileSync(xzWasmSource, path.join(work, 'liblzma.wasm'));
+const xzWasmBase64Source = fs.readFileSync(path.join(root, 'node_modules', 'lzma-wasm', 'lib', 'wasm-b64.js'), 'utf8');
+const xzWasmBase64 = xzWasmBase64Source.match(/WASM_BASE64\s*=\s*[`'"]([^`'"]+)/)?.[1];
+assert(xzWasmBase64, 'Unable to locate lzma-wasm embedded WASM payload');
+const xzWasmBytes = Buffer.from(xzWasmBase64, 'base64').byteLength;
 
 await build({
   entryPoints: [path.join(here, 'browser-harness.mjs')],
@@ -56,7 +57,6 @@ const server = http.createServer((request, response) => {
   const pathname = new URL(request.url, 'http://localhost').pathname;
   if (pathname === '/') return send(response, path.join(work, 'index.html'), 'text/html');
   if (pathname === '/harness.js') return send(response, path.join(work, 'harness.js'), 'text/javascript');
-  if (pathname === '/liblzma.wasm') return send(response, path.join(work, 'liblzma.wasm'), 'application/wasm');
   if (pathname === '/brotli.wasm') return send(response, path.join(work, 'brotli.wasm'), 'application/wasm');
   const corpus = corpora.find(item => item.url === pathname);
   if (corpus) return send(response, corpus.file, 'application/octet-stream');
