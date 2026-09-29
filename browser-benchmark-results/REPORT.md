@@ -5,7 +5,7 @@ This report compares codecs in the same headless Chrome process on the same dete
 ## Environment
 
 - Browser: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.0.0 Safari/537.36
-- CPU: Intel(R) Xeon(R) 6973P-C
+- CPU: AMD EPYC 7763 64-Core Processor
 - Logical CPUs: 4
 - Corpus size: 32.00 MiB each
 - Repetitions: 3 measured after 1 warm-up
@@ -29,15 +29,15 @@ Compiler optimization selection was established by the checked-in [optimization 
 
 The WASM implementations benchmarked in this report are supported and measured independently of this table.  The entries below refer **only** to the browser-native `CompressionStream` / `DecompressionStream` API.
 
-Native API support is runtime-detected in the browser named above.  An unsupported entry means that this browser rejects the corresponding `CompressionStream` / `DecompressionStream` format; it does not mean the compression algorithm is absent from the browser's HTTP stack.
+Native API availability is runtime-detected in the browser named above.  Brotli and Zstd are benchmarked through their WASM implementations regardless of whether this browser exposes those formats through `CompressionStream` / `DecompressionStream`.
 
 As of September 2026, Chromium/Chrome does **not** expose Brotli through `CompressionStream`, despite supporting Brotli HTTP content encoding.  Chromium issue 463397980 tracks that still-unshipped API support.  Firefox 147+ and Safari 18.4+ do expose native Brotli through `CompressionStream`.  Therefore this Chrome run cannot produce a legitimate browser-native Brotli measurement.
 
-- Browser-native supported: `gzip`
-- Browser-native supported: `deflate`
-- Browser-native supported: `deflate-raw`
-- Browser-native unsupported: `brotli`
-- Browser-native unsupported: `zstd`
+- `gzip`: browser-native CompressionStream available
+- `deflate`: browser-native CompressionStream available
+- `deflate-raw`: browser-native CompressionStream available
+- `brotli`: browser-native CompressionStream not available in this Chrome run
+- `zstd`: browser-native CompressionStream not available in this Chrome run
 
 - WASM benchmark: **Brotli/WASM supported and measured**
 - WASM benchmark: **Zstd/WASM supported and measured**
@@ -63,78 +63,72 @@ As of September 2026, Chromium/Chrome does **not** expose Brotli through `Compre
 
 | Codec | Compressed bytes | Ratio | Compress ms | Compress MiB/s | Decompress ms | Decompress MiB/s |
 |---|---:|---:|---:|---:|---:|---:|
-| gzip | 365,083 | 1.0880% | 122.1 | 262.08 | 42.0 | 761.90 |
-| deflate | 365,071 | 1.0880% | 121.3 | 263.81 | 41.6 | 769.23 |
-| deflate-raw | 365,065 | 1.0880% | 121.0 | 264.46 | 41.8 | 765.55 |
-| brotli | unsupported | unsupported | unsupported | unsupported | unsupported | unsupported |
-| zstd | unsupported | unsupported | unsupported | unsupported | unsupported | unsupported |
-| brotli-wasm-q1 | 172,686 | 0.5146% | 36.0 | 888.89 | 20.0 | 1600.00 |
-| brotli-wasm-q4 | 122,405 | 0.3648% | 85.1 | 376.03 | 16.1 | 1987.58 |
-| brotli-wasm-q6 | 86,366 | 0.2574% | 152.2 | 210.25 | 15.9 | 2012.58 |
-| brotli-wasm-q9 | 85,749 | 0.2556% | 238.6 | 134.12 | 15.5 | 2064.52 |
-| brotli-wasm-q11 | 88,117 | 0.2626% | 13823.2 | 2.31 | 16.2 | 1975.31 |
-| zstd-wasm-l1 | 152,699 | 0.4551% | 28.6 | 1118.88 | 13.1 | 2442.75 |
-| zstd-wasm-l4 | 150,874 | 0.4496% | 32.0 | 1000.00 | 13.6 | 2352.94 |
-| zstd-wasm-l6 | 118,512 | 0.3532% | 69.6 | 459.77 | 11.7 | 2735.04 |
-| zstd-wasm-l9 | 129,967 | 0.3873% | 93.4 | 342.61 | 13.3 | 2406.02 |
-| zstd-wasm-l11 | 131,863 | 0.3930% | 110.8 | 288.81 | 13.8 | 2318.84 |
-| xz-wasm-p1 | 148,816 | 0.4435% | 209.1 | 153.04 | 49.7 | 643.86 |
-| xz-wasm-p4 | 134,240 | 0.4001% | 672.5 | 47.58 | 49.6 | 645.16 |
-| xz-wasm-p6 | 92,180 | 0.2747% | 2158.2 | 14.83 | 49.8 | 642.57 |
-| xz-wasm-p9 | 84,516 | 0.2519% | 2200.4 | 14.54 | 51.2 | 625.00 |
+| gzip | 365,083 | 1.0880% | 200.6 | 159.52 | 48.8 | 655.74 |
+| deflate | 365,071 | 1.0880% | 199.7 | 160.24 | 47.5 | 673.68 |
+| deflate-raw | 365,065 | 1.0880% | 196.1 | 163.18 | 47.2 | 677.97 |
+| brotli-wasm-q1 | 172,686 | 0.5146% | 23.3 | 1373.39 | 15.0 | 2133.33 |
+| brotli-wasm-q4 | 122,405 | 0.3648% | 149.3 | 214.33 | 17.6 | 1818.18 |
+| brotli-wasm-q6 | 86,366 | 0.2574% | 268.9 | 119.00 | 12.2 | 2622.95 |
+| brotli-wasm-q9 | 85,749 | 0.2556% | 367.6 | 87.05 | 12.3 | 2601.63 |
+| brotli-wasm-q11 | 88,117 | 0.2626% | 20144.2 | 1.59 | 12.1 | 2644.63 |
+| zstd-wasm-l1 | 152,699 | 0.4551% | 27.7 | 1155.23 | 9.4 | 3404.26 |
+| zstd-wasm-l4 | 150,874 | 0.4496% | 32.1 | 996.88 | 15.9 | 2012.58 |
+| zstd-wasm-l6 | 118,512 | 0.3532% | 93.9 | 340.79 | 8.5 | 3764.71 |
+| zstd-wasm-l9 | 129,967 | 0.3873% | 112.8 | 283.69 | 11.0 | 2909.09 |
+| zstd-wasm-l11 | 131,863 | 0.3930% | 139.9 | 228.73 | 7.8 | 4102.56 |
+| xz-wasm-p1 | 148,816 | 0.4435% | 376.5 | 84.99 | 53.4 | 599.25 |
+| xz-wasm-p4 | 134,240 | 0.4001% | 985.9 | 32.46 | 52.6 | 608.37 |
+| xz-wasm-p6 | 92,180 | 0.2747% | 3010.3 | 10.63 | 49.9 | 641.28 |
+| xz-wasm-p9 | 84,516 | 0.2519% | 2987.4 | 10.71 | 52.9 | 604.91 |
 
 ### Moderately compressible 50/50 mixed data
 
 | Codec | Compressed bytes | Ratio | Compress ms | Compress MiB/s | Decompress ms | Decompress MiB/s |
 |---|---:|---:|---:|---:|---:|---:|
-| gzip | 16,928,281 | 50.4502% | 348.3 | 91.87 | 76.1 | 420.50 |
-| deflate | 16,928,269 | 50.4502% | 346.4 | 92.38 | 77.6 | 412.37 |
-| deflate-raw | 16,928,263 | 50.4502% | 343.9 | 93.05 | 75.8 | 422.16 |
-| brotli | unsupported | unsupported | unsupported | unsupported | unsupported | unsupported |
-| zstd | unsupported | unsupported | unsupported | unsupported | unsupported | unsupported |
-| brotli-wasm-q1 | 16,787,648 | 50.0311% | 76.6 | 417.75 | 59.9 | 534.22 |
-| brotli-wasm-q4 | 16,779,081 | 50.0056% | 193.6 | 165.29 | 59.0 | 542.37 |
-| brotli-wasm-q6 | 16,779,197 | 50.0059% | 278.7 | 114.82 | 59.1 | 541.46 |
-| brotli-wasm-q9 | 16,780,278 | 50.0091% | 1716.1 | 18.65 | 58.9 | 543.29 |
-| brotli-wasm-q11 | 16,779,573 | 50.0070% | 41629.2 | 0.77 | 59.2 | 540.54 |
-| zstd-wasm-l1 | 16,818,602 | 50.1233% | 35.4 | 903.95 | 16.3 | 1963.19 |
-| zstd-wasm-l4 | 16,786,371 | 50.0273% | 67.9 | 471.28 | 13.8 | 2318.84 |
-| zstd-wasm-l6 | 16,781,166 | 50.0118% | 59.5 | 537.82 | 14.8 | 2162.16 |
-| zstd-wasm-l9 | 16,800,733 | 50.0701% | 78.1 | 409.73 | 13.3 | 2406.02 |
-| zstd-wasm-l11 | 16,800,733 | 50.0701% | 88.0 | 363.64 | 13.5 | 2370.37 |
-| xz-wasm-p1 | 17,018,112 | 50.7179% | 2477.5 | 12.92 | 774.4 | 41.32 |
-| xz-wasm-p4 | 16,997,244 | 50.6557% | 3157.9 | 10.13 | 784.1 | 40.81 |
-| xz-wasm-p6 | 16,997,056 | 50.6552% | 5578.7 | 5.74 | 793.5 | 40.33 |
-| xz-wasm-p9 | 16,997,120 | 50.6554% | 5648.1 | 5.67 | 825.1 | 38.78 |
+| gzip | 16,928,281 | 50.4502% | 462.4 | 69.20 | 87.5 | 365.71 |
+| deflate | 16,928,269 | 50.4502% | 470.5 | 68.01 | 88.0 | 363.64 |
+| deflate-raw | 16,928,263 | 50.4502% | 457.4 | 69.96 | 85.3 | 375.15 |
+| brotli-wasm-q1 | 16,787,648 | 50.0311% | 85.0 | 376.47 | 69.8 | 458.45 |
+| brotli-wasm-q4 | 16,779,081 | 50.0056% | 326.2 | 98.10 | 63.5 | 503.94 |
+| brotli-wasm-q6 | 16,779,197 | 50.0059% | 489.5 | 65.37 | 62.2 | 514.47 |
+| brotli-wasm-q9 | 16,780,278 | 50.0091% | 2643.8 | 12.10 | 64.4 | 496.89 |
+| brotli-wasm-q11 | 16,779,573 | 50.0070% | 53414.9 | 0.60 | 63.3 | 505.53 |
+| zstd-wasm-l1 | 16,818,602 | 50.1233% | 34.3 | 932.94 | 12.1 | 2644.63 |
+| zstd-wasm-l4 | 16,786,371 | 50.0273% | 70.2 | 455.84 | 10.0 | 3200.00 |
+| zstd-wasm-l6 | 16,781,166 | 50.0118% | 65.0 | 492.31 | 10.6 | 3018.87 |
+| zstd-wasm-l9 | 16,800,733 | 50.0701% | 94.0 | 340.43 | 11.3 | 2831.86 |
+| zstd-wasm-l11 | 16,800,733 | 50.0701% | 104.7 | 305.64 | 11.5 | 2782.61 |
+| xz-wasm-p1 | 17,018,112 | 50.7179% | 2936.3 | 10.90 | 892.6 | 35.85 |
+| xz-wasm-p4 | 16,997,244 | 50.6557% | 5467.8 | 5.85 | 893.7 | 35.81 |
+| xz-wasm-p6 | 16,997,056 | 50.6552% | 6018.3 | 5.32 | 893.1 | 35.83 |
+| xz-wasm-p9 | 16,997,120 | 50.6554% | 5579.3 | 5.74 | 890.8 | 35.92 |
 
 ### Incompressible high-entropy data
 
 | Codec | Compressed bytes | Ratio | Compress ms | Compress MiB/s | Decompress ms | Decompress MiB/s |
 |---|---:|---:|---:|---:|---:|---:|
-| gzip | 33,564,695 | 100.0306% | 606.0 | 52.81 | 87.8 | 364.46 |
-| deflate | 33,564,683 | 100.0306% | 598.3 | 53.48 | 85.3 | 375.15 |
-| deflate-raw | 33,564,677 | 100.0305% | 610.0 | 52.46 | 85.6 | 373.83 |
-| brotli | unsupported | unsupported | unsupported | unsupported | unsupported | unsupported |
-| zstd | unsupported | unsupported | unsupported | unsupported | unsupported | unsupported |
-| brotli-wasm-q1 | 33,554,465 | 100.0001% | 49.3 | 649.09 | 18.2 | 1758.24 |
-| brotli-wasm-q4 | 33,554,449 | 100.0001% | 152.0 | 210.53 | 20.5 | 1560.98 |
-| brotli-wasm-q6 | 33,554,512 | 100.0002% | 387.2 | 82.64 | 20.4 | 1568.63 |
-| brotli-wasm-q9 | 33,554,520 | 100.0003% | 535.3 | 59.78 | 21.2 | 1509.43 |
-| brotli-wasm-q11 | 33,554,536 | 100.0003% | 23683.3 | 1.35 | 20.6 | 1553.40 |
-| zstd-wasm-l1 | 33,555,210 | 100.0023% | 44.1 | 725.62 | 17.1 | 1871.35 |
-| zstd-wasm-l4 | 33,555,210 | 100.0023% | 53.8 | 594.80 | 18.1 | 1767.96 |
-| zstd-wasm-l6 | 33,555,210 | 100.0023% | 59.2 | 540.54 | 16.9 | 1893.49 |
-| zstd-wasm-l9 | 33,555,210 | 100.0023% | 71.1 | 450.07 | 18.1 | 1767.96 |
-| zstd-wasm-l11 | 33,555,210 | 100.0023% | 83.0 | 385.54 | 17.5 | 1828.57 |
-| xz-wasm-p1 | 33,556,040 | 100.0048% | 6171.8 | 5.18 | 50.7 | 631.16 |
-| xz-wasm-p4 | 33,556,040 | 100.0048% | 8880.5 | 3.60 | 50.1 | 638.72 |
-| xz-wasm-p6 | 33,556,040 | 100.0048% | 11599.2 | 2.76 | 50.0 | 640.00 |
-| xz-wasm-p9 | 33,556,040 | 100.0048% | 11989.2 | 2.67 | 51.5 | 621.36 |
+| gzip | 33,564,695 | 100.0306% | 765.7 | 41.79 | 89.5 | 357.54 |
+| deflate | 33,564,683 | 100.0306% | 764.0 | 41.88 | 89.0 | 359.55 |
+| deflate-raw | 33,564,677 | 100.0305% | 759.9 | 42.11 | 87.7 | 364.88 |
+| brotli-wasm-q1 | 33,554,465 | 100.0001% | 37.4 | 855.61 | 14.1 | 2269.50 |
+| brotli-wasm-q4 | 33,554,449 | 100.0001% | 259.6 | 123.27 | 14.8 | 2162.16 |
+| brotli-wasm-q6 | 33,554,512 | 100.0002% | 534.4 | 59.88 | 14.3 | 2237.76 |
+| brotli-wasm-q9 | 33,554,520 | 100.0003% | 957.2 | 33.43 | 13.9 | 2302.16 |
+| brotli-wasm-q11 | 33,554,536 | 100.0003% | 28031.8 | 1.14 | 13.8 | 2318.84 |
+| zstd-wasm-l1 | 33,555,210 | 100.0023% | 42.7 | 749.41 | 21.7 | 1474.65 |
+| zstd-wasm-l4 | 33,555,210 | 100.0023% | 45.5 | 703.30 | 19.9 | 1608.04 |
+| zstd-wasm-l6 | 33,555,210 | 100.0023% | 59.5 | 537.82 | 19.8 | 1616.16 |
+| zstd-wasm-l9 | 33,555,210 | 100.0023% | 65.3 | 490.05 | 19.1 | 1675.39 |
+| zstd-wasm-l11 | 33,555,210 | 100.0023% | 80.1 | 399.50 | 19.0 | 1684.21 |
+| xz-wasm-p1 | 33,556,040 | 100.0048% | 6094.4 | 5.25 | 48.2 | 663.90 |
+| xz-wasm-p4 | 33,556,040 | 100.0048% | 11222.6 | 2.85 | 48.2 | 663.90 |
+| xz-wasm-p6 | 33,556,040 | 100.0048% | 12682.8 | 2.52 | 48.2 | 663.90 |
+| xz-wasm-p9 | 33,556,040 | 100.0048% | 11307.6 | 2.83 | 48.6 | 658.44 |
 
 ## Interpretation
 
-- **Highly compressible JSONL:** smallest output: **xz-wasm-p9** (0.2519%); fastest compression: **zstd-wasm-l1** (1118.88 MiB/s); fastest decompression: **zstd-wasm-l6** (2735.04 MiB/s).
-- **Moderately compressible 50/50 mixed data:** smallest output: **brotli-wasm-q4** (50.0056%); fastest compression: **zstd-wasm-l1** (903.95 MiB/s); fastest decompression: **zstd-wasm-l9** (2406.02 MiB/s).
-- **Incompressible high-entropy data:** smallest output: **brotli-wasm-q4** (100.0001%); fastest compression: **zstd-wasm-l1** (725.62 MiB/s); fastest decompression: **zstd-wasm-l6** (1893.49 MiB/s).
+- **Highly compressible JSONL:** smallest output: **xz-wasm-p9** (0.2519%); fastest compression: **brotli-wasm-q1** (1373.39 MiB/s); fastest decompression: **zstd-wasm-l11** (4102.56 MiB/s).
+- **Moderately compressible 50/50 mixed data:** smallest output: **brotli-wasm-q4** (50.0056%); fastest compression: **zstd-wasm-l1** (932.94 MiB/s); fastest decompression: **zstd-wasm-l4** (3200.00 MiB/s).
+- **Incompressible high-entropy data:** smallest output: **brotli-wasm-q4** (100.0001%); fastest compression: **brotli-wasm-q1** (855.61 MiB/s); fastest decompression: **brotli-wasm-q11** (2318.84 MiB/s).
 
-The graphs and conclusions above are generated directly from results.json; unsupported codecs remain explicitly visible in the support section and measurement tables.
+The graphs and conclusions above are generated directly from results.json. Browser-native API availability is reported separately from the WASM benchmark measurements.
