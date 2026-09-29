@@ -21,7 +21,17 @@ jobs:
       - name: Test
         run: npm test
       - name: Benchmark
+        if: github.ref == 'refs/heads/main'
         run: npm run benchmark
+      - name: Browser-native comparison
+        run: npm run benchmark:browser
+      - name: Generate browser report
+        run: npm run report:browser
+      - name: Upload browser comparison
+        uses: actions/upload-artifact@v4
+        with:
+          name: browser-compression-benchmark-results
+          path: browser-benchmark-results/
       - name: Upload results
         uses: actions/upload-artifact@v4
         with:
