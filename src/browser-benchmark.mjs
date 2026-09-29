@@ -69,7 +69,9 @@ const browser = await puppeteer.launch({
 try {
   const page = await browser.newPage();
   page.on('console', message => console.log('browser:', message.text()));
+  page.on('pageerror', error => console.error('browser page error:', error));
   await page.goto(`http://127.0.0.1:${port}/`, { waitUntil: 'load' });
+  await page.waitForFunction(() => typeof window.runCompressionBenchmark === 'function');
   const browserResult = await page.evaluate(
     async config => window.runCompressionBenchmark(config),
     { corpora: corpora.map(({ kind, label, url }) => ({ kind, label, url })), repetitions, xzPreset }
