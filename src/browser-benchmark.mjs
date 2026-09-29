@@ -38,6 +38,7 @@ const corpora = definitions.map(([kind, label, create]) => {
 });
 
 fs.copyFileSync(path.join(root, 'wasm', 'brotli.wasm'), path.join(work, 'brotli.wasm'));
+fs.copyFileSync(path.join(root, 'wasm', 'zstd.wasm'), path.join(work, 'zstd.wasm'));
 
 const xzWasmBytes = embeddedWasmBytes(path.join(root, 'node_modules', 'lzma-wasm'));
 
@@ -55,6 +56,7 @@ const server = http.createServer((request, response) => {
   if (pathname === '/') return send(response, path.join(work, 'index.html'), 'text/html');
   if (pathname === '/harness.js') return send(response, path.join(work, 'harness.js'), 'text/javascript');
   if (pathname === '/brotli.wasm') return send(response, path.join(work, 'brotli.wasm'), 'application/wasm');
+  if (pathname === '/zstd.wasm') return send(response, path.join(work, 'zstd.wasm'), 'application/wasm');
   const corpus = corpora.find(item => item.url === pathname);
   if (corpus) return send(response, corpus.file, 'application/octet-stream');
   response.writeHead(404).end();
@@ -96,6 +98,8 @@ try {
       xzWasmBytes,
       brotliQualities: browserResult.brotliQualities,
       brotliWasmBytes: browserResult.brotliWasmBytes,
+      zstdLevels: browserResult.zstdLevels,
+      zstdWasmBytes: browserResult.zstdWasmBytes,
       browser: browserResult.userAgent,
       browserHardwareConcurrency: browserResult.hardwareConcurrency
     },
