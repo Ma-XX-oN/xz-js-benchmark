@@ -39,10 +39,7 @@ const corpora = definitions.map(([kind, label, create]) => {
 
 fs.copyFileSync(path.join(root, 'wasm', 'brotli.wasm'), path.join(work, 'brotli.wasm'));
 
-const xzWasmBase64Source = fs.readFileSync(path.join(root, 'node_modules', 'lzma-wasm', 'lib', 'wasm-b64.js'), 'utf8');
-const xzWasmBase64 = xzWasmBase64Source.match(/WASM_BASE64\s*=\s*[`'"]([^`'"]+)/)?.[1];
-assert(xzWasmBase64, 'Unable to locate lzma-wasm embedded WASM payload');
-const xzWasmBytes = Buffer.from(xzWasmBase64, 'base64').byteLength;
+const xzWasmBytes = embeddedWasmBytes(path.join(root, 'node_modules', 'lzma-wasm'));
 
 await build({
   entryPoints: [path.join(here, 'browser-harness.mjs')],
@@ -120,4 +117,15 @@ function send(response, file, contentType) {
     'Cache-Control': 'no-store'
   });
   fs.createReadStream(file).pipe(response);
+}
+
+function embeddedWasmBytes(packageDir) {
+  for (const entry of fs.readdirSync(packageDir, { recursive: true })) {
+    const file = path.join(packageDir, entry);
+    if (!fs.statSync(file).isFile() || !/\.(?:js|mjs|cjs)$/.test(file)) continue;
+    const source = fs.readFileSync(file, 'utf8');
+    const match = source.match(/WASM_BASE64\s*=\s*[\x60'\"]([^\x60'\"]+)/);
+    if (match) return Buffer.from(match[1], 'base64').byteLength;
+  }
+  throw new Error('Unable to locate lzma-wasm embedded WASM payload');
 }
